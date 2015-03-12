@@ -27,15 +27,18 @@ class Setup
     public static function create($commandToHandlerMap, $middlewares = [])
     {
 
-        var_dump($middlewares);
-        $handlerMiddleware = new CommandHandlerMiddleware(
+        $middlewareList[] = new LockingMiddleware();
+
+        $middlewareList[] = new CommandHandlerMiddleware(
             new InMemoryLocator($commandToHandlerMap),
             new HandleInflector()
         );
 
-        $lockingMiddleware = new LockingMiddleware();
+        while ($middleware = array_pop($middlewares)) {
+            array_push($middlewareList, new $middleware);
+        }
 
-        return new CommandBus([$lockingMiddleware, $handlerMiddleware]);
+        return new CommandBus($middlewareList);
 
     }
 
