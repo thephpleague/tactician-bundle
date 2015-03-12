@@ -16,9 +16,9 @@ Add this to the config.yml
    tactician:
        quickstart:
          # command + handler pairs
-          YourName\Commands\DoSomethingCommand: Taxi\Handlers\DoSomethingHandler
+          YourName\Commands\DoSomethingCommand: YourName\Handlers\DoSomethingHandler
        middlewares:
-         # all your middlewares in order o   
+         # all your middlewares, top down. First in, first out.
          - YourName\Middleware\DoSomethingMiddleware
 
 ```
