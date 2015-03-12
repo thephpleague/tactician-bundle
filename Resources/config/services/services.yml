@@ -1,0 +1,10 @@
+parameters:
+  setup.class: TacticianBundle\Setup\Setup
+  tactician.commandbus.class: League\Tactician\CommandBus
+
+services:
+    tactician.commandbus.factory:
+        class: %setup.class%
+    tactician.commandbus:
+        class:   %tactician.commandbus.class%
+        factory: ["@tactician.commandbus.factory", create]
