@@ -1,6 +1,6 @@
-<?php namespace TacticianBundle;
+<?php namespace Xtrasmal\TacticianBundle;
 
-use CommandBusBundle\DependencyInjection\CommandBusExtension;
+use Xtrasmal\TacticianBundle\DependencyInjection\TacticianExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class TacticianBundle extends Bundle

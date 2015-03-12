@@ -1,4 +1,4 @@
-<?php namespace TacticianBundle\Handler;
+<?php namespace Xtrasmal\TacticianBundle\Handler;
 
 use League\Tactician\Middleware;
 use League\Tactician\Command;

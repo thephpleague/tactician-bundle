@@ -1,5 +1,5 @@
 parameters:
-  setup.class: TacticianBundle\Setup\Setup
+  setup.class: Xtrasmal\TacticianBundle\Setup\Setup
   tactician.commandbus.class: League\Tactician\CommandBus
 
 services:

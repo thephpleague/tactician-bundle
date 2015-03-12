@@ -1,4 +1,4 @@
-<?php namespace TacticianBundle\DependencyInjection;
+<?php namespace Xtrasmal\TacticianBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

@@ -1,4 +1,4 @@
-<?php namespace CommandBusBundle\DependencyInjection;
+<?php namespace Xtrasmal\TacticianBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader;

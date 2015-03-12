@@ -1,9 +1,9 @@
-<?php namespace TacticianBundle\Setup;
+<?php namespace Xtrasmal\TacticianBundle\Setup;
 
 use League\Tactician\CommandBus;
 use League\Tactician\Handler\Locator\InMemoryLocator;
 use League\Tactician\Handler\MethodNameInflector\HandleInflector;
-use TacticianBundle\Handler\CommandHandlerMiddleware;
+use Xtrasmal\TacticianBundle\Handler\CommandHandlerMiddleware;
 use League\Tactician\Plugins\LockingMiddleware;
 
 
