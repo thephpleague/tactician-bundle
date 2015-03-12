@@ -1,5 +1,7 @@
 # TacticianBundle
-Symfony2 Bundle for the Tactician library
+Symfony2 Bundle for the Tactician library by Ross Tuck
+[https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
+
 
 ## Setup
 
