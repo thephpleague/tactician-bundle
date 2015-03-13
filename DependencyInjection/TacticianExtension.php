@@ -27,21 +27,23 @@ class TacticianExtension extends ConfigurableExtension
         {
             $commands[$key] = $value;
         }
-        var_dump($mergedConfig);
 
         foreach($mergedConfig['middlewares'] as $key => $value)
         {
             $middlewares[$key] = $value;
         }
+
         // Load the commandbus service so we can bootstrap config as arguments for the factory method
         $commandbus  =  $container->getDefinition( 'tactician.commandbus' );
         $commandbus->setArguments([$commands, $middlewares]);
-
 
     }
 
     public function getAlias()
     {
+
         return 'tactician';
+
     }
+
 }
