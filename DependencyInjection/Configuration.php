@@ -29,7 +29,6 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('middlewares')
-                    ->isRequired()
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
