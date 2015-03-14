@@ -2,17 +2,21 @@
   "name" : "Xtrasmal/TacticianBundle",
   "description" : "The Tactician bundle",
   "type" : "symfony-bundle",
-  "authors" : [{
+  "authors" : [
+  {
     "name" : "xander smalbil",
     "email" : "xander@videofunk.nl"
-  }],
+  }
+  ],
   "keywords" : [
-    "tactician bundle"
+    "tactician",
+    "bundle"
   ],
   "license" : [
     "MIT"
   ],
   "require" : {
+    "league/tactician": "^0.3"
   },
   "autoload" : {
     "psr-0" : {
@@ -20,11 +24,7 @@
     }
   },
   "target-dir" : "Xtrasmal/TacticianBundle",
-  "repositories" : [{
-  }],
   "extra" : {
     "dev-master" : "some_version-dev"
   }
 }
-}
-  }
