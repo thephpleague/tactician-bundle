@@ -1,10 +1,31 @@
 parameters:
-  setup.class: Xtrasmal\TacticianBundle\Setup\Setup
   tactician.commandbus.class: League\Tactician\CommandBus
 
 services:
-    tactician.commandbus.factory:
-        class: %setup.class%
     tactician.commandbus:
-        class:   %tactician.commandbus.class%
-        factory: ["@tactician.commandbus.factory", create]
+        class: %tactician.commandbus.class%
+
+    tactician.handler.locator.symfony:
+        class: Xtrasmal\TacticianBundle\Handler\ContainerBasedHandlerLocator
+        arguments:
+            - @service_container
+
+    # The standard middleware
+    tactician.middleware.command_handler:
+        class: League\Tactician\Handler\CommandHandlerMiddleware
+        arguments:
+            - @tactician.handler.locator.symfony
+            - @tactician.handler.method_name_inflector.handle
+
+    tactician.middleware.locking:
+        class: League\Tactician\Plugins\LockingMiddleware
+
+    # The standard Handler method name inflectors
+    tactician.handler.method_name_inflector.handle:
+        class: League\Tactician\Handler\MethodNameInflector\HandleInflector
+
+    tactician.handler.method_name_inflector.handle_class_name:
+        class: League\Tactician\Handler\MethodNameInflector\HandleClassNameInflector
+
+    tactician.handler.method_name_inflector.invoke:
+        class: League\Tactician\Handler\MethodNameInflector\InvokeInflector
