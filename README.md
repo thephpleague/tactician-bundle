@@ -18,7 +18,7 @@ class AppKernel extends Kernel
         $bundles = array(
             new Xtrasmal\TacticianBundle\TacticianBundle(),
             // ...
-```php
+```
 
 That's it! 
 
