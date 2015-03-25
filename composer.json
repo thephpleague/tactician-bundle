@@ -1,5 +1,5 @@
 {
-  "name" : "xtrasmal/tacticianbundle",
+  "name" : "xtrasmal/tactician-bundle",
   "description" : "The Tactician bundle",
   "type" : "symfony-bundle",
   "authors" : [
