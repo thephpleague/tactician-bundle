@@ -3,10 +3,10 @@
   "description" : "The Tactician bundle",
   "type" : "symfony-bundle",
   "authors" : [
-  {
-    "name" : "xander smalbil",
-    "email" : "xander@videofunk.nl"
-  }
+    {
+      "name" : "xander smalbil",
+      "email" : "xander@videofunk.nl"
+    }
   ],
   "keywords" : [
     "tactician",
