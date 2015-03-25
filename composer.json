@@ -1,5 +1,5 @@
 {
-  "name" : "xtrasmal/tacticianBundle",
+  "name" : "xtrasmal/tacticianbundle",
   "description" : "The Tactician bundle",
   "type" : "symfony-bundle",
   "authors" : [
@@ -20,7 +20,7 @@
   },
   "autoload" : {
     "psr-4" : {
-      "Xtrasmal\\TacticianBundle" : ""
+      "Xtrasmal\\TacticianBundle\\" : ""
     }
   },
   "extra": {
