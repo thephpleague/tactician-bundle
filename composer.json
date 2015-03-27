@@ -1,5 +1,5 @@
 {
-  "name" : "Xtrasmal/TacticianBundle",
+  "name" : "xtrasmal/tactician-bundle",
   "description" : "The Tactician bundle",
   "type" : "symfony-bundle",
   "authors" : [
@@ -19,12 +19,13 @@
     "league/tactician": "^0.3"
   },
   "autoload" : {
-    "psr-0" : {
-      "Xtrasmal\\TacticianBundle" : ""
+    "psr-4" : {
+      "Xtrasmal\\TacticianBundle\\" : ""
     }
   },
-  "target-dir" : "Xtrasmal/TacticianBundle",
-  "extra" : {
-    "dev-master" : "some_version-dev"
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
   }
 }
