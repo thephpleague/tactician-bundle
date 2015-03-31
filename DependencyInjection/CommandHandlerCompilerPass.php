@@ -14,6 +14,7 @@ class CommandHandlerCompilerPass implements CompilerPassInterface
      *
      * @param ContainerBuilder $container
      *
+     * @throws \Exception
      * @api
      */
     public function process(ContainerBuilder $container)
