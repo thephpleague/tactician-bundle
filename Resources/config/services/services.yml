@@ -20,6 +20,11 @@ services:
     tactician.middleware.locking:
         class: League\Tactician\Plugins\LockingMiddleware
 
+    tactician.middleware.validator:
+        class: Xtrasmal\TacticianBundle\Middleware\ValidatorMiddleware
+        arguments:
+            - @?validator
+
     # The standard Handler method name inflectors
     tactician.handler.method_name_inflector.handle:
         class: League\Tactician\Handler\MethodNameInflector\HandleInflector
@@ -29,3 +34,4 @@ services:
 
     tactician.handler.method_name_inflector.invoke:
         class: League\Tactician\Handler\MethodNameInflector\InvokeInflector
+
