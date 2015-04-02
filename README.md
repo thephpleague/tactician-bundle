@@ -4,6 +4,7 @@
 Symfony2 Bundle for the Tactician library
 [https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
 
+If you are looking for a Laravel Provider or want to help: [https://github.com/xtrasmal/TacticianProvider](https://github.com/xtrasmal/TacticianProvider)
 
 ## Setup
 First add this bundle to your composer dependencies:
