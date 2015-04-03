@@ -31,6 +31,7 @@
   "require-dev": {
     "symfony/validator": "~2.6",
     "phpunit/phpunit": "~4.5",
-    "mockery/mockery": "0.9.*"
+    "mockery/mockery": "0.9.*",
+    "scrutinizer/ocular": "~1.1"
   }
 }
