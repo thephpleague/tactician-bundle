@@ -1,5 +1,6 @@
 # TacticianBundle
 [![Build Status](https://travis-ci.org/xtrasmal/TacticianBundle.svg)](https://travis-ci.org/xtrasmal/TacticianBundle)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/xtrasmal/TacticianBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/xtrasmal/TacticianBundle/?branch=master)
 
 Symfony2 Bundle for the Tactician library
 [https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
