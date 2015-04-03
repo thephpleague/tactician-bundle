@@ -16,8 +16,7 @@
     "MIT"
   ],
   "require" : {
-    "league/tactician": "^0.3",
-    "mockery/mockery": "0.9.*"
+    "league/tactician": "^0.3"
   },
   "autoload" : {
     "psr-4" : {
@@ -31,6 +30,8 @@
   },
   "require-dev": {
     "symfony/validator": "~2.6",
-    "phpunit/phpunit": "~4.5"
+    "phpunit/phpunit": "~4.5",
+    "mockery/mockery": "0.9.*",
+    "scrutinizer/ocular": "~1.1"
   }
 }

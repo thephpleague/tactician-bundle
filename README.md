@@ -1,7 +1,10 @@
 # TacticianBundle
+[![Build Status](https://travis-ci.org/xtrasmal/TacticianBundle.svg)](https://travis-ci.org/xtrasmal/TacticianBundle)
+
 Symfony2 Bundle for the Tactician library
 [https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
 
+If you are looking for a Laravel Provider or want to help: [https://github.com/xtrasmal/TacticianProvider](https://github.com/xtrasmal/TacticianProvider)
 
 ## Setup
 First add this bundle to your composer dependencies:
@@ -68,6 +71,28 @@ By default, the only Middleware enabled is the Command Handler support. You can 
 **Important**: Adding your own middleware is absolutely encouraged, just be sure to always add `tactician.middleware.command_handler` as the final middleware. Otherwise, your commands won't actually be executed.
 
 Check the [Tactician docs](http://tactician.thephpleague.com/) for more info and a complete list of middleware. 
+
+### Extra Bundled Middleware
+
+This bundles ships with a few pre-configured middlewares, they can be enabled using the method above by just listing their ids.
+
+#### Validator Middleware (tactician.middleware.validator)
+
+The validator middleware will plug into Symfony's Validator (@validator) and will throw and exception if the command is not valid.
+
+Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](http://symfony.com/doc/current/book/validation.html). 
+
+The middleware will throw an `InvalidCommand` Exception that will contain the command and the `ContraintViolationList` returned by the validator.
+
+#### Locking Middleware (tactician.middleware.locking)
+
+This middleware is bundled in Tactician, please refer to [the official documentation](http://tactician.thephpleague.com/plugins/locking-middleware/) for details.
+
+#### Command Handler Middleware (tactician.middleware.command_handler)
+
+**Always ensure this is the last middleware listed**
+
+While not listed this is the core of Tactician and handles executing commands, it should always be enabled.
 
 ## Using the Command Bus 
 Create a service and inject the command bus:
