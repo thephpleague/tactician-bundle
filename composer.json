@@ -16,6 +16,7 @@
     "MIT"
   ],
   "require" : {
+    "php":  ">=5.5",
     "league/tactician": "^0.3"
   },
   "autoload" : {
