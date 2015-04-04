@@ -1,7 +1,6 @@
 <?php
 namespace Xtrasmal\TacticianBundle\Handler;
 
-use League\Tactician\Command;
 use League\Tactician\Exception\MissingHandlerException;
 use League\Tactician\Handler\Locator\HandlerLocator;
 use Symfony\Component\DependencyInjection\ContainerInterface;

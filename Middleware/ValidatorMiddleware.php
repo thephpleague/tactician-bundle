@@ -2,7 +2,6 @@
 
 namespace Xtrasmal\TacticianBundle\Middleware;
 
-use League\Tactician\Command;
 use League\Tactician\Middleware;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -21,13 +20,13 @@ class ValidatorMiddleware implements Middleware
     }
 
     /**
-     * @param Command|object $command
+     * @param object $command
      * @param callable $next
      * @return mixed
      * @throws InvalidCommandException
      * @throws \Exception
      */
-    public function execute(Command $command, callable $next)
+    public function execute($command, callable $next)
     {
         if ($this->validator === null) {
             throw new \Exception(
