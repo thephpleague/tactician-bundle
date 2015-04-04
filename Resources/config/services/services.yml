@@ -14,6 +14,7 @@ services:
     tactician.middleware.command_handler:
         class: League\Tactician\Handler\CommandHandlerMiddleware
         arguments:
+            - @tactician.handler.command_name_extractor.class_name
             - @tactician.handler.locator.symfony
             - @tactician.handler.method_name_inflector.handle
 
@@ -35,3 +36,9 @@ services:
     tactician.handler.method_name_inflector.invoke:
         class: League\Tactician\Handler\MethodNameInflector\InvokeInflector
 
+    # The CommandNameExtractors in Tactician core
+    tactician.handler.command_name_extractor.class_name:
+        class: League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor
+
+    tactician.plugins.named_command.extractor:
+        class: League\Tactician\Plugins\NamedCommand\NamedCommandExtractor

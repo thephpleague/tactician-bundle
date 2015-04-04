@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "327c027513a32ebce92e77ff4086294e",
+    "hash": "41fb70461e66fd3d7cdd874cde736af0",
     "packages": [
         {
             "name": "league/tactician",
-            "version": "v0.3.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/tactician.git",
-                "reference": "c41b6c5e80ebb12e0efba204a8293b435297071c"
+                "reference": "69d82bd7e554139e0f1ffc749534757a40967662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/tactician/zipball/c41b6c5e80ebb12e0efba204a8293b435297071c",
-                "reference": "c41b6c5e80ebb12e0efba204a8293b435297071c",
+                "url": "https://api.github.com/repos/thephpleague/tactician/zipball/69d82bd7e554139e0f1ffc749534757a40967662",
+                "reference": "69d82bd7e554139e0f1ffc749534757a40967662",
                 "shasum": ""
             },
             "require": {
@@ -26,12 +26,12 @@
             "require-dev": {
                 "mockery/mockery": "~0.9",
                 "phpunit/phpunit": "~4.3",
-                "squizlabs/php_codesniffer": "~2.0"
+                "squizlabs/php_codesniffer": "~2.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.6-dev"
                 }
             },
             "autoload": {
@@ -55,7 +55,7 @@
                 "command bus",
                 "service layer"
             ],
-            "time": "2015-02-12 15:03:11"
+            "time": "2015-04-04 16:44:49"
         }
     ],
     "packages-dev": [
@@ -1893,6 +1893,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.5"
+    },
     "platform-dev": []
 }

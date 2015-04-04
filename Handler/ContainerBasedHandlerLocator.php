@@ -1,7 +1,6 @@
 <?php
 namespace Xtrasmal\TacticianBundle\Handler;
 
-use League\Tactician\Command;
 use League\Tactician\Exception\MissingHandlerException;
 use League\Tactician\Handler\Locator\HandlerLocator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -34,16 +33,15 @@ class ContainerBasedHandlerLocator implements HandlerLocator
     /**
      * Retrieves the handler for a specified command
      *
-     * @param Command $command
+     * @param string $commandName
      * @return mixed
      */
-    public function getHandlerForCommand(Command $command)
+    public function getHandlerForCommand($commandName)
     {
-        $commandClass = get_class($command);
-        if (!isset($this->commandToServiceId[$commandClass])) {
-            throw MissingHandlerException::forCommand($command);
+        if (!isset($this->commandToServiceId[$commandName])) {
+            throw MissingHandlerException::forCommand($commandName);
         }
 
-        return $this->container->get($this->commandToServiceId[$commandClass]);
+        return $this->container->get($this->commandToServiceId[$commandName]);
     }
 }

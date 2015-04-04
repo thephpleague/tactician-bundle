@@ -1,20 +1,16 @@
 <?php
-
-
 namespace Xtrasmal\TacticianBundle\Tests\Middleware;
 
-
-use League\Tactician\Command;
 use Mockery\MockInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Xtrasmal\TacticianBundle\Middleware\InvalidCommandException;
 use Xtrasmal\TacticianBundle\Middleware\ValidatorMiddleware;
+use Xtrasmal\TacticianBundle\Tests\Fake\FakeCommand;
 
 class ValidatorMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var ValidatorInterface | MockInterface
      */
@@ -37,28 +33,28 @@ class ValidatorMiddlewareTest extends \PHPUnit_Framework_TestCase
     public function testExecute()
     {
         $list = new ConstraintViolationList([\Mockery::mock('Symfony\Component\Validator\ConstraintViolation')]);
-        $command = \Mockery::mock('League\Tactician\Command');
 
         $this->validator->shouldReceive('validate')->once()->andReturn($list);
 
         try {
 
-            $this->middleware->execute($command, function () {});
+            $this->middleware->execute(new FakeCommand(), function () {
+            });
 
         } catch (InvalidCommandException $e) {
             $this->assertEquals($list, $e->getViolations());
-            $this->assertEquals($command, $e->getCommand());
+            $this->assertEquals(new FakeCommand(), $e->getCommand());
         }
     }
 
     public function testExecuteWithoutViolations()
     {
         $list = new ConstraintViolationList([]);
-        $command = \Mockery::mock('League\Tactician\Command');
 
         $this->validator->shouldReceive('validate')->once()->andReturn($list);
 
-        $this->middleware->execute($command, function () {});
+        $this->middleware->execute(new FakeCommand(), function () {
+        });
     }
 
     /**
@@ -67,6 +63,7 @@ class ValidatorMiddlewareTest extends \PHPUnit_Framework_TestCase
     public function testExecuteWithoutValidator()
     {
         $this->middleware = new ValidatorMiddleware();
-        $this->middleware->execute(\Mockery::mock('League\Tactician\Command'), function () {});
+        $this->middleware->execute(new FakeCommand(), function () {
+        });
     }
 }
