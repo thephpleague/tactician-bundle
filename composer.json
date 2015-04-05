@@ -17,7 +17,8 @@
   ],
   "require" : {
     "php":  ">=5.5",
-    "league/tactician": "^0.5"
+    "league/tactician": "^0.5",
+    "symfony/framework-bundle": "~2.3"
   },
   "autoload" : {
     "psr-4" : {
@@ -30,9 +31,10 @@
     }
   },
   "require-dev": {
-    "symfony/validator": "~2.6",
+    "symfony/validator": "~2.3",
     "phpunit/phpunit": "~4.5",
     "mockery/mockery": "0.9.*",
-    "scrutinizer/ocular": "~1.1"
+    "scrutinizer/ocular": "~1.1",
+    "matthiasnoback/symfony-config-test": "~1.0"
   }
 }
