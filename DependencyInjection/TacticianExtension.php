@@ -1,6 +1,7 @@
 <?php namespace Xtrasmal\TacticianBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -19,20 +20,35 @@ class TacticianExtension extends ConfigurableExtension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('services.yml');
 
-        $middlewares = array_map(
-            function ($middlewareServiceId) {
-                return new Reference($middlewareServiceId);
-            },
-            $mergedConfig['middlewares']
-        );
-
-        // Load the commandbus service so we can bootstrap config as arguments for the factory method
-        $commandbus = $container->getDefinition('tactician.commandbus');
-        $commandbus->setArguments([$middlewares]);
+        $this->configureCommandBuses($mergedConfig, $container);
     }
 
     public function getAlias()
     {
         return 'tactician';
+    }
+
+    /**
+     * @param array $mergedConfig
+     * @param ContainerBuilder $container
+     */
+    private function configureCommandBuses(array $mergedConfig, ContainerBuilder $container)
+    {
+        foreach ($mergedConfig['commandbus'] as $commandBusName => $commandBusConfig) {
+            $middlewares = array_map(
+                function ($middlewareServiceId) {
+                    return new Reference($middlewareServiceId);
+                },
+                $commandBusConfig['middleware']
+            );
+
+            $serviceName = 'tactician.commandbus.' . $commandBusName;
+            $definition = new Definition($container->getParameter('tactician.commandbus.class'), [$middlewares]);
+            $container->setDefinition($serviceName, $definition);
+
+            if ($commandBusName === $mergedConfig['default_bus']) {
+                $container->setAlias('tactician.commandbus', $serviceName);
+            }
+        }
     }
 }

@@ -22,10 +22,22 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('tactician');
         $rootNode
             ->children()
-                ->arrayNode('middlewares')
+                ->scalarNode('default_bus')
+                    ->defaultValue('default')
+                    ->cannotBeEmpty()
+                ->end()
+                ->arrayNode('commandbus')
+                    ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
-                    ->defaultValue(['tactician.middleware.command_handler'])
-                    ->prototype('scalar')->end()
+                    ->prototype('array')
+                        ->children()
+                            ->arrayNode('middleware')
+                                ->useAttributeAsKey('name')
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->defaultValue(['default' => ['middleware' => ['tactician.middleware.command_handler']]])
                 ->end()
             ->end();
         return $treeBuilder;

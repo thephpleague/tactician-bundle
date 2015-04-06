@@ -28,9 +28,13 @@ class ConfigurationTest extends AbstractConfigurationTestCase
     {
         $this->assertConfigurationIsValid([
             'tactician' => [
-                'middlewares' => [
-                    'my_middleware'  => 'some_middleware',
-                    'my_middleware2' => 'some_middleware',
+                'commandbus' => [
+                    'default' => [
+                        'middleware' => [
+                            'my_middleware'  => 'some_middleware',
+                            'my_middleware2' => 'some_middleware',
+                        ]
+                    ]
                 ]
             ]
         ]);
@@ -41,13 +45,34 @@ class ConfigurationTest extends AbstractConfigurationTestCase
         $this->assertConfigurationIsInvalid(
             [
                 'tactician' => [
-                    'middlewares' => [
-                        'my_middleware'  => [],
-                        'my_middleware2' => 'some_middleware',
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware'  => [],
+                                'my_middleware2' => 'some_middleware',
+                            ]
+                        ]
                     ]
                 ]
             ],
-            'Invalid type for path "tactician.middlewares.my_middleware". Expected scalar, but got array.'
+            'Invalid type for path "tactician.commandbus.default.middleware.my_middleware". Expected scalar, but got array.'
         );
+    }
+
+    public function testDefaultMiddlewareMustExist()
+    {
+        $this->assertConfigurationIsValid([
+            'tactician' => [
+                'default_bus' => 'foo',
+                'commandbus' => [
+                    'bar' => [
+                        'middleware' => [
+
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+        $this->markTestIncomplete('Not sure how to implement this with configuration invalidation.');
     }
 }

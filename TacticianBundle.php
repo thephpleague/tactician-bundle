@@ -17,5 +17,4 @@ class TacticianBundle extends Bundle
     {
         return new TacticianExtension();
     }
-
 }

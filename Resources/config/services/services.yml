@@ -2,9 +2,6 @@ parameters:
   tactician.commandbus.class: League\Tactician\CommandBus
 
 services:
-    tactician.commandbus:
-        class: %tactician.commandbus.class%
-
     tactician.handler.locator.symfony:
         class: Xtrasmal\TacticianBundle\Handler\ContainerBasedHandlerLocator
         arguments:
