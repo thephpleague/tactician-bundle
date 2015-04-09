@@ -57,21 +57,60 @@ The tag should have two attributes: the tag name, which should always be `tactic
 Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `handle()`.
 
 By default, the only Middleware enabled is the Command Handler support. You can override this and add your own middleware in the `app/config.yml`.
-    
+
 ```yaml
 
-   tactician:
-       middlewares:
-         # service ids for all your middlewares, top down. First in, first out.
-         - tactician.middleware.locking
-         - my.custom.middleware.plugin
-         - tactician.middleware.command_handler
+  tactician:
+    commandbus:
+      default:
+        middleware:
+          # service ids for all your middlewares, top down. First in, first out.
+          - tactician.middleware.locking
+          - my.custom.middleware.plugin
+          - tactician.middleware.command_handler
 
 ```
 
 **Important**: Adding your own middleware is absolutely encouraged, just be sure to always add `tactician.middleware.command_handler` as the final middleware. Otherwise, your commands won't actually be executed.
 
-Check the [Tactician docs](http://tactician.thephpleague.com/) for more info and a complete list of middleware. 
+Check the [Tactician docs](http://tactician.thephpleague.com/) for more info and a complete list of middleware.
+
+## Configuring Command buses
+The bundle is pre-configured with a command bus called "default". Which has the service name `tactician.commandbus`.
+Some users want to configure more than one command bus though. You can do this via configuration, like so:
+
+```yaml
+
+  tactician:
+    commandbus:
+      default:
+        middleware:
+          - tactician.middleware.command_handler
+      queued:
+        middleware:
+          - tactician.middleware.queued_command_handler
+
+```
+
+The configuration defines two buses: "default" and "queued". These buses will be registered as the
+`tactician.commandbus.default` and `tactician.commandbus.queued` services respectively.
+
+If you want, you can also change which command handler is registered under `tactician.commandbus`. You can do this by
+setting the `default_bus` value in the configuration, like so:
+
+```yaml
+
+  tactician:
+    default_bus: queued
+    commandbus:
+      default:
+        middleware:
+          # ...
+      queued:
+        middleware:
+          # ...
+
+```
 
 ### Extra Bundled Middleware
 

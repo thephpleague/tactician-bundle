@@ -2,6 +2,7 @@
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
@@ -10,7 +11,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-
     /**
      * Create a rootnode tree for configuration that can be injected into the DI container
      *
@@ -20,14 +20,55 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('tactician');
+
         $rootNode
             ->children()
-                ->arrayNode('middlewares')
+                ->arrayNode('commandbus')
+                    ->defaultValue(['default' => ['middleware' => ['tactician.middleware.command_handler']]])
+                    ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
-                    ->defaultValue(['tactician.middleware.command_handler'])
-                    ->prototype('scalar')->end()
+                    ->prototype('array')
+                        ->children()
+                            ->arrayNode('middleware')
+                                ->requiresAtLeastOneElement()
+                                ->useAttributeAsKey('name')
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
-            ->end();
+                ->scalarNode('default_bus')
+                    ->defaultValue('default')
+                    ->cannotBeEmpty()
+                ->end()
+            ->end()
+            ->validate()
+                ->ifTrue(function($config) {
+                    return is_array($config) &&
+                        array_key_exists('default_bus', $config) &&
+                        array_key_exists('commandbus', $config)
+                    ;
+                })
+                    ->then(function($config) {
+                        $busNames = [];
+                        foreach ($config['commandbus'] as $busName => $busConfig) {
+                            $busNames[] = $busName;
+                        }
+
+                        if (!in_array($config['default_bus'], $busNames)) {
+                            throw new InvalidConfigurationException(
+                                sprintf(
+                                    'The default_bus "%s" was not defined as command bus. Valid option(s): %s',
+                                    $config['default_bus'],
+                                    implode(', ', $busNames)
+                                )
+                            );
+                        }
+                        return $config;
+                    })
+            ->end()
+        ;
+
         return $treeBuilder;
 
     }
