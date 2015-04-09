@@ -33,8 +33,21 @@ class Configuration implements ConfigurationInterface
                                 ->requiresAtLeastOneElement()
                                 ->useAttributeAsKey('name')
                                 ->prototype('scalar')->end()
+                                ->validate()
+                                    ->ifTrue(function ($config) {
+                                        $isPresent = in_array('tactician.middleware.command_handler', $config);
+                                        $isLast    = end($config) == 'tactician.middleware.command_handler';
+                                        return ($isPresent && !$isLast);
+                                    })
+                                    ->thenInvalid(
+                                        '"tactician.middleware.command_handler" should be last loaded middleware'.
+                                        ' when it is use.'
+                                    )
+                                ->end()
                             ->end()
+
                         ->end()
+
                     ->end()
                 ->end()
                 ->scalarNode('default_bus')
