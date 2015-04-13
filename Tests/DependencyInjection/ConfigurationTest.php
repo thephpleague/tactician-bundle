@@ -123,4 +123,59 @@ class ConfigurationTest extends AbstractConfigurationTestCase
             'The path "tactician.commandbus.foo.middleware" should have at least 1 element(s) defined.'
         );
     }
+
+    public function testCommandHandlerMiddlewareIfPresentAndNotLastIsInvalid()
+    {
+        $this->assertConfigurationIsInvalid(
+            [
+                'tactician' => [
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'tactician.middleware.command_handler',
+                                'my_middleware.custom.stuff',
+
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            '"tactician.middleware.command_handler" should be last loaded middleware when it is use.'
+        );
+    }
+
+    public function testCommandHandlerMiddlewarePresentAndLastIsValid()
+    {
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'tactician.middleware.command_handler',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
+    }
+    public function testCommandHandlerMiddlewareNotPresentDoesNotAffectValidation()
+    {
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
+    }
 }
