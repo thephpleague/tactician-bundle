@@ -1,10 +1,10 @@
 <?php
 
-namespace Xtrasmal\TacticianBundle\Tests\Handler;
+namespace League\Tactician\Bundle\Tests\Handler;
 
 use Mockery\MockInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Xtrasmal\TacticianBundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
 
 class ContainerBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
 {

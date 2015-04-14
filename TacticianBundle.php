@@ -1,8 +1,8 @@
-<?php namespace Xtrasmal\TacticianBundle;
+<?php namespace League\Tactician\Bundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Xtrasmal\TacticianBundle\DependencyInjection\CommandHandlerCompilerPass;
-use Xtrasmal\TacticianBundle\DependencyInjection\TacticianExtension;
+use League\Tactician\Bundle\DependencyInjection\CommandHandlerCompilerPass;
+use League\Tactician\Bundle\DependencyInjection\TacticianExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class TacticianBundle extends Bundle

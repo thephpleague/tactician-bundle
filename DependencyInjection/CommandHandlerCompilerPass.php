@@ -1,5 +1,5 @@
 <?php
-namespace Xtrasmal\TacticianBundle\DependencyInjection;
+namespace League\Tactician\Bundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

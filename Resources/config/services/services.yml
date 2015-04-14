@@ -3,7 +3,7 @@ parameters:
 
 services:
     tactician.handler.locator.symfony:
-        class: Xtrasmal\TacticianBundle\Handler\ContainerBasedHandlerLocator
+        class: League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator
         arguments:
             - @service_container
 
@@ -19,7 +19,7 @@ services:
         class: League\Tactician\Plugins\LockingMiddleware
 
     tactician.middleware.validator:
-        class: Xtrasmal\TacticianBundle\Middleware\ValidatorMiddleware
+        class: League\Tactician\Bundle\Middleware\ValidatorMiddleware
         arguments:
             - @?validator
 

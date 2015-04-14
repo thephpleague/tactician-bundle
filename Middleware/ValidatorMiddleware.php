@@ -1,6 +1,6 @@
 <?php
 
-namespace Xtrasmal\TacticianBundle\Middleware;
+namespace League\Tactician\Bundle\Middleware;
 
 use League\Tactician\Middleware;
 use Symfony\Component\Validator\Validator\ValidatorInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Xtrasmal\TacticianBundle\Middleware;
+namespace League\Tactician\Bundle\Middleware;
 
 use League\Tactician\Exception\Exception;
 use Symfony\Component\Validator\ConstraintViolationListInterface;

@@ -1,13 +1,13 @@
 <?php
-namespace Xtrasmal\TacticianBundle\Tests\Middleware;
+namespace League\Tactician\Bundle\Tests\Middleware;
 
 use Mockery\MockInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Xtrasmal\TacticianBundle\Middleware\InvalidCommandException;
-use Xtrasmal\TacticianBundle\Middleware\ValidatorMiddleware;
-use Xtrasmal\TacticianBundle\Tests\Fake\FakeCommand;
+use League\Tactician\Bundle\Middleware\InvalidCommandException;
+use League\Tactician\Bundle\Middleware\ValidatorMiddleware;
+use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 
 class ValidatorMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
