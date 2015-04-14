@@ -1,11 +1,23 @@
 {
-  "name" : "xtrasmal/tactician-bundle",
-  "description" : "The Tactician bundle",
+  "name" : "league/tactician-bundle",
+  "description" : "Bundle to integrate Tactician with Symfony projects",
   "type" : "symfony-bundle",
   "authors" : [
     {
-      "name" : "xander smalbil",
+        "name": "Rafael Dohms",
+        "homepage": "http://doh.ms"
+    },
+    {
+        "name": "Richard Tuin",
+        "homepage": "http://www.rtuin.nl/"
+    },
+    {
+      "name" : "Xander Smalbil",
       "email" : "xander@videofunk.nl"
+    },
+    {
+        "name": "Ross Tuck",
+        "email": "me@rosstuck.com"
     }
   ],
   "keywords" : [
