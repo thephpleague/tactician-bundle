@@ -1,5 +1,5 @@
 <?php
-namespace Xtrasmal\TacticianBundle\Handler;
+namespace League\Tactician\Bundle\Handler;
 
 use League\Tactician\Exception\MissingHandlerException;
 use League\Tactician\Handler\Locator\HandlerLocator;

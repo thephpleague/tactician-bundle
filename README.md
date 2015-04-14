@@ -1,6 +1,6 @@
 # TacticianBundle
-[![Build Status](https://travis-ci.org/xtrasmal/TacticianBundle.svg)](https://travis-ci.org/xtrasmal/TacticianBundle)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/xtrasmal/TacticianBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/xtrasmal/TacticianBundle/?branch=master)
+[![Build Status](https://travis-ci.org/thephpleague/tactician-bundle.svg)](https://travis-ci.org/thephpleague/tactician-bundle)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thephpleague/tactician-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thephpleague/tactician-bundle/?branch=master)
 
 Symfony2 Bundle for the Tactician library
 [https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
@@ -10,7 +10,7 @@ If you are looking for a Laravel Provider or want to help: [https://github.com/x
 ## Setup 
 First add this bundle to your composer dependencies:
 
-`> composer require xtrasmal\tactician-bundle`
+`> composer require league\tactician-bundle`
 
 Then register it in your AppKernel.php.
 
@@ -20,7 +20,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
-            new Xtrasmal\TacticianBundle\TacticianBundle(),
+            new League\Tactician\Bundle\TacticianBundle(),
             // ...
 ```
 

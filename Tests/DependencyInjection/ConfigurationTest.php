@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Xtrasmal\TacticianBundle\Tests\DependencyInjection;
+namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
-use Xtrasmal\TacticianBundle\DependencyInjection\Configuration;
+use League\Tactician\Bundle\DependencyInjection\Configuration;
 
 class ConfigurationTest extends AbstractConfigurationTestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Xtrasmal\TacticianBundle\Tests\DependencyInjection;
+namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use Mockery\MockInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Xtrasmal\TacticianBundle\DependencyInjection\CommandHandlerCompilerPass;
+use League\Tactician\Bundle\DependencyInjection\CommandHandlerCompilerPass;
 
 class CommandHandlerCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
