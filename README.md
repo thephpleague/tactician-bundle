@@ -134,6 +134,24 @@ This middleware is bundled in Tactician, please refer to [the official documenta
 
 While not listed this is the core of Tactician and handles executing commands, it should always be enabled.
 
+## Customizing the MethodNameInflector used by the `tactician.middleware.command_handler` middleware
+
+By default the library uses `HandleInflector` to define the handling method names, which maps to `handle()`.
+
+To use a different inflector you can now pass the service name in the config.
+
+```yml
+tactician:
+    method_inflector: my_inflector.service.id
+```
+
+Tactician offers a list of custom Inflectors, these are all supported.
+
+* `tactician.handler.method_name_inflector.handle`
+* `tactician.handler.method_name_inflector.handle_class_name`
+* `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
+* `tactician.handler.method_name_inflector.invoke`
+
 ## Using the Command Bus 
 Create a service and inject the command bus:
 
