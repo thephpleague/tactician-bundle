@@ -45,13 +45,16 @@ class Configuration implements ConfigurationInterface
                                     )
                                 ->end()
                             ->end()
-
                         ->end()
 
                     ->end()
                 ->end()
                 ->scalarNode('default_bus')
                     ->defaultValue('default')
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('method_inflector')
+                    ->defaultValue('tactician.handler.method_name_inflector.handle')
                     ->cannotBeEmpty()
                 ->end()
             ->end()

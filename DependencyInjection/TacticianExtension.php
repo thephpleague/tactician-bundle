@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\Validator\Constraints\All;
 
 class TacticianExtension extends ConfigurableExtension
 {
@@ -21,6 +22,7 @@ class TacticianExtension extends ConfigurableExtension
         $loader->load('services.yml');
 
         $this->configureCommandBuses($mergedConfig, $container);
+        $this->injectMethodNameInflector($mergedConfig, $container);
     }
 
     public function getAlias()
@@ -50,5 +52,31 @@ class TacticianExtension extends ConfigurableExtension
                 $container->setAlias('tactician.commandbus', $serviceName);
             }
         }
+    }
+
+    /**
+     * Define the default Method Name Inflector.
+     * This will fail silently if the command_handler service does not exist
+     *
+     * @param array $mergedConfig
+     * @param ContainerBuilder $container
+     * @throws \Exception
+     */
+    private function injectMethodNameInflector(array $mergedConfig, ContainerBuilder $container)
+    {
+        if (! $container->has('tactician.middleware.command_handler')) {
+            return;
+        }
+
+        if (! $container->has($mergedConfig['method_inflector'])) {
+            throw new \Exception(
+                'Unable to find requested method_inflector service definition: ' . $mergedConfig['method_inflector']
+            );
+        }
+
+        $inflectorReference = new Reference($mergedConfig['method_inflector']);
+
+        $handlerLocator = $container->findDefinition('tactician.middleware.command_handler');
+        $handlerLocator->replaceArgument(2, $inflectorReference);
     }
 }

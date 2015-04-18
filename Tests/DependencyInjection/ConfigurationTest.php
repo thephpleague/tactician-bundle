@@ -178,4 +178,29 @@ class ConfigurationTest extends AbstractConfigurationTestCase
             ]
         );
     }
+
+    public function testCustomMethodInflectorCanBeSet()
+    {
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'method_inflector' => 'some.inflector.service',
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ],
+                        ],
+                        'second' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
+    }
 }
