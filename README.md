@@ -10,7 +10,7 @@ If you are looking for a Laravel Provider or want to help: [https://github.com/x
 ## Setup 
 First add this bundle to your composer dependencies:
 
-`> composer require league\tactician-bundle`
+`> composer require league/tactician-bundle`
 
 Then register it in your AppKernel.php.
 
