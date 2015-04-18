@@ -6,7 +6,6 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
-use Symfony\Component\Validator\Constraints\All;
 
 class TacticianExtension extends ConfigurableExtension
 {
