@@ -30,6 +30,9 @@ services:
     tactician.handler.method_name_inflector.handle_class_name:
         class: League\Tactician\Handler\MethodNameInflector\HandleClassNameInflector
 
+    tactician.handler.method_name_inflector.handle_class_name_without_suffix:
+        class: League\Tactician\Handler\MethodNameInflector\HandleClassNameWithoutSuffixInflector
+
     tactician.handler.method_name_inflector.invoke:
         class: League\Tactician\Handler\MethodNameInflector\InvokeInflector
 
