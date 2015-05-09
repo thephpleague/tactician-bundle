@@ -33,24 +33,24 @@ Since handlers often have extra dependencies and are best lazily-loaded, you'll 
 
 Let's say we have two classes, `RegisterUserCommand` and `RegisterUserHandler`. We'll register the Handler in the service container, along with a repository it needs. 
 
-```
-    foo.user.register_user_handler:
-        class: Foo\User\RegisterUserHandler
-        arguments:
-            - @foo.user.user_repository
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - @foo.user.user_repository
 ```
 
 However, we still need to map the Command to the Handler. We can do this by adding a tag to the Handler's DI definition.
 
 The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be FQCN of a Command it can handle.
 
-```yml
-    foo.user.register_user_handler:
-        class: Foo\User\RegisterUserHandler
-        arguments:
-            - @foo.user.user_repository
-        tags:
-          - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - @foo.user.user_repository
+    tags:
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
 ```
 
 ## Configuring Middleware
@@ -59,16 +59,14 @@ Everything inside Tactician is a middleware plugin. Without any middleware confi
 By default, the only Middleware enabled is the Command Handler support. You can override this and add your own middleware in the `app/config.yml`.
 
 ```yaml
-
-  tactician:
+tactician:
     commandbus:
-      default:
-        middleware:
-          # service ids for all your middlewares, top down. First in, first out.
-          - tactician.middleware.locking
-          - my.custom.middleware.plugin
-          - tactician.middleware.command_handler
-
+        default:
+            middleware:
+                # service ids for all your middlewares, top down. First in, first out.
+                - tactician.middleware.locking
+                - my.custom.middleware.plugin
+                - tactician.middleware.command_handler
 ```
 
 **Important**: Adding your own middleware is absolutely encouraged, just be sure to always add `tactician.middleware.command_handler` as the final middleware. Otherwise, your commands won't actually be executed.
@@ -80,16 +78,14 @@ The bundle is pre-configured with a command bus called "default". Which has the 
 Some users want to configure more than one command bus though. You can do this via configuration, like so:
 
 ```yaml
-
-  tactician:
+tactician:
     commandbus:
-      default:
-        middleware:
-          - tactician.middleware.command_handler
-      queued:
-        middleware:
-          - tactician.middleware.queued_command_handler
-
+        default:
+            middleware:
+                - tactician.middleware.command_handler
+        queued:
+            middleware:
+                - tactician.middleware.queued_command_handler
 ```
 
 The configuration defines two buses: "default" and "queued". These buses will be registered as the
@@ -99,17 +95,15 @@ If you want, you can also change which command handler is registered under `tact
 setting the `default_bus` value in the configuration, like so:
 
 ```yaml
-
-  tactician:
+tactician:
     default_bus: queued
-    commandbus:
-      default:
-        middleware:
-          # ...
-      queued:
-        middleware:
-          # ...
-
+        commandbus:
+            default:
+                middleware:
+                    # ...
+            queued:
+                middleware:
+                    # ...
 ```
 
 ### Extra Bundled Middleware
@@ -140,7 +134,7 @@ By default the library uses `HandleInflector` to define the handling method name
 
 To use a different inflector you can now pass the service name in the config.
 
-```yml
+```yaml
 tactician:
     method_inflector: my_inflector.service.id
 ```
@@ -156,7 +150,6 @@ Tactician offers a list of custom Inflectors, these are all supported.
 Create a service and inject the command bus:
 
 ```yaml
-
 services:
     your.controller:
         class: %your.controller.class%
@@ -167,7 +160,6 @@ services:
 Then party like it's 1994
 
 ```php
-
 <?php namespace YourName\Controller;
 
 use League\Tactician\CommandBus;
@@ -190,6 +182,4 @@ class YourNameController
     }
 
 }
-
-
 ```
