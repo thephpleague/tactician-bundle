@@ -97,13 +97,13 @@ setting the `default_bus` value in the configuration, like so:
 ```yaml
 tactician:
     default_bus: queued
-        commandbus:
-            default:
-                middleware:
-                    # ...
-            queued:
-                middleware:
-                    # ...
+    commandbus:
+        default:
+            middleware:
+                # ...
+        queued:
+            middleware:
+                # ...
 ```
 
 ### Extra Bundled Middleware
