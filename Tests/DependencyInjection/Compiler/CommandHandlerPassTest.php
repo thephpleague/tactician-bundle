@@ -1,13 +1,13 @@
 <?php
 
-namespace League\Tactician\Bundle\Tests\DependencyInjection;
+namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
 use Mockery\MockInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use League\Tactician\Bundle\DependencyInjection\CommandHandlerCompilerPass;
+use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 
-class CommandHandlerCompilerPassTest extends \PHPUnit_Framework_TestCase
+class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -16,7 +16,7 @@ class CommandHandlerCompilerPassTest extends \PHPUnit_Framework_TestCase
     protected $container;
 
     /**
-     * @var CommandHandlerCompilerPass
+     * @var CommandHandlerPass
      */
     protected $compiler;
 
@@ -25,7 +25,7 @@ class CommandHandlerCompilerPassTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
         $this->container = \Mockery::mock(ContainerBuilder::class);
 
-        $this->compiler = new CommandHandlerCompilerPass();
+        $this->compiler = new CommandHandlerPass();
     }
 
     public function testProcess()

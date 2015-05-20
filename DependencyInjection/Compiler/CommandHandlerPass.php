@@ -1,5 +1,5 @@
 <?php
-namespace League\Tactician\Bundle\DependencyInjection;
+namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * This compiler pass maps Handler DI tags to specific commands
  */
-class CommandHandlerCompilerPass implements CompilerPassInterface
+class CommandHandlerPass implements CompilerPassInterface
 {
     /**
      * You can modify the container here before it is dumped to PHP code.
