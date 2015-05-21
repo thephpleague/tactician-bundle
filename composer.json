@@ -33,6 +33,9 @@
     "league/tactician": "^0.6",
     "symfony/framework-bundle": "~2.3"
   },
+  "suggest": {
+    "league/tactician-doctrine": "For doctrine transaction middleware"
+  },
   "autoload" : {
     "psr-4" : {
       "League\\Tactician\\Bundle\\" : ""
