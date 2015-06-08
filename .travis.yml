@@ -6,15 +6,22 @@ php:
   - 7.0
   - hhvm
 
+env:
+  - ''
+  - 'DOCTRINE="false"'
+
 matrix:
   allow_failures:
     - php: 7.0
   include:
       - php: 5.5
         env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
+      - php: 5.5
+        env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest" DOCTRINE="false"'
 
 before_script:
   - travis_retry composer self-update
+  - if [ "${DOCTRINE}" == "false" ]; then composer remove league/tactician-doctrine --dev --no-update; fi
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
 
 script:
