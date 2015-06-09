@@ -31,8 +31,10 @@
   "require" : {
     "php":  ">=5.5",
     "league/tactician": "^0.6",
-    "league/tactician-doctrine": "^0.6",
     "symfony/framework-bundle": "~2.3"
+  },
+  "suggest": {
+    "league/tactician-doctrine": "For doctrine transaction middleware"
   },
   "autoload" : {
     "psr-4" : {
@@ -47,9 +49,11 @@
   "require-dev": {
     "symfony/validator": "~2.3",
     "phpunit/phpunit": "~4.5",
-    "mockery/mockery": "0.9.*",
+    "mockery/mockery": "~0.9.4",
     "scrutinizer/ocular": "~1.1",
     "matthiasnoback/symfony-config-test": "~1.0",
-    "matthiasnoback/symfony-dependency-injection-test": "^0.7"
+    "matthiasnoback/symfony-dependency-injection-test": "^0.7",
+
+    "league/tactician-doctrine": "^0.6"
   }
 }

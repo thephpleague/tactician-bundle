@@ -23,11 +23,6 @@ services:
         arguments:
             - @?validator
 
-    tactician.middleware.doctrine:
-        class: League\Tactician\Doctrine\ORM\TransactionMiddleware
-        arguments:
-            - @doctrine.orm.entity_manager
-
     # The standard Handler method name inflectors
     tactician.handler.method_name_inflector.handle:
         class: League\Tactician\Handler\MethodNameInflector\HandleInflector
