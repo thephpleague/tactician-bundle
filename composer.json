@@ -31,8 +31,9 @@
   "require" : {
     "php":  ">=5.5",
     "league/tactician": "^0.6",
-    "symfony/framework-bundle": "~2.3"
+    "symfony/framework-bundle": "^2.3|^3.0"
   },
+  "minimum-stability": "beta",
   "suggest": {
     "league/tactician-doctrine": "For doctrine transaction middleware"
   },
