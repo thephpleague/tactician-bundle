@@ -1,5 +1,11 @@
 language: php
 
+sudo: false
+
+cache:
+  directories:
+    - "$HOME/.composer/cache"
+
 php:
   - 5.5
   - 5.6
@@ -7,25 +13,32 @@ php:
   - hhvm
 
 env:
-  - ''
-  - 'DOCTRINE="false"'
+  matrix:
+    - DOCTRINE="true"
+    - DOCTRINE="false"
 
 matrix:
   allow_failures:
     - php: 7.0
   include:
-      - php: 5.5
-        env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
-      - php: 5.5
-        env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest" DOCTRINE="false"'
+    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+    - php: 5.5
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" DOCTRINE="false"
+    - php: 5.6
+      env: SYMFONY_VERSION="2.7.*"
+    - php: 5.6
+      env: SYMFONY_VERSION="2.8.*"
+    - php: 5.6
+      env: SYMFONY_VERSION="3.0.*"
 
-before_script:
-  - travis_retry composer self-update
-  - if [ "${DOCTRINE}" == "false" ]; then composer remove league/tactician-doctrine --dev --no-update; fi
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+before_install:
+  - composer self-update || true
+  - if [ "$DOCTRINE" == "false" ]; then composer remove league/tactician-doctrine --dev --no-update; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION} --no-update; fi
 
-script:
-  - phpunit --coverage-text --coverage-clover=coverage.clover
+install: composer update $COMPOSER_FLAGS --prefer-dist --no-interaction
 
-after_script:
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+script: phpunit --coverage-text --coverage-clover=coverage.clover
+
+after_script: php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
