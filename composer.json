@@ -48,7 +48,7 @@
     }
   },
   "require-dev": {
-    "symfony/validator": "~2.3",
+    "symfony/validator": "^2.3|^3.0",
     "phpunit/phpunit": "~4.5",
     "mockery/mockery": "~0.9.4",
     "matthiasnoback/symfony-config-test": "~1.0",
