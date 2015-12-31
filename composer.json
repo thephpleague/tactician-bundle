@@ -30,7 +30,7 @@
   ],
   "require" : {
     "php":  ">=5.5",
-    "league/tactician": "^0.6",
+    "league/tactician": "^1.0",
     "symfony/framework-bundle": "^2.3|^3.0"
   },
   "minimum-stability": "beta",
@@ -54,6 +54,6 @@
     "matthiasnoback/symfony-config-test": "~1.0",
     "matthiasnoback/symfony-dependency-injection-test": "^0.7",
 
-    "league/tactician-doctrine": "^0.6"
+    "league/tactician-doctrine": "^1.0"
   }
 }
