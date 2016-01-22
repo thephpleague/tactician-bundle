@@ -7,24 +7,45 @@ Symfony2 Bundle for the Tactician library
 
 If you are looking for a Laravel Provider or want to help: [https://github.com/xtrasmal/TacticianProvider](https://github.com/xtrasmal/TacticianProvider)
 
-## Setup 
-First add this bundle to your composer dependencies:
+## Installation
 
-`> composer require league/tactician-bundle`
+### Step 1: Download the Bundle
+Open a command console, enter your project directory and execute the
+following command to download the latest stable version of this bundle:
 
-Then register it in your AppKernel.php.
+```bash
+$ composer require league/tactician-bundle "~0.4"
+```
+
+This command requires you to have Composer installed globally, as explained
+in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
+of the Composer documentation.
+
+### Step 2: Enable the Bundle
+Then, enable the bundle by adding it to the list of registered bundles
+in the `app/AppKernel.php` file of your project:
 
 ```php
+<?php
+// app/AppKernel.php
+
+// ...
 class AppKernel extends Kernel
 {
     public function registerBundles()
     {
         $bundles = array(
-            new League\Tactician\Bundle\TacticianBundle(),
             // ...
-```
 
-That's it! 
+            new League\Tactician\Bundle\TacticianBundle(),
+        );
+
+        // ...
+    }
+
+    // ...
+}
+```
 
 ## Configuring Command Handlers
 The most common use case with Tactician is passing a Command to the Command Bus and having it routed to the Command Bus.
@@ -37,7 +58,7 @@ Let's say we have two classes, `RegisterUserCommand` and `RegisterUserHandler`. 
 foo.user.register_user_handler:
     class: Foo\User\RegisterUserHandler
     arguments:
-        - @foo.user.user_repository
+        - '@foo.user.user_repository'
 ```
 
 However, we still need to map the Command to the Handler. We can do this by adding a tag to the Handler's DI definition.
@@ -48,7 +69,7 @@ The tag should have two attributes: the tag name, which should always be `tactic
 foo.user.register_user_handler:
     class: Foo\User\RegisterUserHandler
     arguments:
-        - @foo.user.user_repository
+        - '@foo.user.user_repository'
     tags:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
 ```
@@ -116,7 +137,7 @@ The validator middleware will plug into Symfony's Validator (@validator) and wil
 
 Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](http://symfony.com/doc/current/book/validation.html). 
 
-The middleware will throw an `InvalidCommand` Exception that will contain the command and the `ContraintViolationList` returned by the validator.
+The middleware will throw an `InvalidCommandException` that will contain the command and the `ContraintViolationList` returned by the validator.
 
 #### Locking Middleware (tactician.middleware.locking)
 
@@ -141,29 +162,29 @@ tactician:
 
 Tactician offers a list of custom Inflectors, these are all supported.
 
-* `tactician.handler.method_name_inflector.handle`
-* `tactician.handler.method_name_inflector.handle_class_name`
-* `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
-* `tactician.handler.method_name_inflector.invoke`
+ * `tactician.handler.method_name_inflector.handle`
+ * `tactician.handler.method_name_inflector.handle_class_name`
+ * `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
+ * `tactician.handler.method_name_inflector.invoke`
 
 ## Using the Command Bus 
 Create a service and inject the command bus:
 
 ```yaml
 services:
-    your.controller:
-        class: %your.controller.class%
+    app.your_controller:
+        class: AppBundle\Controller\YourNameController
         arguments:
-            - @tactician.commandbus
+            - '@tactician.commandbus'
 ```
 
 Then party like it's 1994
 
 ```php
-<?php namespace YourName\Controller;
+<?php namespace AppBundle\Controller;
 
 use League\Tactician\CommandBus;
-use YourName\Commands\DoSomethingCommand;
+use AppBundle\Commands\DoSomethingCommand;
 
 class YourNameController
 {
