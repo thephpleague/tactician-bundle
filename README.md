@@ -137,7 +137,7 @@ The validator middleware will plug into Symfony's Validator (@validator) and wil
 
 Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](http://symfony.com/doc/current/book/validation.html). 
 
-The middleware will throw an `InvalidCommandException` that will contain the command and the `ContraintViolationList` returned by the validator.
+The middleware will throw an `InvalidCommandException` that will contain the command and the `ConstraintViolationList` returned by the validator.
 
 #### Locking Middleware (tactician.middleware.locking)
 
