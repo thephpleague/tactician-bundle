@@ -121,14 +121,4 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             new Reference('tactician.handler.method_name_inflector.handle_class_name_without_suffix')
         );
     }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testMethodNameInflectorThrowsErrorIfNonExistingService()
-    {
-        $this->load([
-            'method_inflector' => 'i.do.not.exist'
-        ]);
-    }
 }
