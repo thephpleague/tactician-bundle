@@ -25,7 +25,8 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $handlerLocator = $container->findDefinition('tactician.handler.locator.symfony');
 
-        $mapping = [];
+        $defaultMapping = [];
+        $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
 
@@ -35,14 +36,15 @@ class CommandHandlerPass implements CompilerPassInterface
                 }
 
                 if (isset($attributes['bus'])) {
-                    $this->abortIfInvalidBusId($id, $container);
+                    $this->abortIfInvalidBusId($attributes['bus'], $container);
+                    $busIdToHandlerMapping[$attributes['bus']][$attributes['command']] = $id;
+                } else {
+                    $defaultMapping[$attributes['command']] = $id;
                 }
-
-                $mapping[$attributes['command']] = $id;
             }
         }
 
-        $handlerLocator->addArgument($mapping);
+        $handlerLocator->addArgument($defaultMapping);
     }
 
     protected function abortIfInvalidBusId($id, ContainerBuilder $container)
