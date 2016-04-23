@@ -3,6 +3,8 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * This compiler pass maps Handler DI tags to specific commands
@@ -44,9 +46,21 @@ class CommandHandlerPass implements CompilerPassInterface
             }
         }
 
+        foreach ($busIdToHandlerMapping as $busId => $handlerMapping) {
+            $container->setDefinition(
+                'tactician.handler.locator.symfony.'.$busId,
+                $this->buildLocatorDefinition($handlerMapping)
+            );
+        }
+
         $handlerLocator->addArgument($defaultMapping);
     }
 
+    /**
+     * @param string $id
+     * @param ContainerBuilder $container 
+     * @throws Exception
+     */
     protected function abortIfInvalidBusId($id, ContainerBuilder $container)
     {
         $config = $container->getExtensionConfig('tactician');
@@ -54,6 +68,21 @@ class CommandHandlerPass implements CompilerPassInterface
         if (!array_key_exists($id, $config['commandbus'])) {
             throw new \Exception('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', array_keys($config['commandbus'])));
         }
+    }
+
+    /**
+     * @param array $handlerMapping 
+     * @return Definition
+     */
+    protected function buildLocatorDefinition(array $handlerMapping)
+    {
+        return new Definition(
+            'League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator',
+            [
+                new Reference('service_container'),
+                $handlerMapping,
+            ]
+        );
     }
 
 }

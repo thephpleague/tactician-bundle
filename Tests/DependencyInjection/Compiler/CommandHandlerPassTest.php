@@ -171,4 +171,48 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
         $this->compiler->process($this->container);
     }
+
+    public function testProcessAddsLocatorDefinitionForTaggedBuses()
+    {
+        $definition = \Mockery::mock(Definition::class);
+
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once()
+            ->andReturn([
+                'commandbus' => [
+                    'custom_bus' => []
+                ]
+            ]);
+
+        $this->container->shouldReceive('has')
+            ->with('tactician.handler.locator.symfony')
+            ->once()
+            ->andReturn(true);
+
+        $this->container->shouldReceive('findDefinition')
+            ->with('tactician.handler.locator.symfony')
+            ->once()
+            ->andReturn($definition);
+
+        $this->container->shouldReceive('findTaggedServiceIds')
+            ->with('tactician.handler')
+            ->once()
+            ->andReturn([
+                'service_id_1' => [
+                    ['command' => 'my_command', 'bus' => 'custom_bus']
+                ],
+            ]);
+
+        $this->container->shouldReceive('setDefinition')
+            ->with(
+                'tactician.handler.locator.symfony.custom_bus',
+                \Mockery::type('Symfony\Component\DependencyInjection\Definition')
+            );
+
+        $definition->shouldReceive('addArgument')
+            ->once();
+
+        $this->compiler->process($this->container);
+    }
 }
