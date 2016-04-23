@@ -32,6 +32,10 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once();
+
         $this->container->shouldReceive('has')
             ->with('tactician.handler.locator.symfony')
             ->once()
@@ -67,6 +71,10 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once();
+
         $this->container->shouldReceive('has')
             ->with('tactician.handler.locator.symfony')
             ->once()
@@ -91,6 +99,10 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once();
+
         $this->container->shouldReceive('has')
             ->with('tactician.handler.locator.symfony')
             ->once()
@@ -110,6 +122,47 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ],
                 'service_id_2' => [
                     ['command' => 'my_command']
+                ],
+            ]);
+
+        $definition->shouldReceive('addArgument')
+            ->never();
+
+        $this->compiler->process($this->container);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testProcessAbortsOnInvalidBus()
+    {
+        $definition = \Mockery::mock(Definition::class);
+
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once()
+            ->andReturn([
+                'commandbus' => [
+                    'default' => []
+                ]
+            ]);
+
+        $this->container->shouldReceive('has')
+            ->with('tactician.handler.locator.symfony')
+            ->once()
+            ->andReturn(true);
+
+        $this->container->shouldReceive('findDefinition')
+            ->with('tactician.handler.locator.symfony')
+            ->once()
+            ->andReturn($definition);
+
+        $this->container->shouldReceive('findTaggedServiceIds')
+            ->with('tactician.handler')
+            ->once()
+            ->andReturn([
+                'service_id_1' => [
+                    ['command' => 'my_command', 'bus' => 'bad_bus_name']
                 ],
             ]);
 
