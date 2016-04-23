@@ -27,8 +27,6 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $mapping = [];
 
-        $config = $container->getExtensionConfig('tactician');
-
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
 
             foreach ($tags as $attributes) {
@@ -37,9 +35,7 @@ class CommandHandlerPass implements CompilerPassInterface
                 }
 
                 if (isset($attributes['bus'])) {
-                    if (!array_key_exists($attributes['bus'], $config['commandbus'])) {
-                        throw new \Exception('Invalid bus id "'.$attributes['bus'].'". Valid buses are: '.implode(', ', array_keys($config['commandbus'])));
-                    }
+                    $this->abortIfInvalidBusId($id, $container);
                 }
 
                 $mapping[$attributes['command']] = $id;
@@ -47,6 +43,15 @@ class CommandHandlerPass implements CompilerPassInterface
         }
 
         $handlerLocator->addArgument($mapping);
+    }
+
+    protected function abortIfInvalidBusId($id, ContainerBuilder $container)
+    {
+        $config = $container->getExtensionConfig('tactician');
+
+        if (!array_key_exists($id, $config['commandbus'])) {
+            throw new \Exception('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', array_keys($config['commandbus'])));
+        }
     }
 
 }
