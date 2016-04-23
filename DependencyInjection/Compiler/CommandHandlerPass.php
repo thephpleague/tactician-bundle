@@ -27,10 +27,19 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $mapping = [];
 
+        $config = $container->getExtensionConfig('tactician');
+
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
+
             foreach ($tags as $attributes) {
                 if (!isset($attributes['command'])) {
                     throw new \Exception('The tactician.handler tag must always have a command attribute');
+                }
+
+                if (isset($attributes['bus'])) {
+                    if (!array_key_exists($attributes['bus'], $config['commandbus'])) {
+                        throw new \Exception('Invalid bus id "'.$attributes['bus'].'". Valid buses are: '.implode(', ', array_keys($config['commandbus'])));
+                    }
                 }
 
                 $mapping[$attributes['command']] = $id;
