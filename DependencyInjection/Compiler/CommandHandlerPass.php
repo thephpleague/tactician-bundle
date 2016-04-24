@@ -28,6 +28,7 @@ class CommandHandlerPass implements CompilerPassInterface
         $handlerLocator = $container->findDefinition('tactician.handler.locator.symfony');
 
         $defaultMapping = [];
+        $defaultBusId = $this->getDefaultBusId($container);
         $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
@@ -37,23 +38,32 @@ class CommandHandlerPass implements CompilerPassInterface
                     throw new \Exception('The tactician.handler tag must always have a command attribute');
                 }
 
-                if (isset($attributes['bus'])) {
+                if (array_key_exists('bus', $attributes)) {
                     $this->abortIfInvalidBusId($attributes['bus'], $container);
-                    $busIdToHandlerMapping[$attributes['bus']][$attributes['command']] = $id;
-                } else {
-                    $defaultMapping[$attributes['command']] = $id;
                 }
+
+                $busId = array_key_exists('bus', $attributes) ? $attributes['bus'] : $defaultBusId;
+
+                $busIdToHandlerMapping[$busId][$attributes['command']] = $id;
             }
         }
 
         foreach ($busIdToHandlerMapping as $busId => $handlerMapping) {
+            $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
             $container->setDefinition(
-                'tactician.handler.locator.symfony.'.$busId,
+                $locatorServiceId,
                 $this->buildLocatorDefinition($handlerMapping)
             );
         }
 
         $handlerLocator->addArgument($defaultMapping);
+    }
+
+    protected function getDefaultBusId(ContainerBuilder $container)
+    {
+        $config = $container->getExtensionConfig('tactician');
+
+        return $config['default_bus'];
     }
 
     /**
