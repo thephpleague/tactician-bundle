@@ -21,7 +21,6 @@ class TacticianExtension extends ConfigurableExtension
         $loader->load('services.yml');
 
         $this->configureCommandBuses($mergedConfig, $container);
-        $this->injectMethodNameInflector($mergedConfig, $container);
     }
 
     public function getAlias()
@@ -51,24 +50,5 @@ class TacticianExtension extends ConfigurableExtension
                 $container->setAlias('tactician.commandbus', $serviceName);
             }
         }
-    }
-
-    /**
-     * Define the default Method Name Inflector.
-     * This will fail silently if the command_handler service does not exist
-     *
-     * @param array $mergedConfig
-     * @param ContainerBuilder $container
-     */
-    private function injectMethodNameInflector(array $mergedConfig, ContainerBuilder $container)
-    {
-        if (! $container->has('tactician.middleware.command_handler')) {
-            return;
-        }
-
-        $inflectorReference = new Reference($mergedConfig['method_inflector']);
-
-        $handlerLocator = $container->findDefinition('tactician.middleware.command_handler');
-        $handlerLocator->replaceArgument(2, $inflectorReference);
     }
 }
