@@ -66,6 +66,11 @@ class CommandHandlerPass implements CompilerPassInterface
             'tactician.commandbus.'.$defaultBusId.'.handler.locator'
         );
 
+        $container->setAlias(
+            'tactician.middleware.command_handler',
+            'tactician.commandbus.'.$defaultBusId.'.middleware.command_handler'
+        );
+
         $handlerLocator->addArgument($defaultMapping);
     }
 

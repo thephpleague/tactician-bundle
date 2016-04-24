@@ -73,6 +73,13 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             )
             ->once();
 
+        $this->container->shouldReceive('setAlias')
+            ->with(
+                'tactician.middleware.command_handler',
+                'tactician.commandbus.default.middleware.command_handler'
+            )
+            ->once();
+
         $definition->shouldReceive('addArgument')
             ->once();
 
@@ -237,6 +244,13 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             ->with(
                 'tactician.handler.locator.symfony',
                 'tactician.commandbus.custom_bus.handler.locator'
+            )
+            ->once();
+
+        $this->container->shouldReceive('setAlias')
+            ->with(
+                'tactician.middleware.command_handler',
+                'tactician.commandbus.custom_bus.middleware.command_handler'
             )
             ->once();
 
