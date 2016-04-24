@@ -61,6 +61,11 @@ class CommandHandlerPass implements CompilerPassInterface
             );
         }
 
+        $container->setAlias(
+            'tactician.handler.locator.symfony',
+            'tactician.commandbus.'.$defaultBusId.'.handler.locator'
+        );
+
         $handlerLocator->addArgument($defaultMapping);
     }
 
