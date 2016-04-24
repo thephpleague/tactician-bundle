@@ -71,8 +71,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 'tactician.handler.locator.symfony',
                 'tactician.commandbus.default.handler.locator'
             )
-            ->once()
-            ->andReturn($definition);
+            ->once();
 
         $definition->shouldReceive('addArgument')
             ->once();
