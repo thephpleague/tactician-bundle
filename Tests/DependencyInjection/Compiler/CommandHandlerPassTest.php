@@ -58,6 +58,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ],
             ]);
 
+        $this->container->shouldReceive('setDefinition')
+            ->twice();
+
         $definition->shouldReceive('addArgument')
             ->once();
 
@@ -142,6 +145,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             ->with('tactician')
             ->once()
             ->andReturn([
+                'default_bus' => 'default',
                 'commandbus' => [
                     'default' => []
                 ]
@@ -180,6 +184,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             ->with('tactician')
             ->once()
             ->andReturn([
+                'default_bus' => 'default',
                 'commandbus' => [
                     'custom_bus' => []
                 ]
@@ -206,7 +211,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
         $this->container->shouldReceive('setDefinition')
             ->with(
-                'tactician.handler.locator.symfony.custom_bus',
+                'tactician.commandbus.custom_bus.handler.locator',
                 \Mockery::type('Symfony\Component\DependencyInjection\Definition')
             );
 
