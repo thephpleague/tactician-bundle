@@ -54,6 +54,11 @@ class CommandHandlerPass implements CompilerPassInterface
                 $locatorServiceId,
                 $this->buildLocatorDefinition($handlerMapping)
             );
+
+            $container->setDefinition(
+                'tactician.commandbus.'.$busId.'.middleware.command_handler',
+                $this->buildCommandHandlerDefinition($locatorServiceId)
+            );
         }
 
         $handlerLocator->addArgument($defaultMapping);
@@ -91,6 +96,22 @@ class CommandHandlerPass implements CompilerPassInterface
             [
                 new Reference('service_container'),
                 $handlerMapping,
+            ]
+        );
+    }
+
+    /**
+     * @param string $locatorServiceId 
+     * @return Definition
+     */
+    protected function buildCommandHandlerDefinition($locatorServiceId)
+    {
+        return new Definition(
+            'League\Tactician\Handler\CommandHandlerMiddleware',
+            [
+                new Reference('tactician.handler.command_name_extractor.class_name'),
+                new Reference($locatorServiceId),
+                new Reference('tactician.handler.method_name_inflector.handle')
             ]
         );
     }
