@@ -26,6 +26,10 @@ class ContainerBasedHandlerLocator implements HandlerLocator
      */
     public function __construct(ContainerInterface $container, $commandToServiceIdMapping)
     {
+        if (empty($commandToServiceIdMapping)) {
+            throw new \InvalidArgumentException('commandToServiceIdMapping cannot be empty');
+        }
+
         $this->container = $container;
         $this->commandToServiceId = $commandToServiceIdMapping;
     }
