@@ -21,7 +21,6 @@ class CommandHandlerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $defaultMapping = [];
         $defaultBusId = $this->getDefaultBusId($container);
         $busIdToHandlerMapping = [];
 
