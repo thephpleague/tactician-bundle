@@ -21,12 +21,6 @@ class CommandHandlerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('tactician.handler.locator.symfony')) {
-            throw new \Exception('Missing tactician.handler.locator.symfony definition');
-        }
-
-        $handlerLocator = $container->findDefinition('tactician.handler.locator.symfony');
-
         $defaultMapping = [];
         $defaultBusId = $this->getDefaultBusId($container);
         $busIdToHandlerMapping = [];
@@ -57,7 +51,7 @@ class CommandHandlerPass implements CompilerPassInterface
 
             $container->setDefinition(
                 'tactician.commandbus.'.$busId.'.middleware.command_handler',
-                $this->buildCommandHandlerDefinition($locatorServiceId)
+                $this->buildCommandHandlerDefinition($locatorServiceId, $container)
             );
         }
 
@@ -70,8 +64,6 @@ class CommandHandlerPass implements CompilerPassInterface
             'tactician.middleware.command_handler',
             'tactician.commandbus.'.$defaultBusId.'.middleware.command_handler'
         );
-
-        $handlerLocator->addArgument($defaultMapping);
     }
 
     protected function getDefaultBusId(ContainerBuilder $container)
@@ -114,14 +106,16 @@ class CommandHandlerPass implements CompilerPassInterface
      * @param string $locatorServiceId 
      * @return Definition
      */
-    protected function buildCommandHandlerDefinition($locatorServiceId)
+    protected function buildCommandHandlerDefinition($locatorServiceId, ContainerBuilder $container)
     {
+        $config = $container->getExtensionConfig('tactician');
+
         return new Definition(
             'League\Tactician\Handler\CommandHandlerMiddleware',
             [
                 new Reference('tactician.handler.command_name_extractor.class_name'),
                 new Reference($locatorServiceId),
-                new Reference('tactician.handler.method_name_inflector.handle')
+                new Reference($config['method_inflector'])
             ]
         );
     }
