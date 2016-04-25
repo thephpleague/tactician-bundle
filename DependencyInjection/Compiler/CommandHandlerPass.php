@@ -31,11 +31,9 @@ class CommandHandlerPass implements CompilerPassInterface
                     throw new \Exception('The tactician.handler tag must always have a command attribute');
                 }
 
-                if (array_key_exists('bus', $attributes)) {
-                    $this->abortIfInvalidBusId($attributes['bus'], $container);
-                }
-
                 $busId = array_key_exists('bus', $attributes) ? $attributes['bus'] : $defaultBusId;
+
+                $this->abortIfInvalidBusId($busId, $container);
 
                 $busIdToHandlerMapping[$busId][$attributes['command']] = $id;
             }
