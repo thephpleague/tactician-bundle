@@ -83,7 +83,11 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
         $this->container->shouldReceive('getExtensionConfig')
             ->with('tactician')
-            ->once();
+            ->twice()
+            ->andReturn([
+                'default_bus' => 'default',
+                'commandbus' => []
+            ]);
 
         $this->container->shouldReceive('findTaggedServiceIds')
             ->with('tactician.handler')

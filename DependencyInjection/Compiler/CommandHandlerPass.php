@@ -24,6 +24,7 @@ class CommandHandlerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $defaultBusId = $this->getDefaultBusId($container);
+        $busIds = $this->getBusIds($container);
         $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
@@ -33,11 +34,14 @@ class CommandHandlerPass implements CompilerPassInterface
                     throw new \Exception('The tactician.handler tag must always have a command attribute');
                 }
 
-                $busId = array_key_exists('bus', $attributes) ? $attributes['bus'] : $defaultBusId;
+                if (array_key_exists('bus', $attributes)) {
+                    $this->abortIfInvalidBusId($attributes['bus'], $busIds);
+                }
 
-                $this->abortIfInvalidBusId($busId, $container);
-
-                $busIdToHandlerMapping[$busId][$attributes['command']] = $id;
+                $busIds = array_key_exists('bus', $attributes) ? [$attributes['bus']] : $busIds;
+                foreach ($busIds as $busId) {
+                    $busIdToHandlerMapping[$busId][$attributes['command']] = $id;
+                }
             }
         }
 
@@ -73,16 +77,25 @@ class CommandHandlerPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $id
      * @param ContainerBuilder $container 
-     * @throws Exception
+     * @return string[]
      */
-    protected function abortIfInvalidBusId($id, ContainerBuilder $container)
+    protected function getBusIds(ContainerBuilder $container)
     {
         $config = $container->getExtensionConfig('tactician');
 
-        if (!array_key_exists($id, $config['commandbus'])) {
-            throw new \Exception('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', array_keys($config['commandbus'])));
+        return array_keys($config['commandbus']);
+    }
+
+    /**
+     * @param string $id
+     * @param array $busIds 
+     * @throws Exception
+     */
+    protected function abortIfInvalidBusId($id, array $busIds)
+    {
+        if (!in_array($id, $busIds)) {
+            throw new \Exception('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', $busIds));
         }
     }
 
