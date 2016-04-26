@@ -1,6 +1,8 @@
 <?php
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
+use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\Handler\CommandHandlerMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -91,7 +93,7 @@ class CommandHandlerPass implements CompilerPassInterface
     protected function buildLocatorDefinition(array $handlerMapping)
     {
         return new Definition(
-            'League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator',
+            ContainerBasedHandlerLocator::class,
             [
                 new Reference('service_container'),
                 $handlerMapping,
@@ -108,7 +110,7 @@ class CommandHandlerPass implements CompilerPassInterface
         $config = $container->getExtensionConfig('tactician');
 
         return new Definition(
-            'League\Tactician\Handler\CommandHandlerMiddleware',
+            CommandHandlerMiddleware::class,
             [
                 new Reference('tactician.handler.command_name_extractor.class_name'),
                 new Reference($locatorServiceId),
