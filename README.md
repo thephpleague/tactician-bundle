@@ -143,6 +143,22 @@ The middleware will throw an `InvalidCommandException` that will contain the com
 
 This middleware is bundled in Tactician, please refer to [the official documentation](http://tactician.thephpleague.com/plugins/locking-middleware/) for details.
 
+#### Security Middleware (tactician.middleware.security)
+
+The security middleware will perform authorization on handling all commands. By default an AccessDenied exception will be thrown if the user is not authorized. You must configure one or more roles for each command to allow handling:
+
+```yaml
+tactician:
+    security:
+        My\User\Command:
+            - 'ROLE_USER'
+        My\Admin\Command:
+            - 'ROLE_ADMIN'
+        My\UserAndAdmin\Command:
+            - 'ROLE_USER'
+            - 'ROLE_ADMIN'
+```
+
 #### Command Handler Middleware (tactician.middleware.command_handler)
 
 **Always ensure this is the last middleware listed**
