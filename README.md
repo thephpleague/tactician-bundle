@@ -48,7 +48,7 @@ class AppKernel extends Kernel
 ```
 
 ## Configuring Command Handlers
-The most common use case with Tactician is passing a Command to the Command Bus and having it routed to the Command Bus.
+The most common use case with Tactician is passing a Command to the Command Bus and having it routed to the Handler.
 
 Since handlers often have extra dependencies and are best lazily-loaded, you'll want to register them in the service container.
 
