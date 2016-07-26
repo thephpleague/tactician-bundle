@@ -98,27 +98,4 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
         $this->load();
         $this->assertContainerBuilderHasService('tactician.commandbus.default');
     }
-
-    public function testMethodNameInflectorDefault()
-    {
-        $this->load();
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'tactician.middleware.command_handler',
-            2,
-            new Reference('tactician.handler.method_name_inflector.handle')
-        );
-    }
-
-    public function testMethodNameInflectorNonDefault()
-    {
-        $this->load([
-            'method_inflector' => 'tactician.handler.method_name_inflector.handle_class_name_without_suffix'
-        ]);
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'tactician.middleware.command_handler',
-            2,
-            new Reference('tactician.handler.method_name_inflector.handle_class_name_without_suffix')
-        );
-    }
 }
