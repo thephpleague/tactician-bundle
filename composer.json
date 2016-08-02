@@ -31,10 +31,10 @@
   "require" : {
     "php":  ">=5.5",
     "league/tactician": "^1.0",
-    "symfony/config": "^2.3|^3.0",
-    "symfony/dependency-injection": "^2.3|^3.0",
-    "symfony/http-kernel": "^2.3|^3.0",
-    "symfony/yaml": "^2.3|^3.0"
+    "symfony/config": "^2.8|^3.0",
+    "symfony/dependency-injection": "^2.8|^3.0",
+    "symfony/http-kernel": "^2.8|^3.0",
+    "symfony/yaml": "^2.8|^3.0"
   },
   "minimum-stability": "beta",
   "suggest": {
@@ -57,8 +57,8 @@
     "mockery/mockery": "~0.9.4",
     "matthiasnoback/symfony-config-test": "~1.0",
     "matthiasnoback/symfony-dependency-injection-test": "^0.7",
-    "symfony/security": "^2.6|^3.1",
-    "symfony/validator": "^2.3|^3.0",
+    "symfony/security": "^2.8|^3.1",
+    "symfony/validator": "^2.8|^3.0",
     "league/tactician-doctrine": "^1.0"
   }
 }
