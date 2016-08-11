@@ -203,4 +203,24 @@ class ConfigurationTest extends AbstractConfigurationTestCase
             ]
         );
     }
+
+    public function testSecurityConfiguration()
+        {
+        $this->assertConfigurationIsValid([
+            'tactician' => [
+                'commandbus' => [
+                    'default' => [
+                        'middleware' => [
+                            'my_middleware'  => 'some_middleware',
+                            'my_middleware2' => 'some_middleware',
+                        ]
+                    ]
+                ],
+                'security' => [
+                    'Some\Command' => 'ROLE_USER',
+                    'Some\Other\Command' => 'ROLE_ADMIN',
+                ]
+            ]
+        ]);
+    }
 }

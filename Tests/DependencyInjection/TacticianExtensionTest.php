@@ -121,4 +121,13 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             new Reference('tactician.handler.method_name_inflector.handle_class_name_without_suffix')
         );
     }
+
+    public function testLoadSecurityConfiguration()
+    {
+        $securitySettings = ['Some\Command' => 'ROLE_USER', 'Some\Other\Command' => 'ROLE_ADMIN'];
+
+        $this->load(['security' => $securitySettings]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, $securitySettings);
+    }
 }
