@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                 ->end()
                 ->arrayNode('security')
+                    ->defaultValue([])
                     ->useAttributeAsKey('name')
                     ->prototype('scalar')->end()
                 ->end()
