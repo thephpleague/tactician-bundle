@@ -84,7 +84,7 @@ class TacticianExtension extends ConfigurableExtension
     {
         foreach ($mergedConfig['commandbus'] as $commandBusConfig) {
             if (in_array('tactician.middleware.security', $commandBusConfig['middleware'])) {
-                $this->configureCommandSecurityVoter($mergedConfig, $container);
+                return $this->configureCommandSecurityVoter($mergedConfig, $container);
             }
         }
     }
