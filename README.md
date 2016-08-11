@@ -159,6 +159,8 @@ tactician:
             - 'ROLE_ADMIN'
 ```
 
+The Security middleware is disabled by default.
+
 #### Command Handler Middleware (tactician.middleware.command_handler)
 
 **Always ensure this is the last middleware listed**
