@@ -126,7 +126,17 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
     {
         $securitySettings = ['Some\Command' => 'ROLE_USER', 'Some\Other\Command' => 'ROLE_ADMIN'];
 
-        $this->load(['security' => $securitySettings]);
+        $this->load([
+            'commandbus' => [
+                'default' => [
+                    'middleware' => [
+                        'tactician.middleware.security',
+                        'tactician.middleware.command_handler',
+                    ]
+                ]
+            ],
+            'security' => $securitySettings
+        ]);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, $securitySettings);
         $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
@@ -134,9 +144,25 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
 
     public function testDefaultSecurityConfigurationIsAllowNothing()
     {
-        $this->load();
+        $this->load([
+            'commandbus' => [
+                'default' => [
+                    'middleware' => [
+                        'tactician.middleware.security',
+                        'tactician.middleware.command_handler',
+                    ]
+                ]
+            ]
+        ]);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, []);
         $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
+    }
+
+    public function testVoterIsNotLoadedWithoutSecurityMiddleware()
+    {
+        $this->load();
+
+        $this->assertContainerBuilderNotHasService('tactician.middleware.security_voter');
     }
 }
