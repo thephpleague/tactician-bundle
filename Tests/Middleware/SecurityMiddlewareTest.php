@@ -60,28 +60,4 @@ class SecurityMiddlewareTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($handled);
     }
-
-    /**
-     * Tests the command is not handled if access is denied and the command is just dropped if the drop behavior is set.
-     */
-    public function testAccessIsNotGrantedCommandIsDropped()
-    {
-        $this->authorizationChecker->shouldReceive('isGranted')->andReturn(false);
-        $middleware = new SecurityMiddleware($this->authorizationChecker, SecurityMiddleware::DROP_COMMAND);
-        $handled = false;
-        $middleware->execute(new FakeCommand(), function () use(&$handled) {
-            $handled = true;
-        });
-
-        $this->assertFalse($handled);
-    }
-
-    /**
-     * Tests if an exception if thrown if passing in an invalid behavior.
-     */
-    public function testExceptionForInvalidBehavior()
-    {
-        $this->setExpectedException(InvalidMiddlewareException::class);
-        new SecurityMiddleware($this->authorizationChecker, -1);
-    }
 }
