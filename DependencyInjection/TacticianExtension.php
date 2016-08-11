@@ -90,6 +90,7 @@ class TacticianExtension extends ConfigurableExtension
                     $mergedConfig['security']
                 ]
             );
+            $definition->addTag('security.voter');
             $container->setDefinition('tactician.middleware.security_voter', $definition);
         }
     }
