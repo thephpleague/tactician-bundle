@@ -185,6 +185,20 @@ Tactician offers a list of custom Inflectors, these are all supported.
  * `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
  * `tactician.handler.method_name_inflector.invoke`
 
+When using multiple bus, you can also specify `method_inflector` of particular bus :
+
+```yaml
+tactician:
+    commandbus:
+        command:
+            middleware:
+                - tactician.middleware.command_handler
+        query:
+            middleware:
+                - tactician.middleware.command_handler
+            method_inflector: tactician.handler.method_name_inflector.handle_class_name_without_suffix
+```
+
 ## Using the Command Bus 
 Create a service and inject the command bus:
 

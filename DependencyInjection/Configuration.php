@@ -45,8 +45,8 @@ class Configuration implements ConfigurationInterface
                                     )
                                 ->end()
                             ->end()
+                            ->scalarNode('method_inflector')->end()
                         ->end()
-
                     ->end()
                 ->end()
                 ->scalarNode('default_bus')

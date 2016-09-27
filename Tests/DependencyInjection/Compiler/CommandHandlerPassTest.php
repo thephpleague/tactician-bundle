@@ -207,6 +207,39 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
         $this->compiler->process($this->container);
     }
 
+    public function testProcessAddsHandlerDefinitionWithSpecificMethodInflector()
+    {
+        $definition = \Mockery::mock(Definition::class);
+
+        $this->container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once()
+            ->andReturn([
+                'default_bus' => 'custom_bus',
+                'method_inflector' => 'tactician.handler.method_name_inflector.handle',
+                'commandbus' => [
+                    'custom_bus' => ['method_inflector' => 'tactician.handler.method_name_inflector.handle_class_name']
+                ]
+            ]);
+
+        $this->container->shouldReceive('findTaggedServiceIds')
+            ->with('tactician.handler')
+            ->once()
+            ->andReturn([
+                'service_id_1' => [
+                    ['command' => 'my_command', 'bus' => 'custom_bus']
+                ],
+            ]);
+
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
+            'custom_bus',
+            'tactician.handler.method_name_inflector.handle_class_name'
+        );
+
+        $this->compiler->process($this->container);
+    }
+
     private function busShouldBeCorrectlyRegisteredInContainer($container, $busId, $methodInflector)
     {
         $handlerLocatorId = sprintf('tactician.commandbus.%s.handler.locator', $busId);

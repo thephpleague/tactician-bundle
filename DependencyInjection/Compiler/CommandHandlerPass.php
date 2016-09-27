@@ -55,7 +55,7 @@ class CommandHandlerPass implements CompilerPassInterface
 
             $container->setDefinition(
                 'tactician.commandbus.'.$busId.'.middleware.command_handler',
-                $this->buildCommandHandlerDefinition($locatorServiceId, $tacticianConfig)
+                $this->buildCommandHandlerDefinition($busId, $locatorServiceId, $tacticianConfig)
             );
         }
 
@@ -98,20 +98,29 @@ class CommandHandlerPass implements CompilerPassInterface
     }
 
     /**
+     * @param string $busId
      * @param string $locatorServiceId
      * @param array $config
      * @return Definition
      */
-    protected function buildCommandHandlerDefinition($locatorServiceId, array $config)
+    protected function buildCommandHandlerDefinition($busId, $locatorServiceId, array $config)
     {
         return new Definition(
             CommandHandlerMiddleware::class,
             [
                 new Reference('tactician.handler.command_name_extractor.class_name'),
                 new Reference($locatorServiceId),
-                new Reference($config['method_inflector'])
+                new Reference($this->methodInflectorOfBus($busId, $config))
             ]
         );
     }
 
+    private function methodInflectorOfBus($busId, array $config)
+    {
+        if (array_key_exists('method_inflector', $config['commandbus'][$busId])) {
+            return $config['commandbus'][$busId]['method_inflector'];
+        }
+
+        return $config['method_inflector'];
+    }
 }
