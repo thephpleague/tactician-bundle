@@ -144,7 +144,8 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 'default_bus' => 'custom_bus',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle',
                 'commandbus' => [
-                    'custom_bus' => []
+                    'custom_bus' => [],
+                    'other_bus' => [],
                 ]
             ]);
 
@@ -154,38 +155,14 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             ->andReturn([
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'custom_bus']
-                ],
+                ]
             ]);
 
-        $this->container->shouldReceive('setDefinition')
-            ->with(
-                'tactician.commandbus.custom_bus.handler.locator',
-                \Mockery::type('Symfony\Component\DependencyInjection\Definition')
-            );
-
-        $this->container->shouldReceive('setDefinition')
-            ->with(
-                'tactician.commandbus.custom_bus.middleware.command_handler',
-                \Mockery::on(function (Definition $definition) {
-                    $methodNameInflectorServiceId = (string) $definition->getArgument(2);
-
-                    return $methodNameInflectorServiceId === 'tactician.handler.method_name_inflector.handle';
-                })
-            );
-
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.handler.locator.symfony',
-                'tactician.commandbus.custom_bus.handler.locator'
-            )
-            ->once();
-
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.middleware.command_handler',
-                'tactician.commandbus.custom_bus.middleware.command_handler'
-            )
-            ->once();
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
+            'custom_bus',
+            'tactician.handler.method_name_inflector.handle'
+        );
 
         $this->compiler->process($this->container);
     }
@@ -214,36 +191,48 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ],
             ]);
 
-        $this->container->shouldReceive('setDefinition')
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
+            'custom_bus',
+            'tactician.handler.method_name_inflector.handle_class_name'
+        );
+
+        $this->compiler->process($this->container);
+    }
+
+    private function busShouldBeCorrectlyRegisteredInContainer($container, $busId, $methodInflector)
+    {
+        $handlerLocatorId = sprintf('tactician.commandbus.%s.handler.locator', $busId);
+        $handlerId = sprintf('tactician.commandbus.%s.middleware.command_handler', $busId);
+
+        $container->shouldReceive('setDefinition')
             ->with(
-                'tactician.commandbus.custom_bus.handler.locator',
+                $handlerLocatorId,
                 \Mockery::type('Symfony\Component\DependencyInjection\Definition')
             );
 
         $this->container->shouldReceive('setDefinition')
             ->with(
-                'tactician.commandbus.custom_bus.middleware.command_handler',
-                \Mockery::on(function (Definition $definition) {
+                $handlerId,
+                \Mockery::on(function (Definition $definition) use ($methodInflector) {
                     $methodNameInflectorServiceId = (string) $definition->getArgument(2);
 
-                    return $methodNameInflectorServiceId === 'tactician.handler.method_name_inflector.handle_class_name';
+                    return $methodNameInflectorServiceId === $methodInflector;
                 })
             );
 
         $this->container->shouldReceive('setAlias')
             ->with(
                 'tactician.handler.locator.symfony',
-                'tactician.commandbus.custom_bus.handler.locator'
+                $handlerLocatorId
             )
             ->once();
 
         $this->container->shouldReceive('setAlias')
             ->with(
                 'tactician.middleware.command_handler',
-                'tactician.commandbus.custom_bus.middleware.command_handler'
+                $handlerId
             )
             ->once();
-
-        $this->compiler->process($this->container);
     }
 }
