@@ -9,7 +9,6 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 
 class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var ContainerBuilder | MockInterface
      */
@@ -32,44 +31,34 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->andReturn([
+        $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'default',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle',
                 'commandbus' => [
                     'default' => []
                 ]
-            ]);
+            ]
+        );
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['command' => 'my_command']
                 ],
                 'service_id_2' => [
                     ['command' => 'my_command']
                 ],
-            ]);
+            ]
+        );
 
-        $this->container->shouldReceive('setDefinition')
-            ->twice();
-
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.handler.locator.symfony',
-                'tactician.commandbus.default.handler.locator'
-            )
-            ->once();
-
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.middleware.command_handler',
-                'tactician.commandbus.default.middleware.command_handler'
-            )
-            ->once();
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
+            'default',
+            'tactician.handler.method_name_inflector.handle'
+        );
 
         $this->compiler->process($this->container);
     }
@@ -81,18 +70,17 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->twice()
-            ->andReturn([
+        $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'default',
                 'commandbus' => []
-            ]);
+            ]
+        );
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['not_command' => 'my_command']
                 ],
@@ -111,20 +99,19 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->once()
-            ->andReturn([
+         $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'default',
                 'commandbus' => [
                     'default' => []
                 ]
-            ]);
+            ]
+        );
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'bad_bus_name']
                 ],
@@ -137,10 +124,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->once()
-            ->andReturn([
+        $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'custom_bus',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle',
                 'commandbus' => [
@@ -149,10 +135,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ]
             ]);
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'custom_bus'],
                     ['command' => 'my_command', 'bus' => 'other_bus'],
@@ -178,10 +163,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->once()
-            ->andReturn([
+        $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'custom_bus',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle_class_name',
                 'commandbus' => [
@@ -189,10 +173,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ]
             ]);
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'custom_bus']
                 ],
@@ -211,10 +194,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
     {
         $definition = \Mockery::mock(Definition::class);
 
-        $this->container->shouldReceive('getExtensionConfig')
-            ->with('tactician')
-            ->once()
-            ->andReturn([
+        $this->configShouldBe(
+            $this->container,
+            [
                 'default_bus' => 'custom_bus',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle',
                 'commandbus' => [
@@ -222,10 +204,9 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 ]
             ]);
 
-        $this->container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn([
+        $this->servicesTaggedShouldBe(
+            $this->container,
+            [
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'custom_bus']
                 ],
@@ -238,6 +219,24 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->compiler->process($this->container);
+    }
+
+    private function configShouldBe($container, array $config)
+    {
+        $container->shouldReceive('getExtensionConfig')
+            ->with('tactician')
+            ->once()
+            ->andReturn($config)
+        ;
+    }
+
+    private function servicesTaggedShouldBe($container, array $config)
+    {
+        $container->shouldReceive('findTaggedServiceIds')
+            ->with('tactician.handler')
+            ->once()
+            ->andReturn($config)
+        ;
     }
 
     private function busShouldBeCorrectlyRegisteredInContainer($container, $busId, $methodInflector)
