@@ -154,13 +154,20 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
             ->once()
             ->andReturn([
                 'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'custom_bus']
+                    ['command' => 'my_command', 'bus' => 'custom_bus'],
+                    ['command' => 'my_command', 'bus' => 'other_bus'],
                 ]
             ]);
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
             $this->container,
             'custom_bus',
+            'tactician.handler.method_name_inflector.handle'
+        );
+
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
+            'other_bus',
             'tactician.handler.method_name_inflector.handle'
         );
 

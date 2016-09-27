@@ -39,8 +39,8 @@ class CommandHandlerPass implements CompilerPassInterface
                     $this->abortIfInvalidBusId($attributes['bus'], $busIds);
                 }
 
-                $busIds = array_key_exists('bus', $attributes) ? [$attributes['bus']] : $busIds;
-                foreach ($busIds as $busId) {
+                $busIdsDefined = array_key_exists('bus', $attributes) ? [$attributes['bus']] : $busIds;
+                foreach ($busIdsDefined as $busId) {
                     $busIdToHandlerMapping[$busId][$attributes['command']] = $id;
                 }
             }
