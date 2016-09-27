@@ -23,8 +23,9 @@ class CommandHandlerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $defaultBusId = $this->getDefaultBusId($container);
-        $busIds = $this->getBusIds($container);
+        $tacticianConfig = $container->getExtensionConfig('tactician');
+        $defaultBusId = $tacticianConfig['default_bus'];
+        $busIds = array_keys($tacticianConfig['commandbus']);
         $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
@@ -54,7 +55,7 @@ class CommandHandlerPass implements CompilerPassInterface
 
             $container->setDefinition(
                 'tactician.commandbus.'.$busId.'.middleware.command_handler',
-                $this->buildCommandHandlerDefinition($locatorServiceId, $container)
+                $this->buildCommandHandlerDefinition($locatorServiceId, $tacticianConfig)
             );
         }
 
@@ -69,27 +70,9 @@ class CommandHandlerPass implements CompilerPassInterface
         );
     }
 
-    protected function getDefaultBusId(ContainerBuilder $container)
-    {
-        $config = $container->getExtensionConfig('tactician');
-
-        return $config['default_bus'];
-    }
-
-    /**
-     * @param ContainerBuilder $container 
-     * @return string[]
-     */
-    protected function getBusIds(ContainerBuilder $container)
-    {
-        $config = $container->getExtensionConfig('tactician');
-
-        return array_keys($config['commandbus']);
-    }
-
     /**
      * @param string $id
-     * @param array $busIds 
+     * @param array $busIds
      * @throws Exception
      */
     protected function abortIfInvalidBusId($id, array $busIds)
@@ -100,7 +83,7 @@ class CommandHandlerPass implements CompilerPassInterface
     }
 
     /**
-     * @param array $handlerMapping 
+     * @param array $handlerMapping
      * @return Definition
      */
     protected function buildLocatorDefinition(array $handlerMapping)
@@ -115,13 +98,12 @@ class CommandHandlerPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $locatorServiceId 
+     * @param string $locatorServiceId
+     * @param array $config
      * @return Definition
      */
-    protected function buildCommandHandlerDefinition($locatorServiceId, ContainerBuilder $container)
+    protected function buildCommandHandlerDefinition($locatorServiceId, array $config)
     {
-        $config = $container->getExtensionConfig('tactician');
-
         return new Definition(
             CommandHandlerMiddleware::class,
             [

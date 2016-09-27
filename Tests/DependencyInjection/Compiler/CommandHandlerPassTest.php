@@ -168,7 +168,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 'tactician.commandbus.custom_bus.middleware.command_handler',
                 \Mockery::on(function (Definition $definition) {
                     $methodNameInflectorServiceId = (string) $definition->getArgument(2);
-                   
+
                     return $methodNameInflectorServiceId === 'tactician.handler.method_name_inflector.handle';
                 })
             );
@@ -225,7 +225,7 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 'tactician.commandbus.custom_bus.middleware.command_handler',
                 \Mockery::on(function (Definition $definition) {
                     $methodNameInflectorServiceId = (string) $definition->getArgument(2);
-                   
+
                     return $methodNameInflectorServiceId === 'tactician.handler.method_name_inflector.handle_class_name';
                 })
             );
