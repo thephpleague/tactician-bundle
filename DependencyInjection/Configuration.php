@@ -57,6 +57,11 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('tactician.handler.method_name_inflector.handle')
                     ->cannotBeEmpty()
                 ->end()
+                ->arrayNode('security')
+                    ->defaultValue([])
+                    ->useAttributeAsKey('name')
+                    ->prototype('scalar')->end()
+                ->end()
             ->end()
             ->validate()
                 ->ifTrue(function($config) {

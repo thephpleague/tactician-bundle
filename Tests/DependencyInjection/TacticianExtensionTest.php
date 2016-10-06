@@ -121,4 +121,48 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             new Reference('tactician.handler.method_name_inflector.handle_class_name_without_suffix')
         );
     }
+
+    public function testLoadSecurityConfiguration()
+    {
+        $securitySettings = ['Some\Command' => 'ROLE_USER', 'Some\Other\Command' => 'ROLE_ADMIN'];
+
+        $this->load([
+            'commandbus' => [
+                'default' => [
+                    'middleware' => [
+                        'tactician.middleware.security',
+                        'tactician.middleware.command_handler',
+                    ]
+                ]
+            ],
+            'security' => $securitySettings
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, $securitySettings);
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
+    }
+
+    public function testDefaultSecurityConfigurationIsAllowNothing()
+    {
+        $this->load([
+            'commandbus' => [
+                'default' => [
+                    'middleware' => [
+                        'tactician.middleware.security',
+                        'tactician.middleware.command_handler',
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, []);
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
+    }
+
+    public function testVoterIsNotLoadedWithoutSecurityMiddleware()
+    {
+        $this->load();
+
+        $this->assertContainerBuilderNotHasService('tactician.middleware.security_voter');
+    }
 }
