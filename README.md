@@ -127,6 +127,17 @@ tactician:
                 # ...
 ```
 
+By default, all commands are available in each bus. If you want to make a command available only in a specific bus, you need to specify its id :
+
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - '@foo.user.user_repository'
+    tags:
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: queued }
+```
+
 ### Extra Bundled Middleware
 
 This bundles ships with a few pre-configured middlewares, they can be enabled using the method above by just listing their ids.
