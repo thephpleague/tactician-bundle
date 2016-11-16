@@ -35,7 +35,7 @@ before_install:
 
 install: composer update $COMPOSER_FLAGS --prefer-dist --no-interaction
 
-script: phpunit --coverage-text --coverage-clover=coverage.clover
+script: ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
