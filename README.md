@@ -127,6 +127,17 @@ tactician:
                 # ...
 ```
 
+By default, all commands are available in each bus. If you want to make a command available only in a specific bus, you need to specify its id :
+
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - '@foo.user.user_repository'
+    tags:
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: queued }
+```
+
 ### Extra Bundled Middleware
 
 This bundles ships with a few pre-configured middlewares, they can be enabled using the method above by just listing their ids.
@@ -184,6 +195,20 @@ Tactician offers a list of custom Inflectors, these are all supported.
  * `tactician.handler.method_name_inflector.handle_class_name`
  * `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
  * `tactician.handler.method_name_inflector.invoke`
+
+When using multiple bus, you can also specify `method_inflector` of particular bus :
+
+```yaml
+tactician:
+    commandbus:
+        command:
+            middleware:
+                - tactician.middleware.command_handler
+        query:
+            middleware:
+                - tactician.middleware.command_handler
+            method_inflector: tactician.handler.method_name_inflector.handle_class_name_without_suffix
+```
 
 ## Using the Command Bus 
 Create a service and inject the command bus:
