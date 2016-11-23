@@ -13,7 +13,7 @@ services:
     tactician.middleware.security:
         class: League\Tactician\Bundle\Middleware\SecurityMiddleware
         arguments:
-            - "@security.authorization_checker"
+            - "@?security.authorization_checker"
 
     # The standard Handler method name inflectors
     tactician.handler.method_name_inflector.handle:
