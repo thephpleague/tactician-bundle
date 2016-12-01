@@ -29,8 +29,6 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
     public function testProcess()
     {
-        $definition = \Mockery::mock(Definition::class);
-
         $this->parametersShouldBe(
             $this->container,
             [
@@ -66,8 +64,6 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessAbortsOnMissingCommandAttribute()
     {
-        $definition = \Mockery::mock(Definition::class);
-
         $this->parametersShouldBe(
             $this->container,
             [
@@ -96,8 +92,6 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessAbortsOnInvalidBus()
     {
-        $definition = \Mockery::mock(Definition::class);
-
         $this->parametersShouldBe(
             $this->container,
             [
@@ -120,8 +114,6 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessAddsLocatorAndHandlerDefinitionForTaggedBuses()
     {
-        $definition = \Mockery::mock(Definition::class);
-
         $this->parametersShouldBe(
             $this->container,
             [
@@ -144,6 +136,12 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
             $this->container,
+            'default',
+            'tactician.handler.method_name_inflector.handle'
+        );
+
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $this->container,
             'custom_bus',
             'tactician.handler.method_name_inflector.handle'
         );
@@ -159,8 +157,6 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessAddsHandlerDefinitionWithNonDefaultMethodNameInflector()
     {
-        $definition = \Mockery::mock(Definition::class);
-
         $this->parametersShouldBe(
             $this->container,
             [
@@ -241,5 +237,13 @@ class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
                 $handlerId
             )
             ->once();
+
+        $definition = \Mockery::mock(Definition::class);
+        $definition->shouldReceive('getArgument')->andReturn([]);
+        $this->container->shouldReceive('getDefinition')
+            ->with('tactician.commandbus.'.$busId)
+            ->once()
+            ->andReturn($definition)
+        ;
     }
 }

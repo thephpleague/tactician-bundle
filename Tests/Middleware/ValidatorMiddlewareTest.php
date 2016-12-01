@@ -56,14 +56,4 @@ class ValidatorMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->middleware->execute(new FakeCommand(), function () {
         });
     }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testExecuteWithoutValidator()
-    {
-        $this->middleware = new ValidatorMiddleware();
-        $this->middleware->execute(new FakeCommand(), function () {
-        });
-    }
 }

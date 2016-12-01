@@ -5,16 +5,6 @@ services:
     tactician.middleware.locking:
         class: League\Tactician\Plugins\LockingMiddleware
 
-    tactician.middleware.validator:
-        class: League\Tactician\Bundle\Middleware\ValidatorMiddleware
-        arguments:
-            - "@?validator"
-
-    tactician.middleware.security:
-        class: League\Tactician\Bundle\Middleware\SecurityMiddleware
-        arguments:
-            - "@security.authorization_checker"
-
     # The standard Handler method name inflectors
     tactician.handler.method_name_inflector.handle:
         class: League\Tactician\Handler\MethodNameInflector\HandleInflector

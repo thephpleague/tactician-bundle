@@ -45,6 +45,16 @@ class CommandHandlerPass implements CompilerPassInterface
             }
         }
 
+        $container->setAlias(
+            'tactician.handler.locator.symfony',
+            'tactician.commandbus.'.$defaultBusId.'.handler.locator'
+        );
+
+        $container->setAlias(
+            'tactician.middleware.command_handler',
+            'tactician.commandbus.'.$defaultBusId.'.middleware.command_handler'
+        );
+
         foreach ($busIds as $busId) {
             $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
             $methodInflectorId = $container->getParameter(sprintf('tactician.method_inflector.%s', $busId));
@@ -67,17 +77,8 @@ class CommandHandlerPass implements CompilerPassInterface
                     ]
                 )
             );
+            $this->guardInvalidMiddlewares($container, $busId);
         }
-
-        $container->setAlias(
-            'tactician.handler.locator.symfony',
-            'tactician.commandbus.'.$defaultBusId.'.handler.locator'
-        );
-
-        $container->setAlias(
-            'tactician.middleware.command_handler',
-            'tactician.commandbus.'.$defaultBusId.'.middleware.command_handler'
-        );
     }
 
     /**
@@ -105,5 +106,15 @@ class CommandHandlerPass implements CompilerPassInterface
                 $handlerMapping,
             ]
         );
+    }
+
+    private function guardInvalidMiddlewares(ContainerBuilder $container, $busId)
+    {
+        $busDefinition = $container->getDefinition('tactician.commandbus.'.$busId);
+        foreach ($busDefinition->getArgument(0) as $middlewareReference) {
+            if (false === $container->has($middlewareReference)) {
+                throw UnknownMiddleware::withId((string) $middlewareReference);
+            }
+        }
     }
 }
