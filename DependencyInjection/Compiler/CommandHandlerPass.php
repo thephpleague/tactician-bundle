@@ -45,12 +45,15 @@ class CommandHandlerPass implements CompilerPassInterface
             }
         }
 
-        foreach ($busIdToHandlerMapping as $busId => $handlerMapping) {
+        foreach ($busIds as $busId) {
             $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
             $methodInflectorId = $container->getParameter(sprintf('tactician.method_inflector.%s', $busId));
             $container->setDefinition(
                 $locatorServiceId,
-                $this->buildLocatorDefinition($handlerMapping)
+                $this->buildLocatorDefinition(
+                    // Build an empty locator if no command defined. To be sure extension still working
+                    array_key_exists($busId, $busIdToHandlerMapping) ? $busIdToHandlerMapping[$busId] : []
+                )
             );
 
             $container->setDefinition(
