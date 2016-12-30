@@ -146,7 +146,7 @@ This bundles ships with a few pre-configured middlewares, they can be enabled us
 
 The validator middleware will plug into Symfony's Validator (@validator) and will throw and exception if the command is not valid.
 
-Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](http://symfony.com/doc/current/book/validation.html). 
+Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](https://symfony.com/doc/current/validation). 
 
 The middleware will throw an `InvalidCommandException` that will contain the command and the `ConstraintViolationList` returned by the validator.
 
