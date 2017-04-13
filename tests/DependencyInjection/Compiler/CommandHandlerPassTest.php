@@ -3,10 +3,13 @@
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
+use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\Container\ContainerLocator;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class CommandHandlerPassTest extends TestCase
 {
@@ -212,7 +215,10 @@ class CommandHandlerPassTest extends TestCase
         $container->shouldReceive('setDefinition')
             ->with(
                 $handlerLocatorId,
-                \Mockery::type('Symfony\Component\DependencyInjection\Definition')
+                $this->callback(function ($definition) {
+                    $this->assertInstanceOf(Definition::class, $definition);
+                    $this->assertSame(class_exists(ServiceLocator::class) ? ContainerLocator::class : ContainerBasedHandlerLocator::class, $definition->getClass());
+                })
             );
 
         $this->container->shouldReceive('setDefinition')
