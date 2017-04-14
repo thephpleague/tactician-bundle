@@ -101,7 +101,7 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
 
     public function testLoadSecurityConfiguration()
     {
-        $securitySettings = ['Some\Command' => 'ROLE_USER', 'Some\Other\Command' => 'ROLE_ADMIN'];
+        $securitySettings = ['Some\Command' => ['ROLE_USER'], 'Some\Other\Command' => ['ROLE_ADMIN']];
 
         $this->load([
             'commandbus' => [
