@@ -4,7 +4,7 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\Middleware;
 
-class UnknownMiddleware extends \RuntimeException
+class UnknownMiddlewareException extends \RuntimeException
 {
     public static function withId($serviceId)
     {

@@ -47,7 +47,7 @@ EOF
     }
 
     /**
-     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware
+     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException
      */
     public function testHandleCommandWithInvalidMiddleware()
     {
