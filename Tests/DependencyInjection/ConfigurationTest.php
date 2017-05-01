@@ -217,8 +217,8 @@ class ConfigurationTest extends AbstractConfigurationTestCase
                     ]
                 ],
                 'security' => [
-                    'Some\Command' => 'ROLE_USER',
-                    'Some\Other\Command' => 'ROLE_ADMIN',
+                    'Some\Command' => ['ROLE_USER'],
+                    'Some\Other\Command' => ['ROLE_ADMIN'],
                 ]
             ]
         ]);
