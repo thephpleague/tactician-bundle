@@ -5,7 +5,6 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
 use Mockery\MockInterface;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

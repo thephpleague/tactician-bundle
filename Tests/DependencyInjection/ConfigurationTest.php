@@ -4,7 +4,6 @@
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use League\Tactician\Bundle\DependencyInjection\Configuration;
-use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
 

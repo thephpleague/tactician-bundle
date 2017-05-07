@@ -1,9 +1,8 @@
 <?php
 
-namespace League\Tactician\Bundle\Tests\Bundle;
+namespace League\Tactician\Bundle\Tests\Integration;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -11,25 +10,8 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @runTestsInSeparateProcesses
  */
-class BundleTest extends KernelTestCase
+class BundleTest extends IntegrationTest
 {
-    protected function setUp()
-    {
-        static::$kernel = static::createKernel();
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tactician-bundle'.DIRECTORY_SEPARATOR.md5(microtime(true) * rand(0, 10000));
-        if (false === is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        static::$kernel->defineCacheDir($dir);
-    }
-
-    protected static function createKernel(array $options = array())
-    {
-        require_once __DIR__.'/../testapp/AppKernel.php';
-
-        return new \AppKernel('test', true);
-    }
-
     public function testHandleCommandOnDefaultBus()
     {
         $this->givenConfig('tactician', <<<'EOF'
