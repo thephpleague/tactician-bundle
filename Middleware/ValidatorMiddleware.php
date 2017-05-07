@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ValidatorMiddleware implements Middleware
 {
+    const SERVICE_ID = 'tactician.middleware.validator';
+
     /**
      * @var ValidatorInterface
      */
@@ -15,7 +17,8 @@ class ValidatorMiddleware implements Middleware
     /**
      * @param ValidatorInterface | null $validator
      */
-    public function __construct(ValidatorInterface $validator = null) {
+    public function __construct(ValidatorInterface $validator)
+    {
         $this->validator = $validator;
     }
 
@@ -28,13 +31,6 @@ class ValidatorMiddleware implements Middleware
      */
     public function execute($command, callable $next)
     {
-        if ($this->validator === null) {
-            throw new \Exception(
-                "The Validator Middleware requires the Validator service (@validator) to be present and configured." .
-                "Please configure it."
-            );
-        }
-
         $constraintViolations = $this->validator->validate($command);
 
         if (count($constraintViolations) > 0) {

@@ -23,9 +23,8 @@ class CommandHandlerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $tacticianConfig = $container->getExtensionConfig('tactician');
-        $defaultBusId = $tacticianConfig['default_bus'];
-        $busIds = array_keys($tacticianConfig['commandbus']);
+        $defaultBusId = $container->getParameter('tactician.commandbus.default');
+        $busIds = $container->getParameter('tactician.commandbus.ids');
         $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
@@ -46,19 +45,6 @@ class CommandHandlerPass implements CompilerPassInterface
             }
         }
 
-        foreach ($busIdToHandlerMapping as $busId => $handlerMapping) {
-            $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
-            $container->setDefinition(
-                $locatorServiceId,
-                $this->buildLocatorDefinition($handlerMapping)
-            );
-
-            $container->setDefinition(
-                'tactician.commandbus.'.$busId.'.middleware.command_handler',
-                $this->buildCommandHandlerDefinition($busId, $locatorServiceId, $tacticianConfig)
-            );
-        }
-
         $container->setAlias(
             'tactician.handler.locator.symfony',
             'tactician.commandbus.'.$defaultBusId.'.handler.locator'
@@ -68,6 +54,31 @@ class CommandHandlerPass implements CompilerPassInterface
             'tactician.middleware.command_handler',
             'tactician.commandbus.'.$defaultBusId.'.middleware.command_handler'
         );
+
+        foreach ($busIds as $busId) {
+            $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
+            $methodInflectorId = $container->getParameter(sprintf('tactician.method_inflector.%s', $busId));
+            $container->setDefinition(
+                $locatorServiceId,
+                $this->buildLocatorDefinition(
+                    // Build an empty locator if no command defined. To be sure extension still working
+                    array_key_exists($busId, $busIdToHandlerMapping) ? $busIdToHandlerMapping[$busId] : []
+                )
+            );
+
+            $container->setDefinition(
+                'tactician.commandbus.'.$busId.'.middleware.command_handler',
+                new Definition(
+                    CommandHandlerMiddleware::class,
+                    [
+                        new Reference('tactician.handler.command_name_extractor.class_name'),
+                        new Reference($locatorServiceId),
+                        new Reference($methodInflectorId)
+                    ]
+                )
+            );
+            $this->guardInvalidMiddlewares($container, $busId);
+        }
     }
 
     /**
@@ -97,30 +108,13 @@ class CommandHandlerPass implements CompilerPassInterface
         );
     }
 
-    /**
-     * @param string $busId
-     * @param string $locatorServiceId
-     * @param array $config
-     * @return Definition
-     */
-    protected function buildCommandHandlerDefinition($busId, $locatorServiceId, array $config)
+    private function guardInvalidMiddlewares(ContainerBuilder $container, $busId)
     {
-        return new Definition(
-            CommandHandlerMiddleware::class,
-            [
-                new Reference('tactician.handler.command_name_extractor.class_name'),
-                new Reference($locatorServiceId),
-                new Reference($this->methodInflectorOfBus($busId, $config))
-            ]
-        );
-    }
-
-    private function methodInflectorOfBus($busId, array $config)
-    {
-        if (array_key_exists('method_inflector', $config['commandbus'][$busId])) {
-            return $config['commandbus'][$busId]['method_inflector'];
+        $busDefinition = $container->getDefinition('tactician.commandbus.'.$busId);
+        foreach ($busDefinition->getArgument(0) as $middlewareReference) {
+            if (false === $container->has($middlewareReference)) {
+                throw UnknownMiddleware::withId((string) $middlewareReference);
+            }
         }
-
-        return $config['method_inflector'];
     }
 }

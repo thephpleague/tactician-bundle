@@ -6,9 +6,10 @@ use League\Tactician\Middleware;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
 class SecurityMiddleware implements Middleware
 {
+    const SERVICE_ID = 'tactician.middleware.security';
+
     /**
      * @var AuthorizationCheckerInterface
      */
@@ -17,7 +18,8 @@ class SecurityMiddleware implements Middleware
     /**
      * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker) {
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
         $this->authorizationChecker = $authorizationChecker;
     }
 
@@ -30,11 +32,11 @@ class SecurityMiddleware implements Middleware
     {
         if ($this->authorizationChecker->isGranted('handle', $command)) {
             return $next($command);
-        } else {
-            throw new AccessDeniedException(
-                sprintf('The current user is not allowed to handle command of type \'%s\'', get_class($command))
-            );
         }
+
+        throw new AccessDeniedException(
+            sprintf('The current user is not allowed to handle command of type \'%s\'', get_class($command))
+        );
     }
 }
 

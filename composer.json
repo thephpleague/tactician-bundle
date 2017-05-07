@@ -47,6 +47,11 @@
       "League\\Tactician\\Bundle\\" : ""
     }
   },
+  "autoload-dev" : {
+    "psr-4" : {
+      "League\\Tactician\\Bundle\\Tests\\" : "Tests/testapp/src"
+    }
+  },
   "extra": {
     "branch-alias": {
       "dev-master": "1.0-dev"
@@ -59,6 +64,8 @@
     "matthiasnoback/symfony-dependency-injection-test": "^0.7",
     "symfony/security": "^2.8|^3.1",
     "symfony/validator": "^2.8|^3.0",
-    "league/tactician-doctrine": "^1.0"
+    "league/tactician-doctrine": "^1.0",
+    "symfony/framework-bundle": "^2.8|^3.0",
+    "doctrine/annotations": "^1.2"
   }
 }

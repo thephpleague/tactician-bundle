@@ -51,7 +51,15 @@ class TacticianExtension extends ConfigurableExtension
             if ($commandBusName === $mergedConfig['default_bus']) {
                 $container->setAlias('tactician.commandbus', $serviceName);
             }
+            $container->setParameter(
+                sprintf('tactician.method_inflector.%s', $commandBusName),
+                array_key_exists('method_inflector', $commandBusConfig)
+                    ? $commandBusConfig['method_inflector']
+                    : $mergedConfig['method_inflector']
+            );
         }
+        $container->setParameter('tactician.commandbus.default', $mergedConfig['default_bus']);
+        $container->setParameter('tactician.commandbus.ids', array_keys($mergedConfig['commandbus']));
     }
 
     /**
