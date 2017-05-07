@@ -2,6 +2,7 @@
 
 namespace League\Tactician\Bundle\Tests\Bundle;
 
+use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Yaml\Yaml;
 
@@ -46,17 +47,39 @@ EOF
         $this->handleCommand('default', \League\Tactician\Bundle\Tests\EchoText::class, ['Hello world']);
     }
 
-    /**
-     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware
-     */
-    public function testHandleCommandWithInvalidMiddleware()
+    public function testCanBootKernelWhenOptionalComponentMiddlewareIsEnabled()
     {
+        $this->givenConfig('framework', <<<'EOF'
+validation:
+    enabled: true
+EOF
+        );
+
         $this->givenConfig('tactician', <<<'EOF'
 commandbus:
     default:
         middleware:
             - tactician.middleware.validator
-            - tactician.middleware.command_handler
+EOF
+        );
+        static::$kernel->boot();
+    }
+
+    public function testCanNotBootKernelWhenOptionalComponentMiddlewareIsDisabled()
+    {
+        $this->expectException(UnknownMiddleware::class);
+
+        $this->givenConfig('framework', <<<'EOF'
+validation:
+    enabled: false
+EOF
+        );
+
+        $this->givenConfig('tactician', <<<'EOF'
+commandbus:
+    default:
+        middleware:
+            - tactician.middleware.validator
 EOF
         );
         static::$kernel->boot();

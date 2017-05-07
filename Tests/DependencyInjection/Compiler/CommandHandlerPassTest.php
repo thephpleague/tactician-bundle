@@ -2,12 +2,13 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
+use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 
-class CommandHandlerPassTest extends \PHPUnit_Framework_TestCase
+class CommandHandlerPassTest extends TestCase
 {
     /**
      * @var ContainerBuilder | MockInterface

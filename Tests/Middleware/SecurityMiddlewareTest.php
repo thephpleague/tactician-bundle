@@ -4,9 +4,8 @@ namespace League\Tactician\Bundle\Tests\Middleware;
 
 use League\Tactician\Bundle\Middleware\SecurityMiddleware;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
-use League\Tactician\Exception\InvalidMiddlewareException;
 use Mockery;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -15,7 +14,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  *
  * @author Ron Rademaker
  */
-class SecurityMiddlewareTest extends PHPUnit_Framework_TestCase
+class SecurityMiddlewareTest extends TestCase
 {
     /**
      * Authorization checker mock.
@@ -50,7 +49,7 @@ class SecurityMiddlewareTest extends PHPUnit_Framework_TestCase
      */
     public function testAccessIsNotGranted()
     {
-        $this->setExpectedException(AccessDeniedException::class);
+        $this->expectException(AccessDeniedException::class);
         $this->authorizationChecker->shouldReceive('isGranted')->andReturn(false);
         $middleware = new SecurityMiddleware($this->authorizationChecker);
         $handled = false;

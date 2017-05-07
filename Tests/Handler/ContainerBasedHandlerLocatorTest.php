@@ -2,11 +2,12 @@
 
 namespace League\Tactician\Bundle\Tests\Handler;
 
-use Mockery\MockInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ContainerBasedHandlerLocatorTest extends \PHPUnit_Framework_TestCase
+class ContainerBasedHandlerLocatorTest extends TestCase
 {
 
     /**

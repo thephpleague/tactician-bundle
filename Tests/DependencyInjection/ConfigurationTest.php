@@ -3,11 +3,15 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
-use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
 use League\Tactician\Bundle\DependencyInjection\Configuration;
+use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
+use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
+use PHPUnit\Framework\TestCase;
 
-class ConfigurationTest extends AbstractConfigurationTestCase
+class ConfigurationTest extends TestCase
 {
+    use ConfigurationTestCaseTrait;
+
     /**
      * Return the instance of ConfigurationInterface that should be used by the
      * Configuration-specific assertions in this test-case

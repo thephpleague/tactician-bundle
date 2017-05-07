@@ -5,7 +5,7 @@ namespace League\Tactician\Bundle\Tests\Security\Voter;
 use League\Tactician\Bundle\Security\Voter\HandleCommandVoter;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use Mockery;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  *
  * @author Ron Rademaker
  */
-class HandleCommandVoterTest extends PHPUnit_Framework_TestCase
+class HandleCommandVoterTest extends TestCase
 {
     /**
      * The decision manager mock.
