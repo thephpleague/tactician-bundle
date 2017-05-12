@@ -84,7 +84,7 @@ class CommandHandlerPass implements CompilerPassInterface
     /**
      * @param string $id
      * @param array $busIds
-     * @throws Exception
+     * @throws \Exception
      */
     protected function abortIfInvalidBusId($id, array $busIds)
     {

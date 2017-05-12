@@ -1,32 +1,15 @@
 <?php
 
-namespace League\Tactician\Bundle\Tests\Bundle;
+namespace League\Tactician\Bundle\Tests\Integration;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * To ensure cache is isolated from each test.
  *
  * @runTestsInSeparateProcesses
  */
-class BundleTest extends KernelTestCase
+class BasicCommandAndBusMappingTest extends IntegrationTest
 {
-    protected function setUp()
-    {
-        static::$kernel = static::createKernel();
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tactician-bundle'.DIRECTORY_SEPARATOR.md5(microtime(true) * rand(0, 10000));
-        mkdir($dir, 0777, true);
-        static::$kernel->defineCacheDir($dir);
-    }
-
-    protected static function createKernel(array $options = array())
-    {
-        require_once __DIR__.'/../testapp/AppKernel.php';
-
-        return new \AppKernel('test', true);
-    }
-
     public function testHandleCommandOnDefaultBus()
     {
         $this->givenConfig('tactician', <<<'EOF'
@@ -140,24 +123,5 @@ EOF
             ['name' => 'tactician.handler', 'command' => 'League\Tactician\Bundle\Tests\EchoText', 'bus' => 'other'],
         ]);
         $this->handleCommand('default', \League\Tactician\Bundle\Tests\EchoText::class, ['Welcome']);
-    }
-
-    protected function givenConfig($namespace, $config)
-    {
-        static::$kernel->loadConfig($namespace, Yaml::parse((string) $config));
-    }
-
-    protected function registerService($serviceId, $className, array $tags)
-    {
-        static::$kernel->addServiceToRegister($serviceId, $className, $tags);
-    }
-
-    protected function handleCommand($busId, $commandClass, array $args)
-    {
-        $class = new \ReflectionClass($commandClass);
-        $command = $class->newInstanceArgs($args);
-
-        static::$kernel->boot();
-        static::$kernel->getContainer()->get('tactician.commandbus.'.$busId)->handle($command);
     }
 }

@@ -2,14 +2,15 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
+use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
 use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DoctrineMiddlewarePassTest extends \PHPUnit_Framework_TestCase
+class DoctrineMiddlewarePassTest extends TestCase
 {
     /**
      * @var ContainerBuilder|MockInterface
@@ -55,23 +56,23 @@ class DoctrineMiddlewarePassTest extends \PHPUnit_Framework_TestCase
 
         $this->container->shouldReceive('setDefinition')
             ->andReturnUsing(function($name, Definition $def) {
-                \PHPUnit_Framework_Assert::assertEquals('tactician.middleware.doctrine.default', $name);
+                $this->assertEquals('tactician.middleware.doctrine.default', $name);
 
-                \PHPUnit_Framework_Assert::assertEquals(TransactionMiddleware::class, $def->getClass());
-                \PHPUnit_Framework_Assert::assertCount(1, $def->getArguments());
-                \PHPUnit_Framework_Assert::assertInstanceOf(Reference::class, $def->getArgument(0));
-                \PHPUnit_Framework_Assert::assertEquals('doctrine.orm.default_entity_manager', (string)$def->getArgument(0));
+                $this->assertEquals(TransactionMiddleware::class, $def->getClass());
+                $this->assertCount(1, $def->getArguments());
+                $this->assertInstanceOf(Reference::class, $def->getArgument(0));
+                $this->assertEquals('doctrine.orm.default_entity_manager', (string)$def->getArgument(0));
             })
             ->once();
 
         $this->container->shouldReceive('setDefinition')
             ->andReturnUsing(function($name, Definition $def) {
-                \PHPUnit_Framework_Assert::assertEquals('tactician.middleware.doctrine.second', $name);
+                $this->assertEquals('tactician.middleware.doctrine.second', $name);
 
-                \PHPUnit_Framework_Assert::assertEquals(TransactionMiddleware::class, $def->getClass());
-                \PHPUnit_Framework_Assert::assertCount(1, $def->getArguments());
-                \PHPUnit_Framework_Assert::assertInstanceOf(Reference::class, $def->getArgument(0));
-                \PHPUnit_Framework_Assert::assertEquals('doctrine.orm.second_entity_manager', (string)$def->getArgument(0));
+                $this->assertEquals(TransactionMiddleware::class, $def->getClass());
+                $this->assertCount(1, $def->getArguments());
+                $this->assertInstanceOf(Reference::class, $def->getArgument(0));
+                $this->assertEquals('doctrine.orm.second_entity_manager', (string)$def->getArgument(0));
             })
             ->once();
 
