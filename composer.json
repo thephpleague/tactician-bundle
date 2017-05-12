@@ -46,12 +46,12 @@
   },
   "autoload" : {
     "psr-4" : {
-      "League\\Tactician\\Bundle\\" : ""
+      "League\\Tactician\\Bundle\\" : "src/"
     }
   },
   "autoload-dev" : {
     "psr-4" : {
-      "League\\Tactician\\Bundle\\Tests\\" : "Tests/testapp/src"
+      "League\\Tactician\\Bundle\\Tests\\" : ["tests/", "tests/testapp/src/"]
     }
   },
   "extra": {
