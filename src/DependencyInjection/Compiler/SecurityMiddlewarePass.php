@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class SecurityMiddlewarePass implements CompilerPassInterface
 {
+    const SERVICE_ID = 'tactician.middleware.security';
+
     /**
      * {@inheritdoc}
      */
@@ -22,7 +24,7 @@ class SecurityMiddlewarePass implements CompilerPassInterface
         }
 
         $container->setDefinition(
-            SecurityMiddleware::SERVICE_ID,
+            static::SERVICE_ID,
             new Definition(SecurityMiddleware::class, [ new Reference('security.authorization_checker') ])
         );
     }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware;
+use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException;
 
 /**
  * @runTestsInSeparateProcesses
@@ -30,7 +30,7 @@ EOF
 
     public function testCanNotBootKernelWhenOptionalComponentMiddlewareIsDisabled()
     {
-        $this->expectException(UnknownMiddleware::class);
+        $this->expectException(UnknownMiddlewareException::class);
 
         $this->givenConfig('framework', <<<'EOF'
 validation:

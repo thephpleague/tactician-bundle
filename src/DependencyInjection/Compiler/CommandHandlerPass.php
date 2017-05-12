@@ -84,7 +84,7 @@ class CommandHandlerPass implements CompilerPassInterface
     /**
      * @param string $id
      * @param array $busIds
-     * @throws Exception
+     * @throws \Exception
      */
     protected function abortIfInvalidBusId($id, array $busIds)
     {
@@ -113,7 +113,7 @@ class CommandHandlerPass implements CompilerPassInterface
         $busDefinition = $container->getDefinition('tactician.commandbus.'.$busId);
         foreach ($busDefinition->getArgument(0) as $middlewareReference) {
             if (false === $container->has($middlewareReference)) {
-                throw UnknownMiddleware::withId((string) $middlewareReference);
+                throw UnknownMiddlewareException::withId((string) $middlewareReference);
             }
         }
     }
