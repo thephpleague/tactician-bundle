@@ -16,9 +16,7 @@ class BundleTest extends KernelTestCase
     {
         static::$kernel = static::createKernel();
         $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tactician-bundle'.DIRECTORY_SEPARATOR.md5(microtime(true) * rand(0, 10000));
-        if (false === is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
+        mkdir($dir, 0777, true);
         static::$kernel->defineCacheDir($dir);
     }
 
@@ -47,7 +45,7 @@ EOF
     }
 
     /**
-     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddleware
+     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException
      */
     public function testHandleCommandWithInvalidMiddleware()
     {

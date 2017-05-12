@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ValidatorMiddlewarePass implements CompilerPassInterface
 {
+    const SERVICE_ID = 'tactician.middleware.validator';
+
     /**
      * {@inheritdoc}
      */
@@ -22,7 +24,7 @@ class ValidatorMiddlewarePass implements CompilerPassInterface
         }
 
         $container->setDefinition(
-            ValidatorMiddleware::SERVICE_ID,
+            static::SERVICE_ID,
             new Definition(ValidatorMiddleware::class, [ new Reference('validator') ])
         );
     }

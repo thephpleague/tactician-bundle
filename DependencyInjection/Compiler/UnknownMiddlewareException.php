@@ -2,9 +2,7 @@
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Middleware;
-
-class UnknownMiddleware extends \RuntimeException
+class UnknownMiddlewareException extends \RuntimeException
 {
     public static function withId($serviceId)
     {
@@ -16,8 +14,8 @@ class UnknownMiddleware extends \RuntimeException
     private static function completeHelpMessage($serviceId)
     {
         $helpMessages = [
-            Middleware\ValidatorMiddleware::SERVICE_ID => 'You should have the symfony validator service enabled to use this middleware.',
-            Middleware\SecurityMiddleware::SERVICE_ID => 'You should have the symfony security service enabled to use this middleware.',
+            ValidatorMiddlewarePass::SERVICE_ID => 'You should have the symfony validator service enabled to use this middleware.',
+            SecurityMiddlewarePass::SERVICE_ID => 'You should have the symfony security service enabled to use this middleware.',
         ];
 
         if (array_key_exists($serviceId, $helpMessages)) {

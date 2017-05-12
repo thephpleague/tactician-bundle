@@ -8,8 +8,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecurityMiddleware implements Middleware
 {
-    const SERVICE_ID = 'tactician.middleware.security';
-
     /**
      * @var AuthorizationCheckerInterface
      */

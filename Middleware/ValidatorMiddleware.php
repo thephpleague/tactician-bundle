@@ -7,8 +7,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ValidatorMiddleware implements Middleware
 {
-    const SERVICE_ID = 'tactician.middleware.validator';
-
     /**
      * @var ValidatorInterface
      */
