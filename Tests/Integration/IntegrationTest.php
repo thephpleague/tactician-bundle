@@ -6,10 +6,8 @@ namespace League\Tactician\Bundle\Tests\Integration;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Yaml;
 
-/**
- * @runTestsInSeparateProcesses
- */
 abstract class IntegrationTest extends KernelTestCase
 {
     /**
@@ -45,5 +43,24 @@ abstract class IntegrationTest extends KernelTestCase
         $this->filesystem->remove(
             static::$kernel->getCacheDir()
         );
+    }
+
+    protected function givenConfig($namespace, $config)
+    {
+        static::$kernel->loadConfig($namespace, Yaml::parse((string) $config));
+    }
+
+    protected function registerService($serviceId, $className, array $tags)
+    {
+        static::$kernel->addServiceToRegister($serviceId, $className, $tags);
+    }
+
+    protected function handleCommand($busId, $commandClass, array $args)
+    {
+        $class = new \ReflectionClass($commandClass);
+        $command = $class->newInstanceArgs($args);
+
+        static::$kernel->boot();
+        static::$kernel->getContainer()->get('tactician.commandbus.'.$busId)->handle($command);
     }
 }
