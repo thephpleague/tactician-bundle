@@ -2,11 +2,14 @@
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\Container\ContainerLocator;
 use League\Tactician\Handler\CommandHandlerMiddleware;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
  * This compiler pass maps Handler DI tags to specific commands
@@ -58,12 +61,19 @@ class CommandHandlerPass implements CompilerPassInterface
         foreach ($busIds as $busId) {
             $locatorServiceId = 'tactician.commandbus.'.$busId.'.handler.locator';
             $methodInflectorId = $container->getParameter(sprintf('tactician.method_inflector.%s', $busId));
+            $handlerMapping = array_key_exists($busId, $busIdToHandlerMapping) ? $busIdToHandlerMapping[$busId] : [];
+
+            // Leverage symfony/dependency-injection:^3.3 service locators
+            if (class_exists(ServiceLocator::class)) {
+                $this->registerHandlerServiceLocator($container, $locatorServiceId, $handlerMapping);
+                $locatorDefinition = $this->buildLocatorDefinition($handlerMapping, 'tactician.commandbus.'.$busId.'.handler.service_locator', ContainerLocator::class);
+            } else {
+                $locatorDefinition = $this->buildLocatorDefinition($handlerMapping);
+            }
+
             $container->setDefinition(
                 $locatorServiceId,
-                $this->buildLocatorDefinition(
-                    // Build an empty locator if no command defined. To be sure extension still working
-                    array_key_exists($busId, $busIdToHandlerMapping) ? $busIdToHandlerMapping[$busId] : []
-                )
+                $locatorDefinition
             );
 
             $container->setDefinition(
@@ -94,15 +104,21 @@ class CommandHandlerPass implements CompilerPassInterface
     }
 
     /**
-     * @param array $handlerMapping
+     * @param array  $handlerMapping
+     * @param string $locatorServiceClass
+     * @param string $locatorServiceId
+     *
      * @return Definition
      */
-    protected function buildLocatorDefinition(array $handlerMapping)
-    {
+    protected function buildLocatorDefinition(
+        array $handlerMapping,
+        $locatorServiceClass = ContainerBasedHandlerLocator::class,
+        $locatorServiceId = 'service_container'
+    ) {
         return new Definition(
-            ContainerBasedHandlerLocator::class,
+            $locatorServiceClass,
             [
-                new Reference('service_container'),
+                new Reference($locatorServiceId),
                 $handlerMapping,
             ]
         );
@@ -116,5 +132,20 @@ class CommandHandlerPass implements CompilerPassInterface
                 throw UnknownMiddlewareException::withId((string) $middlewareReference);
             }
         }
+    }
+
+    private function registerHandlerServiceLocator(ContainerBuilder $container, $serviceLocatorId, array $handlerMapping)
+    {
+        $handlers = [];
+        foreach ($handlerMapping as $commandName => $id) {
+            $handlers[$id] = new ServiceClosureArgument(new Reference($id));
+        }
+
+        $handlerServiceLocator = (new Definition(ServiceLocator::class, [$handlers]))
+            ->setPublic(false)
+            ->addTag('container.service_locator')
+        ;
+
+        $container->setDefinition($serviceLocatorId, $handlerServiceLocator);
     }
 }
