@@ -2,7 +2,6 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
-
 /**
  * To ensure cache is isolated from each test.
  *
@@ -36,7 +35,7 @@ EOF
 commandbus:
     default:
         middleware:
-            - tactician.middleware.validator
+            - tactician.middleware.whatever
             - tactician.middleware.command_handler
 EOF
         );

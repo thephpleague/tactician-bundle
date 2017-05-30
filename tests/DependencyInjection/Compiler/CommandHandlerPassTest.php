@@ -38,7 +38,7 @@ class CommandHandlerPassTest extends TestCase
             [
                 'tactician.commandbus.default' => 'default',
                 'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default']
+                'tactician.commandbus.ids' => ['default'],
             ]
         );
 
@@ -46,10 +46,10 @@ class CommandHandlerPassTest extends TestCase
             $this->container,
             [
                 'service_id_1' => [
-                    ['command' => 'my_command']
+                    ['command' => 'my_command'],
                 ],
                 'service_id_2' => [
-                    ['command' => 'my_command']
+                    ['command' => 'my_command'],
                 ],
             ]
         );
@@ -73,7 +73,7 @@ class CommandHandlerPassTest extends TestCase
             [
                 'tactician.commandbus.default' => 'default',
                 'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default']
+                'tactician.commandbus.ids' => ['default'],
             ]
         );
 
@@ -81,10 +81,10 @@ class CommandHandlerPassTest extends TestCase
             $this->container,
             [
                 'service_id_1' => [
-                    ['not_command' => 'my_command']
+                    ['not_command' => 'my_command'],
                 ],
                 'service_id_2' => [
-                    ['command' => 'my_command']
+                    ['command' => 'my_command'],
                 ],
             ]);
 
@@ -101,7 +101,7 @@ class CommandHandlerPassTest extends TestCase
             [
                 'tactician.commandbus.default' => 'default',
                 'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default']
+                'tactician.commandbus.ids' => ['default'],
             ]
         );
 
@@ -109,7 +109,7 @@ class CommandHandlerPassTest extends TestCase
             $this->container,
             [
                 'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'bad_bus_name']
+                    ['command' => 'my_command', 'bus' => 'bad_bus_name'],
                 ],
             ]);
 
@@ -125,7 +125,7 @@ class CommandHandlerPassTest extends TestCase
                 'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
                 'tactician.method_inflector.custom_bus' => 'tactician.handler.method_name_inflector.handle',
                 'tactician.method_inflector.other_bus' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default', 'custom_bus', 'other_bus']
+                'tactician.commandbus.ids' => ['default', 'custom_bus', 'other_bus'],
             ]
         );
 
@@ -135,7 +135,7 @@ class CommandHandlerPassTest extends TestCase
                 'service_id_1' => [
                     ['command' => 'my_command', 'bus' => 'custom_bus'],
                     ['command' => 'my_command', 'bus' => 'other_bus'],
-                ]
+                ],
             ]);
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
@@ -166,7 +166,7 @@ class CommandHandlerPassTest extends TestCase
             [
                 'tactician.commandbus.default' => 'custom_bus',
                 'tactician.method_inflector.custom_bus' => 'tactician.handler.method_name_inflector.handle_class_name',
-                'tactician.commandbus.ids' => ['custom_bus']
+                'tactician.commandbus.ids' => ['custom_bus'],
             ]
         );
 
@@ -174,7 +174,7 @@ class CommandHandlerPassTest extends TestCase
             $this->container,
             [
                 'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'custom_bus']
+                    ['command' => 'my_command', 'bus' => 'custom_bus'],
                 ],
             ]);
 
@@ -212,14 +212,30 @@ class CommandHandlerPassTest extends TestCase
         $handlerLocatorId = sprintf('tactician.commandbus.%s.handler.locator', $busId);
         $handlerId = sprintf('tactician.commandbus.%s.middleware.command_handler', $busId);
 
+        if (class_exists(ServiceLocator::class)) {
+            $container->shouldReceive('setDefinition')
+                ->with(
+                    sprintf('tactician.commandbus.%s.handler.service_locator', $busId),
+                    \Mockery::on(function (Definition $definition) {
+                        $this->assertSame(ServiceLocator::class, $definition->getClass());
+
+                        return true;
+                    })
+                )
+            ;
+        }
+
         $container->shouldReceive('setDefinition')
             ->with(
                 $handlerLocatorId,
-                $this->callback(function ($definition) {
-                    $this->assertInstanceOf(Definition::class, $definition);
+                \Mockery::on(function (Definition $definition) {
                     $this->assertSame(class_exists(ServiceLocator::class) ? ContainerLocator::class : ContainerBasedHandlerLocator::class, $definition->getClass());
+
+                    return true;
                 })
-            );
+            )
+            ->once()
+        ;
 
         $this->container->shouldReceive('setDefinition')
             ->with(
@@ -229,7 +245,9 @@ class CommandHandlerPassTest extends TestCase
 
                     return $methodNameInflectorServiceId === $methodInflector;
                 })
-            );
+            )
+            ->once()
+        ;
 
         $this->container->shouldReceive('setAlias')
             ->with(
