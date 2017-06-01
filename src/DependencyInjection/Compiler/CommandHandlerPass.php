@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * This compiler pass maps Handler DI tags to specific commands
+ * This compiler pass maps Handler DI tags to specific commands.
  */
 class CommandHandlerPass implements CompilerPassInterface
 {
@@ -22,6 +22,7 @@ class CommandHandlerPass implements CompilerPassInterface
      * @param ContainerBuilder $container
      *
      * @throws \Exception
+     *
      * @api
      */
     public function process(ContainerBuilder $container)
@@ -31,7 +32,6 @@ class CommandHandlerPass implements CompilerPassInterface
         $busIdToHandlerMapping = [];
 
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
-
             foreach ($tags as $attributes) {
                 if (!isset($attributes['command'])) {
                     throw new \Exception('The tactician.handler tag must always have a command attribute');
@@ -65,8 +65,9 @@ class CommandHandlerPass implements CompilerPassInterface
 
             // Leverage symfony/dependency-injection:^3.3 service locators
             if (class_exists(ServiceLocator::class)) {
-                $this->registerHandlerServiceLocator($container, $locatorServiceId, $handlerMapping);
-                $locatorDefinition = $this->buildLocatorDefinition($handlerMapping, 'tactician.commandbus.'.$busId.'.handler.service_locator', ContainerLocator::class);
+                $serviceLocatorId = 'tactician.commandbus.'.$busId.'.handler.service_locator';
+                $this->registerHandlerServiceLocator($container, $serviceLocatorId, $handlerMapping);
+                $locatorDefinition = $this->buildLocatorDefinition($handlerMapping, ContainerLocator::class, $serviceLocatorId);
             } else {
                 $locatorDefinition = $this->buildLocatorDefinition($handlerMapping);
             }
@@ -83,7 +84,7 @@ class CommandHandlerPass implements CompilerPassInterface
                     [
                         new Reference('tactician.handler.command_name_extractor.class_name'),
                         new Reference($locatorServiceId),
-                        new Reference($methodInflectorId)
+                        new Reference($methodInflectorId),
                     ]
                 )
             );
@@ -93,7 +94,8 @@ class CommandHandlerPass implements CompilerPassInterface
 
     /**
      * @param string $id
-     * @param array $busIds
+     * @param array  $busIds
+     *
      * @throws \Exception
      */
     protected function abortIfInvalidBusId($id, array $busIds)
