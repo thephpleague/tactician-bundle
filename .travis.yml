@@ -17,7 +17,7 @@ env:
     - SYMFONY_VERSION="2.8.*"
     - SYMFONY_VERSION="3.0.*"
     - SYMFONY_VERSION="3.2.*"
-    - SYMFONY_VERSION="3.3.x-dev"
+    - SYMFONY_VERSION="3.3.*"
 
 matrix:
   include:
