@@ -4,131 +4,63 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
-use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase;
+use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DoctrineMiddlewarePassTest extends TestCase
+class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 {
-    /**
-     * @var ContainerBuilder|MockInterface
-     */
-    protected $container;
-
-    /**
-     * @var DoctrineMiddlewarePass
-     */
-    protected $compiler;
-
-    protected function setUp()
+    protected function registerCompilerPass(ContainerBuilder $container)
     {
-        parent::setUp();
-        $this->container = \Mockery::mock(ContainerBuilder::class);
-
-        $this->compiler = new DoctrineMiddlewarePass();
+        $container->addCompilerPass(new DoctrineMiddlewarePass());
     }
 
-    public function testProcess()
+    public function test_registering_middleware_for_multiple_entity_managers()
     {
         if (!class_exists(TransactionMiddleware::class)) {
             $this->markTestSkipped('"league/tactician-doctrine" is not installed');
         }
 
-        $this->container->shouldReceive('hasParameter')
-            ->with('doctrine.entity_managers')
-            ->once()
-            ->andReturn(true);
-
-        $this->container->shouldReceive('getParameter')
-            ->with('doctrine.entity_managers')
-            ->once()
-            ->andReturn([
+        $this->setParameter(
+            'doctrine.entity_managers',
+            [
                 'default' => 'doctrine.orm.default_entity_manager',
                 'second' => 'doctrine.orm.second_entity_manager',
-            ]);
+            ]
+        );
+        $this->setParameter('doctrine.default_entity_manager', 'default');
 
-        $this->container->shouldReceive('getParameter')
-            ->with('doctrine.default_entity_manager')
-            ->once()
-            ->andReturn('default');
+        $this->compile();
 
-        $this->container->shouldReceive('setDefinition')
-            ->andReturnUsing(function($name, Definition $def) {
-                $this->assertEquals('tactician.middleware.doctrine.default', $name);
-
-                $this->assertEquals(TransactionMiddleware::class, $def->getClass());
-                $this->assertCount(1, $def->getArguments());
-                $this->assertInstanceOf(Reference::class, $def->getArgument(0));
-                $this->assertEquals('doctrine.orm.default_entity_manager', (string)$def->getArgument(0));
-            })
-            ->once();
-
-        $this->container->shouldReceive('setDefinition')
-            ->andReturnUsing(function($name, Definition $def) {
-                $this->assertEquals('tactician.middleware.doctrine.second', $name);
-
-                $this->assertEquals(TransactionMiddleware::class, $def->getClass());
-                $this->assertCount(1, $def->getArguments());
-                $this->assertInstanceOf(Reference::class, $def->getArgument(0));
-                $this->assertEquals('doctrine.orm.second_entity_manager', (string)$def->getArgument(0));
-            })
-            ->once();
-
-        $this->container->shouldReceive('setDefinition')
-            ->with('tactician.middleware.doctrine.second')
-            ->once();
-
-        $this->container->shouldReceive('setAlias')
-            ->once()
-            ->with('tactician.middleware.doctrine', 'tactician.middleware.doctrine.default');
-
-        $this->compiler->process($this->container);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine.default', 0, new Reference('doctrine.orm.default_entity_manager'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine.second', 0, new Reference('doctrine.orm.second_entity_manager'));
+        $this->assertContainerBuilderHasAlias('tactician.middleware.doctrine', 'tactician.middleware.doctrine.default');
     }
 
-    public function testDoNotProcessWhenThereAreNoEntityManagers()
+    public function test_do_not_process_when_there_are_no_entity_managers()
     {
         if (!class_exists(TransactionMiddleware::class)) {
             $this->markTestSkipped('"league/tactician-doctrine" is not installed');
         }
 
-        $this->container->shouldReceive('hasParameter')
-            ->with('doctrine.entity_managers')
-            ->once()
-            ->andReturn(false);
+        $this->compile();
 
-        $this->container->shouldNotReceive('getParameter')
-            ->withAnyArgs();
-
-        $this->container->shouldNotReceive('setDefinition')
-            ->withAnyArgs();
-
-        $this->container->shouldNotReceive('setAlias')
-            ->withAnyArgs();
-
-        $this->compiler->process($this->container);
+        $this->assertEmpty($this->container->getDefinitions());
+        $this->assertEmpty($this->container->getAliases());
     }
 
-    public function testDoNotProcessWhenTacticianDoctrineIsNotInstalled()
+    public function test_do_not_process_when_tactician_doctrine_is_not_installed()
     {
         if (class_exists(TransactionMiddleware::class)) {
             $this->markTestSkipped('"league/tactician-doctrine" is installed');
         }
 
-        $this->container->shouldReceive('hasParameter')
-            ->with('doctrine.entity_managers')
-            ->andReturn(true);
+        $this->setParameter('doctrine.entity_managers', ['default' => 'doctrine.orm.default_entity_manager']);
+        $this->setParameter('doctrine.default_entity_manager', 'default');
 
-        $this->container->shouldNotReceive('getParameter')
-            ->withAnyArgs();
+        $this->compile();
 
-        $this->container->shouldNotReceive('setDefinition')
-            ->withAnyArgs();
-
-        $this->container->shouldNotReceive('setAlias')
-            ->withAnyArgs();
-
-        $this->compiler->process($this->container);
+        $this->assertEmpty($this->container->getDefinitions());
+        $this->assertEmpty($this->container->getAliases());
     }
 }
