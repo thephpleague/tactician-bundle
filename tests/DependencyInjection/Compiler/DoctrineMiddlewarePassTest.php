@@ -45,8 +45,7 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertEmpty($this->container->getDefinitions());
-        $this->assertEmpty($this->container->getAliases());
+        $this->assertContainerBuilderNotHasService('tactician.middleware.doctrine');
     }
 
     public function test_do_not_process_when_tactician_doctrine_is_not_installed()
@@ -60,7 +59,6 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertEmpty($this->container->getDefinitions());
-        $this->assertEmpty($this->container->getAliases());
+        $this->assertContainerBuilderNotHasService('tactician.middleware.doctrine');
     }
 }
