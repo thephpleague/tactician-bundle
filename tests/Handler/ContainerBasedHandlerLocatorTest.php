@@ -3,49 +3,23 @@
 namespace League\Tactician\Bundle\Tests\Handler;
 
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
-use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ContainerBasedHandlerLocatorTest extends TestCase
 {
-
-    /**
-     * @var ContainerInterface | MockInterface
-     */
-    protected $container;
-
-    /**
-     * @var ContainerBasedHandlerLocator
-     */
-    protected $locator;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->container = \Mockery::mock(ContainerInterface::class);
-    }
-
     public function testGetHandler()
     {
-        $commandName = 'MyFakeCommand';
-        $serviceId   = 'my_bundle.service.id';
+        $container = new ContainerBuilder();
+        $container->register('fake_command_handler', 'stdClass');
+        $container->compile();
 
-        $definitions = [
-            $commandName   => $serviceId,
-            'OtherCommand' => 'my_bundle.order.id'
-        ];
+        $locator = new ContainerBasedHandlerLocator($container, [
+            'FakeCommand' => 'fake_command_handler',
+            'OtherCommand' => 'other_command_handler'
+        ]);
 
-        $this->container->shouldReceive('get')
-            ->with($serviceId)
-            ->once()
-            ->andReturn($serviceId);
-
-        $this->locator = new ContainerBasedHandlerLocator($this->container, $definitions);
-        $result        = $this->locator->getHandlerForCommand($commandName);
-
-        $this->assertEquals($serviceId, $result);
+        $this->assertInstanceOf('stdClass', $locator->getHandlerForCommand('FakeCommand'));
     }
 
     /**
@@ -53,15 +27,11 @@ class ContainerBasedHandlerLocatorTest extends TestCase
      */
     public function testGetHandlerThrowsExceptionForNotFound()
     {
-        $definitions = [
+        $locator = new ContainerBasedHandlerLocator(new ContainerBuilder(), [
             'OtherCommand' => 'my_bundle.order.id'
-        ];
+        ]);
 
-        $this->container->shouldReceive('get')
-            ->never();
-
-        $this->locator = new ContainerBasedHandlerLocator($this->container, $definitions);
-        $this->locator->getHandlerForCommand('MyFakeCommand');
+        $locator->getHandlerForCommand('MyFakeCommand');
     }
 
 }
