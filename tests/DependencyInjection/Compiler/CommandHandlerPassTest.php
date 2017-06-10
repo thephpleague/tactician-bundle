@@ -5,270 +5,170 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
 use League\Tactician\Container\ContainerLocator;
-use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class CommandHandlerPassTest extends TestCase
 {
-    /**
-     * @var ContainerBuilder | MockInterface
-     */
-    protected $container;
-
-    /**
-     * @var CommandHandlerPass
-     */
-    protected $compiler;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->container = \Mockery::mock(ContainerBuilder::class);
-
-        $this->compiler = new CommandHandlerPass();
-    }
-
     public function testProcess()
     {
-        $this->parametersShouldBe(
-            $this->container,
-            [
-                'tactician.commandbus.default' => 'default',
-                'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default'],
-            ]
-        );
+        $container = $this->getContainer(['default'], 'default');
+        $container->register('handler_1')->addTag('tactician.handler', ['command' => 'my_command']);
+        $container->register('handler_2')->addTag('tactician.handler', ['command' => 'my_command']);
 
-        $this->servicesTaggedShouldBe(
-            $this->container,
-            [
-                'service_id_1' => [
-                    ['command' => 'my_command'],
-                ],
-                'service_id_2' => [
-                    ['command' => 'my_command'],
-                ],
-            ]
-        );
+        (new CommandHandlerPass())->process($container);
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
-            $this->container,
+            $container,
             'default',
             'tactician.handler.method_name_inflector.handle'
         );
-
-        $this->compiler->process($this->container);
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException        \Exception
+     * @expectedExceptionMessage The tactician.handler tag must always have a command attribute
      */
     public function testProcessAbortsOnMissingCommandAttribute()
     {
-        $this->parametersShouldBe(
-            $this->container,
-            [
-                'tactician.commandbus.default' => 'default',
-                'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default'],
-            ]
-        );
+        $container = $this->getContainer(['default'], 'default');
+        $container->register('handler_1')->addTag('tactician.handler', ['command' => 'my_command']);
+        $container->register('handler_2')->addTag('tactician.handler', ['not_command' => 'my_command']);
 
-        $this->servicesTaggedShouldBe(
-            $this->container,
-            [
-                'service_id_1' => [
-                    ['not_command' => 'my_command'],
-                ],
-                'service_id_2' => [
-                    ['command' => 'my_command'],
-                ],
-            ]);
-
-        $this->compiler->process($this->container);
+        (new CommandHandlerPass())->process($container);
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Invalid bus id "bad_bus".
      */
     public function testProcessAbortsOnInvalidBus()
     {
-        $this->parametersShouldBe(
-            $this->container,
-            [
-                'tactician.commandbus.default' => 'default',
-                'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default'],
-            ]
-        );
+        $container = $this->getContainer(['default'], 'default');
 
-        $this->servicesTaggedShouldBe(
-            $this->container,
-            [
-                'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'bad_bus_name'],
-                ],
-            ]);
+        $container
+            ->register('handler_1')
+            ->addTag('tactician.handler', ['command' => 'my_command', 'bus' => 'bad_bus']);
 
-        $this->compiler->process($this->container);
+        (new CommandHandlerPass())->process($container);
     }
 
     public function testProcessAddsLocatorAndHandlerDefinitionForTaggedBuses()
     {
-        $this->parametersShouldBe(
-            $this->container,
-            [
-                'tactician.commandbus.default' => 'custom_bus',
-                'tactician.method_inflector.default' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.method_inflector.custom_bus' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.method_inflector.other_bus' => 'tactician.handler.method_name_inflector.handle',
-                'tactician.commandbus.ids' => ['default', 'custom_bus', 'other_bus'],
-            ]
+        $container = $this->getContainer(['default', 'custom_bus', 'other_bus'], 'custom_bus');
+        $container->setParameter(
+            'tactician.method_inflector.custom_bus',
+            'tactician.handler.method_name_inflector.handle'
+        );
+        $container->setParameter(
+            'tactician.method_inflector.other_bus',
+            'tactician.handler.method_name_inflector.handle'
         );
 
-        $this->servicesTaggedShouldBe(
-            $this->container,
-            [
-                'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'custom_bus'],
-                    ['command' => 'my_command', 'bus' => 'other_bus'],
-                ],
-            ]);
+        $container
+            ->register('handler_1')
+            ->addTag('tactician.handler', ['command' => 'my_command', 'bus' => 'custom_bus'])
+            ->addTag('tactician.handler', ['command' => 'my_command', 'bus' => 'other_bus']);
+
+
+        (new CommandHandlerPass())->process($container);
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
-            $this->container,
+            $container,
             'default',
             'tactician.handler.method_name_inflector.handle'
         );
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
-            $this->container,
+            $container,
             'custom_bus',
             'tactician.handler.method_name_inflector.handle'
         );
 
         $this->busShouldBeCorrectlyRegisteredInContainer(
-            $this->container,
+            $container,
             'other_bus',
             'tactician.handler.method_name_inflector.handle'
         );
-
-        $this->compiler->process($this->container);
     }
 
     public function testProcessAddsHandlerDefinitionWithNonDefaultMethodNameInflector()
     {
-        $this->parametersShouldBe(
-            $this->container,
-            [
-                'tactician.commandbus.default' => 'custom_bus',
-                'tactician.method_inflector.custom_bus' => 'tactician.handler.method_name_inflector.handle_class_name',
-                'tactician.commandbus.ids' => ['custom_bus'],
-            ]
-        );
-
-        $this->servicesTaggedShouldBe(
-            $this->container,
-            [
-                'service_id_1' => [
-                    ['command' => 'my_command', 'bus' => 'custom_bus'],
-                ],
-            ]);
-
-        $this->busShouldBeCorrectlyRegisteredInContainer(
-            $this->container,
-            'custom_bus',
+        $container = $this->getContainer(['default', 'custom_bus'], 'custom_bus');
+        $container->setParameter(
+            'tactician.method_inflector.custom_bus',
             'tactician.handler.method_name_inflector.handle_class_name'
         );
 
-        $this->compiler->process($this->container);
+        $container
+            ->register('handler_1')
+            ->addTag('tactician.handler', ['command' => 'my_command', 'bus' => 'custom_bus']);
+
+        (new CommandHandlerPass())->process($container);
+
+        $this->busShouldBeCorrectlyRegisteredInContainer(
+            $container,
+            'custom_bus',
+            'tactician.handler.method_name_inflector.handle_class_name'
+        );
     }
 
-    private function parametersShouldBe($container, array $parameters)
-    {
-        foreach ($parameters as $key => $value) {
-            $container->shouldReceive('getParameter')
-                ->with($key)
-                ->once()
-                ->andReturn($value)
-            ;
-        }
-    }
-
-    private function servicesTaggedShouldBe($container, array $config)
-    {
-        $container->shouldReceive('findTaggedServiceIds')
-            ->with('tactician.handler')
-            ->once()
-            ->andReturn($config)
-        ;
-    }
-
-    private function busShouldBeCorrectlyRegisteredInContainer($container, $busId, $methodInflector)
+    private function busShouldBeCorrectlyRegisteredInContainer(ContainerBuilder $container, $busId, $methodInflector)
     {
         $handlerLocatorId = sprintf('tactician.commandbus.%s.handler.locator', $busId);
         $handlerId = sprintf('tactician.commandbus.%s.middleware.command_handler', $busId);
+        $defaultHandlerId = sprintf('tactician.commandbus.%s.middleware.command_handler', $container->getParameter('tactician.commandbus.default'));
+        $defaultHandlerLocatorId = sprintf('tactician.commandbus.%s.handler.locator', $container->getParameter('tactician.commandbus.default'));
 
         if (class_exists(ServiceLocator::class)) {
-            $container->shouldReceive('setDefinition')
-                ->with(
-                    sprintf('tactician.commandbus.%s.handler.service_locator', $busId),
-                    \Mockery::on(function (Definition $definition) {
-                        $this->assertSame(ServiceLocator::class, $definition->getClass());
-
-                        return true;
-                    })
-                )
-            ;
+            $this->assertSame(
+                ServiceLocator::class,
+                $container ->getDefinition(
+                    sprintf('tactician.commandbus.%s.handler.service_locator', $busId)
+                )->getClass()
+            );
         }
 
-        $container->shouldReceive('setDefinition')
-            ->with(
-                $handlerLocatorId,
-                \Mockery::on(function (Definition $definition) {
-                    $this->assertSame(class_exists(ServiceLocator::class) ? ContainerLocator::class : ContainerBasedHandlerLocator::class, $definition->getClass());
+        $this->assertSame(
+            class_exists(ServiceLocator::class)
+                ? ContainerLocator::class
+                : ContainerBasedHandlerLocator::class,
+            $container->getDefinition($handlerLocatorId)->getClass()
+        );
 
-                    return true;
-                })
-            )
-            ->once()
-        ;
+        $this->assertSame(
+            $methodInflector,
+            (string) $container
+                ->getDefinition($handlerId)
+                ->getArgument(2)
+        );
 
-        $this->container->shouldReceive('setDefinition')
-            ->with(
-                $handlerId,
-                \Mockery::on(function (Definition $definition) use ($methodInflector) {
-                    $methodNameInflectorServiceId = (string) $definition->getArgument(2);
+        $this->assertSame(
+            $defaultHandlerLocatorId,
+            (string) $container->getAlias('tactician.handler.locator.symfony')
+        );
 
-                    return $methodNameInflectorServiceId === $methodInflector;
-                })
-            )
-            ->once()
-        ;
+        $this->assertSame(
+            $defaultHandlerId,
+            (string) $container->getAlias('tactician.middleware.command_handler')
+        );
+    }
 
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.handler.locator.symfony',
-                $handlerLocatorId
-            )
-            ->once();
+    private function getContainer(array $busIds, $defaultBus)
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('tactician.commandbus.ids', $busIds);
+        $container->setParameter('tactician.commandbus.default', $defaultBus);
+        $container->setParameter(
+            'tactician.method_inflector.default',
+            'tactician.handler.method_name_inflector.handle'
+        );
 
-        $this->container->shouldReceive('setAlias')
-            ->with(
-                'tactician.middleware.command_handler',
-                $handlerId
-            )
-            ->once();
+        foreach ($busIds as $busId) {
+            $container->register('tactician.commandbus.'.$busId)->addArgument(array());
+        }
 
-        $definition = \Mockery::mock(Definition::class);
-        $definition->shouldReceive('getArgument')->andReturn([]);
-        $this->container->shouldReceive('getDefinition')
-            ->with('tactician.commandbus.'.$busId)
-            ->once()
-            ->andReturn($definition)
-        ;
+        return $container;
     }
 }
