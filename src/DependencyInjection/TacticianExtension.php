@@ -89,7 +89,6 @@ class TacticianExtension extends ConfigurableExtension
             $definition = new Definition(
                 HandleCommandVoter::class,
                 [
-                    new Reference('security.access.decision_manager'),
                     $mergedConfig['security']
                 ]
             );
