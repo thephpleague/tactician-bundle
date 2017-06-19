@@ -64,8 +64,14 @@ class HandleCommandVoterTest extends TestCase
             // Testcase: deny access if incorrect role
             ['handle', new FakeCommand, [new Role('ROLE_ADMIN')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
 
-            // Testcase: grant access if decision manager returns true and the command is in the mapping
+            // Testcase: grant access if the user has the configure role
             ['handle', new FakeCommand, [new Role('ROLE_USER')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
+
+            // Testcase: grant access if the user has one of the configure roles
+            ['handle', new FakeCommand, [new Role('ROLE_USER')], [FakeCommand::class => ['ROLE_USER', 'ROLE_TWO']], VoterInterface::ACCESS_GRANTED],
+
+            // Testcase: grant access if the user has one of the configure roles, but also another role
+            ['handle', new FakeCommand, [new Role('ROLE_USER', new Role('ROLE_THREE'))], [FakeCommand::class => ['ROLE_USER', 'ROLE_TWO']], VoterInterface::ACCESS_GRANTED],
 
             // Testcase: deny access if the command is not in the mapping (i.e. a default deny access case)
             ['handle', new FakeCommand, [new Role('ROLE_USER')], ['someOtherCommand' => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
