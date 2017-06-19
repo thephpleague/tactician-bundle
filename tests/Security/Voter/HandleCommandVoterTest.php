@@ -59,13 +59,21 @@ class HandleCommandVoterTest extends TestCase
     public function provideTestVoteData()
     {
         return [
+            // Testcase: default access is false
             ['handle', new FakeCommand, true, [], VoterInterface::ACCESS_DENIED],
+            // Testcase: abstain when not handling a command, but using the handle attribute
             ['handle', null, true, [], VoterInterface::ACCESS_ABSTAIN],
+            // Testcase: abstain when not handling a command and not using the handle attribute
             ['create', null, true, [], VoterInterface::ACCESS_ABSTAIN],
+            // Testcase: abstain when not handling a command
             ['create', new FakeCommand, true, [], VoterInterface::ACCESS_ABSTAIN],
+            // Testcase: default is unrelated to decision manager
             ['handle', new FakeCommand, false, [], VoterInterface::ACCESS_DENIED],
+            // Testcase: deny access if decision manager returns false
             ['handle', new FakeCommand, false, [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
+            // Testcase: grant access if decision manager returns true and the command is in the mapping
             ['handle', new FakeCommand, true, [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
+            // Testcase: deny access if the command is not in the mapping (i.e. a default deny access case)
             ['handle', new FakeCommand, false, ['someOtherCommand' => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
         ];
     }
