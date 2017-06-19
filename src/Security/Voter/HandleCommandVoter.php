@@ -3,7 +3,6 @@
 namespace League\Tactician\Bundle\Security\Voter;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
@@ -14,13 +13,6 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class HandleCommandVoter extends Voter
 {
     /**
-     * The decision manager.
-     *
-     * @var AccessDecisionManagerInterface
-     */
-    private $decisionManager;
-
-    /**
      * Command - Require role mapping
      *
      * @var array
@@ -30,13 +22,10 @@ class HandleCommandVoter extends Voter
     /**
      * Create a new HandleCommandVoter.
      *
-     * @param AccessDecisionManagerInterface $decisionManager
      * @param array $commandRoleMapping
-     * @param string $defaultRole
      */
-    public function __construct(AccessDecisionManagerInterface $decisionManager, array $commandRoleMapping = [])
+    public function __construct(array $commandRoleMapping = [])
     {
-        $this->decisionManager = $decisionManager;
         $this->commandRoleMapping = $commandRoleMapping;
     }
 
@@ -64,13 +53,15 @@ class HandleCommandVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $allowedRoles = $this->getAllowedRoles(get_class($subject));
+        $actualRoles = $token->getRoles();
 
-        if (count($allowedRoles) > 0) {
-            return $this->decisionManager->decide($token, $allowedRoles);
-        } else {
-            // default conclusion is access denied
-            return false;
+        foreach ($actualRoles as $role) {
+            if (in_array($role->getRole(), $allowedRoles)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**

@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Unit test for the handle command voter
@@ -18,35 +19,21 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class HandleCommandVoterTest extends TestCase
 {
     /**
-     * The decision manager mock.
-     */
-    private $decisionManager;
-
-    /**
-     * Set up.
-     */
-    public function setUp()
-    {
-        $this->decisionManager = Mockery::mock(AccessDecisionManager::class);
-    }
-
-    /**
      * Tests the vote method.
      *
-     * @param type $attribute
-     * @param type $subject
-     * @param type $decision
-     * @param type $default
-     * @param type $mapping
-     * @param type $expected
+     * @param string $attribute
+     * @param mixed $subject
+     * @param array $roles
+     * @param array $mapping
+     * @param int $expected
      *
      * @dataProvider provideTestVoteData
      */
-    public function testVote($attribute, $subject, $decision, $mapping, $expected)
+    public function testVote(string $attribute, $subject, array $roles, array $mapping, int $expected)
     {
-        $this->decisionManager->shouldReceive('decide')->andReturn($decision);
-        $voter = new HandleCommandVoter($this->decisionManager, $mapping);
+        $voter = new HandleCommandVoter($mapping);
         $tokenMock = Mockery::mock(TokenInterface::class);
+        $tokenMock->shouldReceive('getRoles')->andReturn($roles);
 
         $this->assertEquals($expected, $voter->vote($tokenMock, $subject, [$attribute]));
     }
@@ -60,21 +47,28 @@ class HandleCommandVoterTest extends TestCase
     {
         return [
             // Testcase: default access is false
-            ['handle', new FakeCommand, true, [], VoterInterface::ACCESS_DENIED],
+            ['handle', new FakeCommand, [new Role('ROLE_ADMIN')], [], VoterInterface::ACCESS_DENIED],
+
             // Testcase: abstain when not handling a command, but using the handle attribute
-            ['handle', null, true, [], VoterInterface::ACCESS_ABSTAIN],
+            ['handle', null, [new Role('ROLE_ADMIN')], [], VoterInterface::ACCESS_ABSTAIN],
+
             // Testcase: abstain when not handling a command and not using the handle attribute
-            ['create', null, true, [], VoterInterface::ACCESS_ABSTAIN],
+            ['create', null, [new Role('ROLE_ADMIN')], [], VoterInterface::ACCESS_ABSTAIN],
+
             // Testcase: abstain when not handling a command
-            ['create', new FakeCommand, true, [], VoterInterface::ACCESS_ABSTAIN],
-            // Testcase: default is unrelated to decision manager
-            ['handle', new FakeCommand, false, [], VoterInterface::ACCESS_DENIED],
-            // Testcase: deny access if decision manager returns false
-            ['handle', new FakeCommand, false, [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
+            ['create', new FakeCommand, [new Role('ROLE_ADMIN')], [FakeCommand::class => ['ROLE_ADMIN']], VoterInterface::ACCESS_ABSTAIN],
+
+            // Testcase: default is unrelated to roles
+            ['handle', new FakeCommand, [new Role('ROLE_ADMIN')], [], VoterInterface::ACCESS_DENIED],
+
+            // Testcase: deny access if incorrect role
+            ['handle', new FakeCommand, [new Role('ROLE_ADMIN')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
+
             // Testcase: grant access if decision manager returns true and the command is in the mapping
-            ['handle', new FakeCommand, true, [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
+            ['handle', new FakeCommand, [new Role('ROLE_USER')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
+
             // Testcase: deny access if the command is not in the mapping (i.e. a default deny access case)
-            ['handle', new FakeCommand, false, ['someOtherCommand' => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
+            ['handle', new FakeCommand, [new Role('ROLE_USER')], ['someOtherCommand' => ['ROLE_USER']], VoterInterface::ACCESS_DENIED],
         ];
     }
 }
