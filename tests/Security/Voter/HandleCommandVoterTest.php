@@ -32,7 +32,7 @@ class HandleCommandVoterTest extends TestCase
      */
     public function testVote(string $attribute, $subject, array $roles, array $mapping, int $expected)
     {
-        $voter = new HandleCommandVoter(new RoleHierarchy([]), $mapping);
+        $voter = new HandleCommandVoter(new RoleHierarchy(['ROLE_ROOT' => ['ROLE_USER']]), $mapping);
         $tokenMock = Mockery::mock(TokenInterface::class);
         $tokenMock->shouldReceive('getRoles')->andReturn($roles);
 
@@ -67,6 +67,9 @@ class HandleCommandVoterTest extends TestCase
 
             // Testcase: grant access if the user has the configure role
             ['handle', new FakeCommand, [new Role('ROLE_USER')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
+
+            // Testcase: grant access if the user has an inherited role
+            ['handle', new FakeCommand, [new Role('ROLE_ROOT')], [FakeCommand::class => ['ROLE_USER']], VoterInterface::ACCESS_GRANTED],
 
             // Testcase: grant access if the user has one of the configure roles
             ['handle', new FakeCommand, [new Role('ROLE_USER')], [FakeCommand::class => ['ROLE_USER', 'ROLE_TWO']], VoterInterface::ACCESS_GRANTED],
