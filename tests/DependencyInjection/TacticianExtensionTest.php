@@ -142,7 +142,7 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             'security' => $securitySettings
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 0, $securitySettings);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, $securitySettings);
         $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
     }
 
@@ -159,7 +159,7 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             ]
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 0, []);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, []);
         $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
     }
 

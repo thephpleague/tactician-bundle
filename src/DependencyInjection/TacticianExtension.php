@@ -89,6 +89,7 @@ class TacticianExtension extends ConfigurableExtension
             $definition = new Definition(
                 HandleCommandVoter::class,
                 [
+                    new Reference('security.role_hierarchy'),
                     $mergedConfig['security']
                 ]
             );

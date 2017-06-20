@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
 /**
  * Unit test for the handle command voter
@@ -31,7 +32,7 @@ class HandleCommandVoterTest extends TestCase
      */
     public function testVote(string $attribute, $subject, array $roles, array $mapping, int $expected)
     {
-        $voter = new HandleCommandVoter($mapping);
+        $voter = new HandleCommandVoter(new RoleHierarchy([]), $mapping);
         $tokenMock = Mockery::mock(TokenInterface::class);
         $tokenMock->shouldReceive('getRoles')->andReturn($roles);
 

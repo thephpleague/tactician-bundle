@@ -4,6 +4,7 @@ namespace League\Tactician\Bundle\Security\Voter;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Voter for security checks on handling commands.
@@ -12,6 +13,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class HandleCommandVoter extends Voter
 {
+    /**
+     * Role hierarchy
+     *
+     * @var RoleHierarchyInterface
+     */
+    private $roleHierarchy;
+
     /**
      * Command - Require role mapping
      *
@@ -23,10 +31,13 @@ class HandleCommandVoter extends Voter
      * Create a new HandleCommandVoter.
      *
      * @param array $commandRoleMapping
+     * @param RoleHierarchyInterface $roleHierarchy
      */
-    public function __construct(array $commandRoleMapping = [])
+    public function __construct(RoleHierarchyInterface $roleHierarchy, array $commandRoleMapping = [])
     {
+        $this->roleHierarchy = $roleHierarchy;
         $this->commandRoleMapping = $commandRoleMapping;
+
     }
 
     /**
@@ -53,7 +64,7 @@ class HandleCommandVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $allowedRoles = $this->getAllowedRoles(get_class($subject));
-        $actualRoles = $token->getRoles();
+        $actualRoles = $this->roleHierarchy->getReachableRoles($token->getRoles());
 
         foreach ($actualRoles as $role) {
             if (in_array($role->getRole(), $allowedRoles)) {
