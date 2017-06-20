@@ -30,8 +30,8 @@ class HandleCommandVoter extends Voter
     /**
      * Create a new HandleCommandVoter.
      *
-     * @param array $commandRoleMapping
      * @param RoleHierarchyInterface $roleHierarchy
+     * @param array $commandRoleMapping
      */
     public function __construct(RoleHierarchyInterface $roleHierarchy, array $commandRoleMapping = [])
     {
