@@ -3,8 +3,8 @@
 namespace League\Tactician\Bundle\Security\Voter;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 /**
  * Voter for security checks on handling commands.
@@ -14,11 +14,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class HandleCommandVoter extends Voter
 {
     /**
-     * The decision manager.
+     * Role hierarchy
      *
-     * @var AccessDecisionManagerInterface
+     * @var RoleHierarchyInterface
      */
-    private $decisionManager;
+    private $roleHierarchy;
 
     /**
      * Command - Require role mapping
@@ -30,14 +30,14 @@ class HandleCommandVoter extends Voter
     /**
      * Create a new HandleCommandVoter.
      *
-     * @param AccessDecisionManagerInterface $decisionManager
+     * @param RoleHierarchyInterface $roleHierarchy
      * @param array $commandRoleMapping
-     * @param string $defaultRole
      */
-    public function __construct(AccessDecisionManagerInterface $decisionManager, array $commandRoleMapping = [])
+    public function __construct(RoleHierarchyInterface $roleHierarchy, array $commandRoleMapping = [])
     {
-        $this->decisionManager = $decisionManager;
+        $this->roleHierarchy = $roleHierarchy;
         $this->commandRoleMapping = $commandRoleMapping;
+
     }
 
     /**
@@ -64,13 +64,15 @@ class HandleCommandVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $allowedRoles = $this->getAllowedRoles(get_class($subject));
+        $actualRoles = $this->roleHierarchy->getReachableRoles($token->getRoles());
 
-        if (count($allowedRoles) > 0) {
-            return $this->decisionManager->decide($token, $allowedRoles);
-        } else {
-            // default conclusion is access denied
-            return false;
+        foreach ($actualRoles as $role) {
+            if (in_array($role->getRole(), $allowedRoles)) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**
