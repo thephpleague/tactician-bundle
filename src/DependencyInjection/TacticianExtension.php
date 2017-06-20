@@ -13,7 +13,7 @@ class TacticianExtension extends ConfigurableExtension
     /**
      * Configures the passed container according to the merged configuration.
      *
-     * @param array $mergedConfig
+     * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
@@ -31,7 +31,7 @@ class TacticianExtension extends ConfigurableExtension
     }
 
     /**
-     * @param array $mergedConfig
+     * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
     private function configureCommandBuses(array $mergedConfig, ContainerBuilder $container)
@@ -65,7 +65,7 @@ class TacticianExtension extends ConfigurableExtension
     /**
      * Configure the security voter if the security middleware is loaded.
      *
-     * @param array $mergedConfig
+     * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
     private function configureSecurity(array $mergedConfig, ContainerBuilder $container)
@@ -80,7 +80,7 @@ class TacticianExtension extends ConfigurableExtension
     /**
      * Configure the security voter.
      *
-     * @param array $mergedConfig
+     * @param array            $mergedConfig
      * @param ContainerBuilder $container
      */
     private function configureCommandSecurityVoter(array $mergedConfig, ContainerBuilder $container)

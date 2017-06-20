@@ -31,15 +31,6 @@ class HandleCommandVoterTest extends TestCase
     }
 
     /**
-     * Tests the vote method.
-     *
-     * @param type $attribute
-     * @param type $subject
-     * @param type $decision
-     * @param type $default
-     * @param type $mapping
-     * @param type $expected
-     *
      * @dataProvider provideTestVoteData
      */
     public function testVote($attribute, $subject, $decision, $mapping, $expected)

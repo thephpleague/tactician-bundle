@@ -41,7 +41,7 @@ class Configuration implements ConfigurationInterface
                                     })
                                     ->thenInvalid(
                                         '"tactician.middleware.command_handler" should be last loaded middleware'.
-                                        ' when it is use.'
+                                        ' when it is used.'
                                     )
                                 ->end()
                             ->end()

@@ -31,8 +31,7 @@ class HandleCommandVoter extends Voter
      * Create a new HandleCommandVoter.
      *
      * @param AccessDecisionManagerInterface $decisionManager
-     * @param array $commandRoleMapping
-     * @param string $defaultRole
+     * @param array                          $commandRoleMapping
      */
     public function __construct(AccessDecisionManagerInterface $decisionManager, array $commandRoleMapping = [])
     {
@@ -45,9 +44,10 @@ class HandleCommandVoter extends Voter
      *
      * @param string $attribute
      * @param object $subject
+     *
      * @return bool
      */
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return $attribute === 'handle' && is_object($subject);
     }
@@ -55,8 +55,8 @@ class HandleCommandVoter extends Voter
     /**
      * Checks if the currently logged on user may handle $subject.
      *
-     * @param type $attribute
-     * @param type $subject
+     * @param string         $attribute
+     * @param mixed          $subject
      * @param TokenInterface $token
      *
      * @return bool
@@ -77,9 +77,10 @@ class HandleCommandVoter extends Voter
      * Gets the roles allowed to handle a command of $type
      *
      * @param string $type
+     *
      * @return array
      */
-    private function getAllowedRoles($type)
+    private function getAllowedRoles(string $type)
     {
         if (array_key_exists($type, $this->commandRoleMapping)) {
             return $this->commandRoleMapping[$type];

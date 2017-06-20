@@ -1,4 +1,5 @@
 <?php
+
 namespace League\Tactician\Bundle\Handler;
 
 use League\Tactician\Exception\MissingHandlerException;
@@ -22,7 +23,7 @@ class ContainerBasedHandlerLocator implements HandlerLocator
 
     /**
      * @param ContainerInterface $container
-     * @param $commandToServiceIdMapping
+     * @param array              $commandToServiceIdMapping
      */
     public function __construct(ContainerInterface $container, array $commandToServiceIdMapping)
     {
@@ -34,7 +35,9 @@ class ContainerBasedHandlerLocator implements HandlerLocator
      * Retrieves the handler for a specified command
      *
      * @param string $commandName
-     * @return mixed
+     * @return object
+     *
+     * @throws MissingHandlerException
      */
     public function getHandlerForCommand($commandName)
     {

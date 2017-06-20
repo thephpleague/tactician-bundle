@@ -23,9 +23,10 @@ class ValidatorMiddleware implements Middleware
     /**
      * @param object $command
      * @param callable $next
+     *
      * @return mixed
+     *
      * @throws InvalidCommandException
-     * @throws \Exception
      */
     public function execute($command, callable $next)
     {

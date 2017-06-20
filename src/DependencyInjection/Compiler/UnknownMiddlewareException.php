@@ -4,7 +4,7 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 class UnknownMiddlewareException extends \RuntimeException
 {
-    public static function withId($serviceId)
+    public static function withId(string $serviceId)
     {
         return new static(
             trim(sprintf('Unknown middleware with service id "%s". %s', $serviceId, static::completeHelpMessage($serviceId)))

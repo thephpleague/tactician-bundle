@@ -1,4 +1,5 @@
 <?php
+
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
@@ -8,6 +9,7 @@ use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
@@ -21,7 +23,7 @@ class CommandHandlerPass implements CompilerPassInterface
      *
      * @param ContainerBuilder $container
      *
-     * @throws \Exception
+     * @throws InvalidArgumentException
      *
      * @api
      */
@@ -34,7 +36,7 @@ class CommandHandlerPass implements CompilerPassInterface
         foreach ($container->findTaggedServiceIds('tactician.handler') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['command'])) {
-                    throw new \Exception('The tactician.handler tag must always have a command attribute');
+                    throw new InvalidArgumentException('The tactician.handler tag must always have a command attribute');
                 }
 
                 if (array_key_exists('bus', $attributes)) {
@@ -96,12 +98,12 @@ class CommandHandlerPass implements CompilerPassInterface
      * @param string $id
      * @param array  $busIds
      *
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     protected function abortIfInvalidBusId($id, array $busIds)
     {
         if (!in_array($id, $busIds)) {
-            throw new \Exception('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', $busIds));
+            throw new InvalidArgumentException('Invalid bus id "'.$id.'". Valid buses are: '.implode(', ', $busIds));
         }
     }
 
