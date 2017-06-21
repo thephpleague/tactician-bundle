@@ -20,7 +20,7 @@ class SecurityTest extends IntegrationTest
      *
      * @return void
      */
-    public function testCanBootKernelWithSecurityMiddleware(): void
+    public function testCanBootKernelWithSecurityMiddleware()
     {
         $this->loadSecurityConfiguration();
 
@@ -40,7 +40,7 @@ EOF
      *
      * @return void
      */
-    public function testCanNotBootKernelWithoutSecurity(): void
+    public function testCanNotBootKernelWithoutSecurity()
     {
         $this->expectException(UnknownMiddlewareException::class);
         $this->givenConfig('tactician', <<<'EOF'
@@ -56,7 +56,7 @@ EOF
     /**
      * Tests if the kernel is bootable without security middleware and without security settings.
      */
-    public function testCanBootKernelWithoutSecurity(): void
+    public function testCanBootKernelWithoutSecurity()
     {
         static::$kernel->boot();
         $this->assertTrue(true);
@@ -70,7 +70,7 @@ EOF
      * @param string $role
      * @param bool $allowed
      */
-    public function testSecurityMiddleware(string $role, bool $allowed): void
+    public function testSecurityMiddleware(string $role, bool $allowed)
     {
         if (false === $allowed) {
             $this->expectException(AccessDeniedException::class);
@@ -112,7 +112,7 @@ EOF
     /**
      * Security configuration.
      */
-    private function loadSecurityConfiguration(): void
+    private function loadSecurityConfiguration()
     {
         $this->givenConfig('security', <<< 'EOF'
 access_denied_url: /
