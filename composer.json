@@ -66,6 +66,7 @@
     "symfony/security": "^2.8|^3.0",
     "symfony/validator": "^2.8|^3.0",
     "league/tactician-doctrine": "^1.1",
-    "symfony/framework-bundle": "^2.8|^3.0"
+    "symfony/framework-bundle": "^2.8|^3.0",
+    "symfony/security-bundle": "^3.3"
   }
 }
