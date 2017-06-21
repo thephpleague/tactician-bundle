@@ -1,4 +1,5 @@
 <?php
+
 namespace League\Tactician\Bundle\Tests\Middleware;
 
 use League\Tactician\Bundle\Middleware\InvalidCommandException;

@@ -143,7 +143,7 @@ class ConfigurationTest extends TestCase
                     ]
                 ]
             ],
-            '"tactician.middleware.command_handler" should be last loaded middleware when it is use.'
+            '"tactician.middleware.command_handler" should be last loaded middleware when it is used.'
         );
     }
 

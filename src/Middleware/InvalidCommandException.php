@@ -20,6 +20,7 @@ class InvalidCommandException extends \Exception implements Exception
     /**
      * @param object $command
      * @param ConstraintViolationListInterface $violations
+     *
      * @return static
      */
     public static function onCommand($command, ConstraintViolationListInterface $violations)
@@ -50,5 +51,4 @@ class InvalidCommandException extends \Exception implements Exception
     {
         return $this->violations;
     }
-
 }

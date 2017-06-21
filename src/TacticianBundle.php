@@ -1,4 +1,6 @@
-<?php namespace League\Tactician\Bundle;
+<?php
+
+namespace League\Tactician\Bundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler;

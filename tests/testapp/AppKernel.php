@@ -11,8 +11,8 @@ class AppKernel extends Kernel
     use MicroKernelTrait;
 
     private $config = [];
-
     private $services = [];
+    private $cacheDir;
 
     public function registerBundles()
     {

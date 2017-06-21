@@ -40,8 +40,8 @@ class Configuration implements ConfigurationInterface
                                         return ($isPresent && !$isLast);
                                     })
                                     ->thenInvalid(
-                                        '"tactician.middleware.command_handler" should be last loaded middleware'.
-                                        ' when it is use.'
+                                        '"tactician.middleware.command_handler" should be the last middleware loaded '.
+                                        ' when it is used.'
                                     )
                                 ->end()
                             ->end()
@@ -81,7 +81,7 @@ class Configuration implements ConfigurationInterface
                         if (!in_array($config['default_bus'], $busNames)) {
                             throw new InvalidConfigurationException(
                                 sprintf(
-                                    'The default_bus "%s" was not defined as command bus. Valid option(s): %s',
+                                    'The default_bus "%s" was not defined as a command bus. Valid option(s): %s',
                                     $config['default_bus'],
                                     implode(', ', $busNames)
                                 )

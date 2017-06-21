@@ -27,7 +27,7 @@ class CommandHandlerPassTest extends TestCase
     }
 
     /**
-     * @expectedException        \Exception
+     * @expectedException        \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      * @expectedExceptionMessage The tactician.handler tag must always have a command attribute
      */
     public function testProcessAbortsOnMissingCommandAttribute()
@@ -40,7 +40,7 @@ class CommandHandlerPassTest extends TestCase
     }
 
     /**
-     * @expectedException        \Exception
+     * @expectedException        \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      * @expectedExceptionMessage Invalid bus id "bad_bus".
      */
     public function testProcessAbortsOnInvalidBus()
