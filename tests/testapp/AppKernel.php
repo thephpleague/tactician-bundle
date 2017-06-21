@@ -18,6 +18,7 @@ class AppKernel extends Kernel
     {
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new League\Tactician\Bundle\TacticianBundle(),
         ];
     }
