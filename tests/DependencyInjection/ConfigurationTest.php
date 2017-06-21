@@ -77,7 +77,7 @@ class ConfigurationTest extends TestCase
                     ]
                 ]
             ],
-            'The default_bus "foo" was not defined as command bus.'
+            'The default_bus "foo" was not defined as a command bus.'
         );
 
         $this->assertConfigurationIsInvalid(
@@ -92,7 +92,7 @@ class ConfigurationTest extends TestCase
                     ]
                 ]
             ],
-            'The default_bus "default" was not defined as command bus.'
+            'The default_bus "default" was not defined as a command bus.'
         );
     }
 
@@ -143,7 +143,7 @@ class ConfigurationTest extends TestCase
                     ]
                 ]
             ],
-            '"tactician.middleware.command_handler" should be last loaded middleware when it is used.'
+            '"tactician.middleware.command_handler" should be the last middleware loaded when it is used.'
         );
     }
 
