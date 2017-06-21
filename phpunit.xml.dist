@@ -7,6 +7,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
          processIsolation="true"
          stopOnFailure="false">
     <testsuites>
