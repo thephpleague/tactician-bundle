@@ -2,11 +2,6 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
-/**
- * To ensure cache is isolated from each test.
- *
- * @runTestsInSeparateProcesses
- */
 class BasicCommandAndBusMappingTest extends IntegrationTest
 {
     public function testHandleCommandOnDefaultBus()
