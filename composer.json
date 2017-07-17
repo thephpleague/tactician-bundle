@@ -35,9 +35,7 @@
     "symfony/config": "^2.8|^3.0",
     "symfony/dependency-injection": "^2.8|^3.0",
     "symfony/http-kernel": "^2.8|^3.0",
-    "symfony/yaml": "^2.8|^3.0",
-    "matthiasnoback/symfony-config-test": "^3.0",
-    "matthiasnoback/symfony-dependency-injection-test": "^2.1"
+    "symfony/yaml": "^2.8|^3.0"
   },
   "minimum-stability": "beta",
   "suggest": {
@@ -67,6 +65,8 @@
     "symfony/validator": "^2.8|^3.0",
     "league/tactician-doctrine": "^1.1",
     "symfony/framework-bundle": "^2.8|^3.0",
-    "symfony/security-bundle": "^2.8|^3.0"
+    "symfony/security-bundle": "^2.8|^3.0",
+    "matthiasnoback/symfony-config-test": "^3.0",
+    "matthiasnoback/symfony-dependency-injection-test": "^2.1"
   }
 }
