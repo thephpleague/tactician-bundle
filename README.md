@@ -74,6 +74,23 @@ foo.user.register_user_handler:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
 ```
 
+### Symfony 3.3+
+As of Symfony version 3.3 all services registered in the DI container are marked private by default. For this bundle to work properly the registered handlers needs to be public. This can be achieved by setting the public attribute on the service to `true`. 
+
+*Note:* This is a temporary solution until version 1.0 of the bundle is released. In this release it won't be necessary anymore to register the command handlers publicly.
+
+The example of above becomes:
+
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    public: true
+    arguments:
+        - '@foo.user.user_repository'
+    tags:
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
+```
+
 ## Configuring Middleware
 Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `handle()`.
 
