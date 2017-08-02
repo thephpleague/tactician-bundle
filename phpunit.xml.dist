@@ -8,7 +8,6 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          beStrictAboutTestsThatDoNotTestAnything="false"
-         processIsolation="true"
          stopOnFailure="false">
     <testsuites>
         <testsuite name="TacticianBundle Test Suite">

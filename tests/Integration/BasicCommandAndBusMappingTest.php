@@ -2,6 +2,9 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class BasicCommandAndBusMappingTest extends IntegrationTest
 {
     public function testHandleCommandOnDefaultBus()

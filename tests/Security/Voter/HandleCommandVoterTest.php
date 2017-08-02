@@ -5,6 +5,7 @@ namespace League\Tactician\Bundle\Tests\Security\Voter;
 use League\Tactician\Bundle\Security\Voter\HandleCommandVoter;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
@@ -18,25 +19,41 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class HandleCommandVoterTest extends TestCase
 {
     /**
-     * The decision manager mock.
+     * @var AccessDecisionManager|MockInterface
      */
     private $decisionManager;
 
-    /**
-     * Set up.
-     */
     public function setUp()
     {
         $this->decisionManager = Mockery::mock(AccessDecisionManager::class);
     }
 
+    public function testAKnownCommandWillBeDelegatedToTheDecisionManager()
+    {
+        $tokenMock = Mockery::mock(TokenInterface::class);
+
+        $voter = new HandleCommandVoter($this->decisionManager, [FakeCommand::class => ['ROLE_USER']]);
+
+        $this->decisionManager
+            ->shouldReceive('decide')
+            ->with($tokenMock, ['ROLE_USER'])
+            ->andReturn(true)
+            ->once();
+
+        $this->assertEquals(VoterInterface::ACCESS_GRANTED, $voter->vote($tokenMock, new FakeCommand(), ['handle']));
+    }
+
     /**
      * @dataProvider provideTestVoteData
      */
-    public function testVote($attribute, $subject, $decision, $mapping, $expected)
+    public function testAbstainOrDenyScenarios($attribute, $subject, $expected)
     {
-        $this->decisionManager->shouldReceive('decide')->andReturn($decision);
-        $voter = new HandleCommandVoter($this->decisionManager, $mapping);
+        // In the test cases provided, we either abstain from voting or refuse
+        // to do it since there's no declared mapping. Therefore, it would be
+        // an error to ever call the decision manager.
+        $this->decisionManager->shouldReceive('decide')->never();
+
+        $voter = new HandleCommandVoter($this->decisionManager, []);
         $tokenMock = Mockery::mock(TokenInterface::class);
 
         $this->assertEquals($expected, $voter->vote($tokenMock, $subject, [$attribute]));
@@ -50,60 +67,24 @@ class HandleCommandVoterTest extends TestCase
     public function provideTestVoteData()
     {
         return [
-            'default access is false' => [
-                'handle',
-                new FakeCommand,
-                true,
-                [],
-                VoterInterface::ACCESS_DENIED
-            ],
-            'default is unrelated to decision manager' => [
-                'handle',
-                new FakeCommand,
-                false,
-                [],
-                VoterInterface::ACCESS_DENIED
-            ],
             'abstain when not handling a command, but using the handle attribute' => [
                 'handle',
                 null,
-                true,
-                [],
                 VoterInterface::ACCESS_ABSTAIN
             ],
             'abstain when not handling a command and not using the handle attribute' => [
                 'create',
                 null,
-                true,
-                [],
                 VoterInterface::ACCESS_ABSTAIN
             ],
             'abstain when handling a command and not using the handle attribute' => [
                 'create',
                 new FakeCommand,
-                true,
-                [],
                 VoterInterface::ACCESS_ABSTAIN
             ],
-            'deny access if decision manager returns false, even if the command is in the mapping' => [
+            'default access is false' => [
                 'handle',
                 new FakeCommand,
-                false,
-                [FakeCommand::class => ['ROLE_USER']],
-                VoterInterface::ACCESS_DENIED
-            ],
-            'grant access if decision manager returns true and the command is in the mapping' => [
-                'handle',
-                new FakeCommand,
-                true,
-                [FakeCommand::class => ['ROLE_USER']],
-                VoterInterface::ACCESS_GRANTED
-            ],
-            'deny access if the command is not in the mapping (i.e. a default deny access case)' => [
-                'handle',
-                new FakeCommand,
-                false,
-                ['someOtherCommand' => ['ROLE_USER']],
                 VoterInterface::ACCESS_DENIED
             ],
         ];

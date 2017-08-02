@@ -25,7 +25,7 @@ class HandleCommandVoter extends Voter
      *
      * @var array
      */
-    private $commandRoleMapping;
+    private $commandRoleMapping = [];
 
     /**
      * Create a new HandleCommandVoter.

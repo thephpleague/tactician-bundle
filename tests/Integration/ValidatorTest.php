@@ -6,6 +6,9 @@ namespace League\Tactician\Bundle\Tests\Integration;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 final class ValidatorTest extends IntegrationTest
 {
     public function testCanBootKernelWhenOptionalComponentMiddlewareIsEnabled()
