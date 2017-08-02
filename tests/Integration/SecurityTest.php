@@ -121,7 +121,7 @@ EOF
     /**
      * @param string $role
      */
-    protected function setUserRole(string $role): void
+    protected function setUserRole(string $role)
     {
         static::$kernel->getContainer()
             ->get('security.token_storage')
