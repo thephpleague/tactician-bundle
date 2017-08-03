@@ -5,7 +5,7 @@ BC Breaks:
 
 New features:
 - Allow multiple command buses, each with separated handlers and different method inflectors
-- Add security component
+- Added security middleware
 - Allow command handlers to be private in the service container
 - Better Symfony 3.x support
 - Improved test suite
