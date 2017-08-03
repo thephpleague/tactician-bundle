@@ -5,8 +5,6 @@
 Symfony2 Bundle for the Tactician library
 [https://github.com/thephpleague/tactician/](https://github.com/thephpleague/tactician/)
 
-If you are looking for a Laravel Provider or want to help: [https://github.com/xtrasmal/TacticianProvider](https://github.com/xtrasmal/TacticianProvider)
-
 ## Installation
 
 ### Step 1: Download the Bundle
@@ -14,7 +12,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require league/tactician-bundle "~0.4"
+$ composer require league/tactician-bundle "1.0@RC"
 ```
 
 This command requires you to have Composer installed globally, as explained
@@ -63,7 +61,7 @@ foo.user.register_user_handler:
 
 However, we still need to map the Command to the Handler. We can do this by adding a tag to the Handler's DI definition.
 
-The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be FQCN of a Command it can handle.
+The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be the FQCN of the Command.
 
 ```yaml
 foo.user.register_user_handler:
@@ -77,9 +75,7 @@ foo.user.register_user_handler:
 ### Symfony 3.3+
 As of Symfony version 3.3 all services registered in the DI container are marked private by default. For this bundle to work properly the registered handlers needs to be public. This can be achieved by setting the public attribute on the service to `true`. 
 
-*Note:* This is a temporary solution until version 1.0 of the bundle is released. In this release it won't be necessary anymore to register the command handlers publicly.
-
-The example of above becomes:
+*Note:* This is a temporary solution for versions earlier than the 1.0 release candidates. If you've upgraded to 1.0 RC or higher, this is no longer necessary.
 
 ```yaml
 foo.user.register_user_handler:
@@ -91,8 +87,44 @@ foo.user.register_user_handler:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
 ```
 
+## Using the Command Bus 
+Create a service and inject the command bus:
+
+```yaml
+services:
+    app.your_controller:
+        class: AppBundle\Controller\YourNameController
+        arguments:
+            - '@tactician.commandbus'
+```
+
+Then pass a command to the command bus for execution: 
+
+```php
+<?php namespace AppBundle\Controller;
+
+use League\Tactician\CommandBus;
+use AppBundle\Commands\DoSomethingCommand;
+
+class YourNameController
+{
+    private $commandbus;
+
+    public function __construct(CommandBus $commandbus)
+    {
+        $this->commandbus = $commandbus;
+    }
+
+    public function doSomething()
+    {
+        $command = new DoSomethingCommand();
+        $this->commandbus->handle($command);
+    }
+}
+```
+
 ## Configuring Middleware
-Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `handle()`.
+Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `$commandBus->handle()`.
 
 By default, the only Middleware enabled is the Command Handler support. You can override this and add your own middleware in the `app/config.yml`.
 
@@ -111,8 +143,8 @@ tactician:
 
 Check the [Tactician docs](http://tactician.thephpleague.com/) for more info and a complete list of middleware.
 
-## Configuring Command buses
-The bundle is pre-configured with a command bus called "default". Which has the service name `tactician.commandbus`.
+## Configuring Multiple Command Buses
+The bundle is pre-configured with a command bus called "default", with the service id `tactician.commandbus`.
 Some users want to configure more than one command bus though. You can do this via configuration, like so:
 
 ```yaml
@@ -129,7 +161,7 @@ tactician:
 The configuration defines two buses: "default" and "queued". These buses will be registered as the
 `tactician.commandbus.default` and `tactician.commandbus.queued` services respectively.
 
-If you want, you can also change which command handler is registered under `tactician.commandbus`. You can do this by
+If you want, you can also change which command handler is registered to `tactician.commandbus`. You can do this by
 setting the `default_bus` value in the configuration, like so:
 
 ```yaml
@@ -144,7 +176,7 @@ tactician:
                 # ...
 ```
 
-By default, all commands are available in each bus. If you want to make a command available only in a specific bus, you need to specify its id :
+By default, all commands are available in each bus. If you want to make a command available only to a specific bus, you need to specify its id :
 
 ```yaml
 foo.user.register_user_handler:
@@ -155,25 +187,25 @@ foo.user.register_user_handler:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: queued }
 ```
 
-### Extra Bundled Middleware
+## Extra Bundled Middleware
 
-This bundles ships with a few pre-configured middlewares, they can be enabled using the method above by just listing their ids.
+This bundles ships with a few pre-configured middlewares. To enable them, add them to the middlewares list in your bus configuration (see [Configuring Middleware](#configuring-middleware))
 
-#### Validator Middleware (tactician.middleware.validator)
+### Validator Middleware (tactician.middleware.validator)
 
-The validator middleware will plug into Symfony's Validator (@validator) and will throw and exception if the command is not valid.
+This middleware uses Symfony's validator to check the command object before passing it along. In practice, this means you can add any Symfony validator annotations to your command to ensure it's fully correct before execution. This isn't a full replacement for writing your objects in an internally consistent style but it can be very helpful.  
 
-Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](https://symfony.com/doc/current/validation). 
+Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](https://symfony.com/doc/current/validation).
 
-The middleware will throw an `InvalidCommandException` that will contain the command and the `ConstraintViolationList` returned by the validator.
+If the command fails, it will throw a [League\Tactician\Bundle\Middleware\InvalidCommandException](src/Middleware/InvalidCommandException.php). This exception also contains the ConstraintViolationList produced by the validator so you can inspect or log the errors yourself. 
 
-#### Locking Middleware (tactician.middleware.locking)
+### Locking Middleware (tactician.middleware.locking)
 
 This middleware is bundled in Tactician, please refer to [the official documentation](http://tactician.thephpleague.com/plugins/locking-middleware/) for details.
 
-#### Security Middleware (tactician.middleware.security)
+### Security Middleware (tactician.middleware.security)
 
-The security middleware will perform authorization on handling all commands. By default an AccessDenied exception will be thrown if the user is not authorized. You must configure one or more roles for each command to allow handling:
+The security middleware will perform authorization on handling all commands. By default an AccessDenied exception will be thrown if the user is not authorized.
 
 ```yaml
 tactician:
@@ -187,33 +219,43 @@ tactician:
             - 'ROLE_ADMIN'
 ```
 
+This middleware is based on Symfony's AccessDecisionManager and voter system. We recommend familiarizing yourself with it before trying to use this middleware. If you'd like to configure more complex scenarios, consider implementing a custom Symfony voter.
+
+As a precaution, the middleware _requires_ you to register the command in the security configuration before it will be evaluated by Symfony's AccessDecisionManager.
+ 
+Furthermore, while the security middleware is based on trusted components, we always recommend a defense in depth strategy. Simply hooking your command bus up to a public web endpoint and relying fully on this middleware may not be sufficient coverage for your application. 
+
 The Security middleware is disabled by default.
 
-#### Command Handler Middleware (tactician.middleware.command_handler)
+### Command Handler Middleware (tactician.middleware.command_handler)
 
 **Always ensure this is the last middleware listed**
 
-While not listed this is the core of Tactician and handles executing commands, it should always be enabled.
+This is the plugin that actually matches your command to a handler and executes it. If you have complex matching logic, feel free to implement your own variant and leave this middleware off.
+   
+However, for 99% of users, this should be enabled and set as the last middleware in the list. 
 
 ## Customizing the MethodNameInflector used by the `tactician.middleware.command_handler` middleware
 
-By default the library uses `HandleInflector` to define the handling method names, which maps to `handle()`.
+By default, the bundle uses `HandleInflector` from Tactician core. That is to say, it expects your Command Handlers to have a `handle()` method that receives the command to execute.
 
-To use a different inflector you can now pass the service name in the config.
+However, [if you prefer a different inflector](http://tactician.thephpleague.com/tweaking-tactician/), you can pass the service name in `config.yml`.
 
 ```yaml
 tactician:
     method_inflector: my_inflector.service.id
 ```
 
-Tactician offers a list of custom Inflectors, these are all supported.
+Tactician core offers a list of custom Inflectors, all of which are supported in this bundle. Assuming a class called My\App\RegisterUserCommand(), the invoked methods on the handler would be:
 
- * `tactician.handler.method_name_inflector.handle`
- * `tactician.handler.method_name_inflector.handle_class_name`
- * `tactician.handler.method_name_inflector.handle_class_name_without_suffix`
- * `tactician.handler.method_name_inflector.invoke`
+ * `tactician.handler.method_name_inflector.handle` - `handle()`
+ * `tactician.handler.method_name_inflector.handle_class_name` - `handleRegisterUserCommand()`
+ * `tactician.handler.method_name_inflector.handle_class_name_without_suffix` - `handleRegisterUser()`
+ * `tactician.handler.method_name_inflector.invoke` - `__invoke()`
 
-When using multiple bus, you can also specify `method_inflector` of particular bus :
+While `handle()` is a reasonable default, using one of the class name methods allows you to handle multiple commands on a single class (possibly useful if they share common dependencies or fit together in some fashion). Likewise, __invoke can be useful if you're mapping to a list of closures.
+
+When using multiple buses, you can also specify the `method_inflector` of particular bus :
 
 ```yaml
 tactician:
@@ -225,44 +267,6 @@ tactician:
             middleware:
                 - tactician.middleware.command_handler
             method_inflector: tactician.handler.method_name_inflector.handle_class_name_without_suffix
-```
-
-## Using the Command Bus 
-Create a service and inject the command bus:
-
-```yaml
-services:
-    app.your_controller:
-        class: AppBundle\Controller\YourNameController
-        arguments:
-            - '@tactician.commandbus'
-```
-
-Then party like it's 1994
-
-```php
-<?php namespace AppBundle\Controller;
-
-use League\Tactician\CommandBus;
-use AppBundle\Commands\DoSomethingCommand;
-
-class YourNameController
-{
-
-    private $commandbus;
-
-    public function __construct( CommandBus $commandbus )
-    {
-        $this->commandbus = $commandbus;
-    }
-
-    public function doSomething()
-    {
-        $command = new DoSomethingCommand();
-        $this->commandbus->handle($command);
-    }
-
-}
 ```
 
 ## Testing
