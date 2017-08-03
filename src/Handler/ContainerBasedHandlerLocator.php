@@ -7,7 +7,7 @@ use League\Tactician\Handler\Locator\HandlerLocator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Lazily loads Command Handlers from the Symfony2 DI container
+ * Lazily loads Command Handlers from the Symfony DI container
  */
 class ContainerBasedHandlerLocator implements HandlerLocator
 {
