@@ -7,19 +7,17 @@ use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Role\Role;
+use stdClass;
 
 /**
  * Integration test for security middleware.
  *
  * @author Ron Rademaker
+ *
+ * @runTestsInSeparateProcesses
  */
 class SecurityTest extends IntegrationTest
 {
-    /**
-     * Tests if the kernel is bootable with security middleware.
-     *
-     * @return void
-     */
     public function testCanBootKernelWithSecurityMiddleware()
     {
         $this->loadSecurityConfiguration();
@@ -35,12 +33,7 @@ EOF
         $this->assertTrue(true);
     }
 
-    /**
-     * Tests if the kernel is not bootable without security settings (but with security middleware).
-     *
-     * @return void
-     */
-    public function testCanNotBootKernelWithoutSecurity()
+    public function testCanNotBootKernelIfLoadingSecurityMiddlewareWithoutSecurityBeingTurnedOn()
     {
         $this->expectException(UnknownMiddlewareException::class);
         $this->givenConfig('tactician', <<<'EOF'
@@ -53,27 +46,19 @@ EOF
         static::$kernel->boot();
     }
 
-    /**
-     * Tests if the kernel is bootable without security middleware and without security settings.
-     */
-    public function testCanBootKernelWithoutSecurity()
+    public function testCanBootKernelWithoutSecurityOrSecurityMiddleware()
     {
         static::$kernel->boot();
         $this->assertTrue(true);
     }
 
     /**
-     * Tests security middleware.
-     *
      * @dataProvider provideTestData
-     *
-     * @param string $role
-     * @param bool $allowed
      */
-    public function testSecurityMiddleware(string $role, bool $allowed)
+    public function testSecurityMiddleware($command, string $role, string $expectedExceptionClassName = null)
     {
-        if (false === $allowed) {
-            $this->expectException(AccessDeniedException::class);
+        if ($expectedExceptionClassName) {
+            $this->expectException($expectedExceptionClassName);
         }
 
         $this->loadSecurityConfiguration();
@@ -89,10 +74,9 @@ EOF
         );
 
         static::$kernel->boot();
-        static::$kernel->getContainer()->get('security.token_storage')->setToken(new AnonymousToken('test', 'anon', [new Role($role)]));
-        static::$kernel->getContainer()->get('tactician.commandbus.default')->handle(new FakeCommand());
+        $this->setUserRole($role);
 
-        $this->assertTrue($allowed);
+        static::$kernel->getContainer()->get('tactician.commandbus.default')->handle($command);
     }
 
     /**
@@ -103,9 +87,10 @@ EOF
     public function provideTestData(): array
     {
         return [
-            'Role may handle the command' => ['ROLE_ADMIN', true],
-            'Test role hierarchy' => ['ROLE_SUPER_ADMIN', true],
-            'Role may not handle the command' => ['ROLE_USER', false],
+            'Role may handle the command' => [new FakeCommand(), 'ROLE_ADMIN'],
+            'Test role hierarchy' => [new FakeCommand(), 'ROLE_SUPER_ADMIN'],
+            'Role may not handle the command' => [new FakeCommand(), 'ROLE_USER', AccessDeniedException::class],
+            'Deny access if command is not in the mapping' => [new stdClass(), 'ROLE_SUPER_ADMIN', AccessDeniedException::class],
         ];
     }
 
@@ -131,5 +116,17 @@ firewalls:
         http_basic: ~
 EOF
         );
+    }
+
+    /**
+     * @param string $role
+     */
+    protected function setUserRole(string $role)
+    {
+        static::$kernel->getContainer()
+            ->get('security.token_storage')
+            ->setToken(
+                new AnonymousToken('test', 'anon', [new Role($role)])
+            );
     }
 }
