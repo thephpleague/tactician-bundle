@@ -16,7 +16,7 @@ BC Breaks:
 - None
 
 New features:
-- [#15] Removed block against using custom inflectors
+- [#15](https://github.com/thephpleague/tactician-bundle/pull/15) Removed block against using custom inflectors
 
 ## Pre-0.4.0
 It worked back then, okay?
