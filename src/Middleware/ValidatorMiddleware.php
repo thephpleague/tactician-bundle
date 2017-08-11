@@ -13,7 +13,7 @@ class ValidatorMiddleware implements Middleware
     protected $validator;
 
     /**
-     * @param ValidatorInterface | null $validator
+     * @param ValidatorInterface $validator
      */
     public function __construct(ValidatorInterface $validator)
     {
