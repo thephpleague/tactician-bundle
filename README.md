@@ -108,11 +108,11 @@ use AppBundle\Commands\DoSomethingCommand;
 
 class YourNameController
 {
-    private $commandbus;
+    private $commandBus;
 
-    public function __construct(CommandBus $commandbus)
+    public function __construct(CommandBus $commandBus)
     {
-        $this->commandbus = $commandbus;
+        $this->commandbus = $commandBus;
     }
 
     public function doSomething()
