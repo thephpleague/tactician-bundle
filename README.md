@@ -9,7 +9,7 @@ Symfony2 Bundle for the Tactician library
 
 ### Step 1: Download the Bundle
 Open a command console, enter your project directory and execute the
-following command to download the latest release candidate for this bundle:
+following command to download the latest stable release for this bundle:
 
 ```bash
 $ composer require league/tactician-bundle
