@@ -1,4 +1,6 @@
-<?php namespace League\Tactician\Bundle\DependencyInjection;
+<?php
+
+namespace League\Tactician\Bundle\DependencyInjection;
 
 use League\Tactician\Bundle\Security\Voter\HandleCommandVoter;
 use Symfony\Component\Config\FileLocator;
