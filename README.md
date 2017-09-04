@@ -145,33 +145,39 @@ Check the [Tactician docs](http://tactician.thephpleague.com/) for more info and
 
 ## Configuring Multiple Command Buses
 The bundle is pre-configured with a command bus called "default", with the service id `tactician.commandbus`.
-Some users want to configure more than one command bus though. You can do this via configuration, like so:
+Some users want to configure more than one command bus though. 
+
+Let's say you're integrating a remote accounting system into your application and you'd like to use a separate command bus for just those commands. You can wire up two command buses like this:
+
+You can do this via configuration, like so:
 
 ```yaml
 tactician:
     commandbus:
-        default:
+        default:    # the "regular" command bus in your application
             middleware:
+                - tactician.middleware.validator
                 - tactician.middleware.command_handler
-        queued:
+        accounting: # the command bus for accounting specific commands
             middleware:
-                - tactician.middleware.queued_command_handler
+                - tactician.middleware.locking
+                - some.middleware.service.to.call.the.remote.accounting.app
 ```
 
-The configuration defines two buses: "default" and "queued". These buses will be registered as the
-`tactician.commandbus.default` and `tactician.commandbus.queued` services respectively.
+The configuration defines two buses: "default" and "accounting". These buses will be registered as the
+`tactician.commandbus.default` and `tactician.commandbus.accounting` services respectively.
 
 If you want, you can also change which command handler is registered to `tactician.commandbus`. You can do this by
 setting the `default_bus` value in the configuration, like so:
 
 ```yaml
 tactician:
-    default_bus: queued
+    default_bus: accounting
     commandbus:
         default:
             middleware:
                 # ...
-        queued:
+        accounting:
             middleware:
                 # ...
 ```
@@ -184,7 +190,7 @@ foo.user.register_user_handler:
     arguments:
         - '@foo.user.user_repository'
     tags:
-        - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: queued }
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: accounting }
 ```
 
 ## Extra Bundled Middleware
