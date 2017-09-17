@@ -5,14 +5,14 @@ namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ChainedStrategies implements MappingStrategy
+final class CompositeMapping implements HandlerMapping
 {
     /**
-     * @var MappingStrategy[]
+     * @var HandlerMapping[]
      */
     private $strategies;
 
-    public function __construct(MappingStrategy ...$strategies)
+    public function __construct(HandlerMapping ...$strategies)
     {
         $this->strategies = $strategies;
     }

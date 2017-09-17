@@ -4,7 +4,7 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfigFile;
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\MappingStrategy;
+use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,11 +15,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class CommandHandlerPass implements CompilerPassInterface
 {
     /**
-     * @var MappingStrategy
+     * @var HandlerMapping
      */
     private $handlerMapping;
 
-    public function __construct(MappingStrategy $mappingStrategy)
+    public function __construct(HandlerMapping $mappingStrategy)
     {
         $this->handlerMapping = $mappingStrategy;
     }

@@ -1,6 +1,3 @@
-parameters:
-  tactician.commandbus.class: League\Tactician\CommandBus
-
 services:
     tactician.middleware.locking:
         class: League\Tactician\Plugins\LockingMiddleware

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\CommandBus;
 use League\Tactician\Container\ContainerLocator;
 use League\Tactician\Handler\CommandHandlerMiddleware;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
@@ -75,7 +76,7 @@ final class BusBuilder
         $container->setDefinition(
             $this->serviceId(),
             new Definition(
-                $container->getParameter('tactician.commandbus.class'),
+                CommandBus::class,
                 [
                     array_map(
                         function (string $id) { return new Reference($id); },

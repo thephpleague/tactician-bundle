@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 
+use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 final class Routing
 {
     /**
@@ -54,7 +57,7 @@ final class Routing
     private function assertValidBusId(string $busId)
     {
         if (!isset($this->mapping[$busId])) {
-            throw new \InvalidArgumentException("Could not find a command bus named '$busId'. Please check your configuration.");
+            throw InvalidCommandBusId::ofName($busId, array_keys($this->mapping));
         }
     }
 
@@ -65,7 +68,7 @@ final class Routing
     protected function assertValidCommandFQCN($commandClassName, $serviceId)
     {
         if (!class_exists($commandClassName)) {
-            throw new \InvalidArgumentException("Can not route $commandClassName to $serviceId, class $commandClassName does not exist!");
+            throw new InvalidArgumentException("Can not route $commandClassName to $serviceId, class $commandClassName does not exist!");
         }
     }
 }

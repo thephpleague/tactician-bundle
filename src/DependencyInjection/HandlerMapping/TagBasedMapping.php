@@ -6,7 +6,7 @@ namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-abstract class TagBasedMappingStrategy implements MappingStrategy
+abstract class TagBasedMapping implements HandlerMapping
 {
     public function build(ContainerBuilder $container, Routing $routing): Routing
     {

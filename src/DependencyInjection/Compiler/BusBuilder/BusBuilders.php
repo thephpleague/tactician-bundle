@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 
+use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
+
 final class BusBuilders implements \IteratorAggregate
 {
     /**
@@ -37,7 +39,7 @@ final class BusBuilders implements \IteratorAggregate
     private function get(string $busId): BusBuilder
     {
         if (!isset($this->busBuilders[$busId])) {
-            throw new \InvalidArgumentException("Invalid bus id '$busId'. Valid buses are: " . implode(', ', array_keys($this->busBuilders)));
+            throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
         }
 
         return $this->busBuilders[$busId];

@@ -5,7 +5,7 @@ namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-interface MappingStrategy
+interface HandlerMapping
 {
     public function build(ContainerBuilder $container, Routing $routing): Routing;
 }

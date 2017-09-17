@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\Tactician\Bundle\Tests\Integration;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * @runTestsInSeparateProcesses
@@ -31,7 +32,7 @@ EOF
 
     public function testCanNotBootKernelWhenOptionalComponentMiddlewareIsDisabled()
     {
-        $this->expectException(UnknownMiddlewareException::class);
+        $this->expectException(ServiceNotFoundException::class);
 
         $this->givenConfig('framework', <<<'EOF'
 validation:

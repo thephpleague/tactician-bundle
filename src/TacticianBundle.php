@@ -2,8 +2,8 @@
 
 namespace League\Tactician\Bundle;
 
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameStrategy;
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\MappingStrategy;
+use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
+use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler;
 use League\Tactician\Bundle\DependencyInjection\TacticianExtension;
@@ -12,14 +12,14 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class TacticianBundle extends Bundle
 {
     /**
-     * @var MappingStrategy
+     * @var HandlerMapping
      */
     private $handlerMapping;
 
-    public function __construct(MappingStrategy $handlerMapping = null)
+    public function __construct(HandlerMapping $handlerMapping = null)
     {
         if ($handlerMapping == null) {
-            $handlerMapping = new ClassNameStrategy();
+            $handlerMapping = new ClassNameMapping();
         }
 
         $this->handlerMapping = $handlerMapping;
