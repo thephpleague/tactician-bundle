@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 
-final class BusBuildersFromConfigFile
+final class BusBuildersFromConfig
 {
     public static function convert(array $config): BusBuilders
     {
