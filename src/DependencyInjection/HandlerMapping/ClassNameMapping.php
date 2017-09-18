@@ -7,12 +7,12 @@ use Symfony\Component\DependencyInjection\Definition;
 
 final class ClassNameMapping extends TagBasedMapping
 {
-    function isSupported(Definition $definition, array $tagAttributes): bool
+    public function isSupported(Definition $definition, array $tagAttributes): bool
     {
         return isset($tagAttributes['command']) && class_exists($tagAttributes['command']);
     }
 
-    function findCommandsForService(Definition $definition, array $tagAttributes): array
+    public function findCommandsForService(Definition $definition, array $tagAttributes): array
     {
         return [
             $tagAttributes['command']

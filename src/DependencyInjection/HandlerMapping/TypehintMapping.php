@@ -7,12 +7,12 @@ use Symfony\Component\DependencyInjection\Definition;
 
 final class TypehintMapping extends TagBasedMapping
 {
-    function isSupported(Definition $definition, array $tagAttributes): bool
+    public function isSupported(Definition $definition, array $tagAttributes): bool
     {
         return isset($tagAttributes['auto']) && $tagAttributes['auto'] === true;
     }
 
-    function findCommandsForService(Definition $definition, array $tagAttributes): array
+    public function findCommandsForService(Definition $definition, array $tagAttributes): array
     {
         return []; // TODO: reflection magic!
     }
