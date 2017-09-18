@@ -3,7 +3,7 @@
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfigFile;
+use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfig;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -26,7 +26,7 @@ class CommandHandlerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        $builders = BusBuildersFromConfigFile::convert($container->getExtensionConfig('tactician')[0]);
+        $builders = BusBuildersFromConfig::convert($container->getExtensionConfig('tactician')[0]);
 
         $routing = $this->handlerMapping->build(
             $container,
