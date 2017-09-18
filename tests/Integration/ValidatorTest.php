@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
