@@ -23,6 +23,7 @@ final class BusBuilders implements \IteratorAggregate
             $this->busBuilders[$builder->id()] = $builder;
         }
 
+        $this->assertValidBusId($defaultBusId);
         $this->defaultBusId = $defaultBusId;
     }
 
@@ -38,9 +39,7 @@ final class BusBuilders implements \IteratorAggregate
 
     private function get(string $busId): BusBuilder
     {
-        if (!isset($this->busBuilders[$busId])) {
-            throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
-        }
+        $this->assertValidBusId($busId);
 
         return $this->busBuilders[$busId];
     }
@@ -48,5 +47,12 @@ final class BusBuilders implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->busBuilders);
+    }
+
+    private function assertValidBusId($busId)
+    {
+        if (!isset($this->busBuilders[$busId])) {
+            throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
+        }
     }
 }

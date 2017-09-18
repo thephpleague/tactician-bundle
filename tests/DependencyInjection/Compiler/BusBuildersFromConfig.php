@@ -13,12 +13,12 @@ final class BusBuildersFromConfigTest extends TestCase
     {
         $builders = BusBuildersFromConfig::convert([
             'commandbus' => [
-                'bus1' => [
+                'default' => [
                     'middleware' => [
                         'my.middleware',
                     ],
                 ],
-                'bus2' => [
+                'other' => [
                     'middleware' => [
                         'my.other.middleware',
                     ],
@@ -27,12 +27,12 @@ final class BusBuildersFromConfigTest extends TestCase
         ]);
 
         $this->assertEquals(
-            new BusBuilder('bus1', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.middleware']),
-            $builders->getIterator()['bus1']
+            new BusBuilder('default', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.middleware']),
+            $builders->getIterator()['default']
         );
         $this->assertEquals(
-            new BusBuilder('bus2', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
-            $builders->getIterator()['bus2']
+            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
+            $builders->getIterator()['other']
         );
     }
 
@@ -41,12 +41,12 @@ final class BusBuildersFromConfigTest extends TestCase
         $builders = BusBuildersFromConfig::convert([
             'method_inflector' => 'other.inflector',
             'commandbus' => [
-                'bus1' => [
+                'default' => [
                     'middleware' => [
                         'my.middleware',
                     ],
                 ],
-                'bus2' => [
+                'other' => [
                     'middleware' => [
                         'my.other.middleware',
                     ],
@@ -55,8 +55,8 @@ final class BusBuildersFromConfigTest extends TestCase
         ]);
 
         $this->assertEquals(
-            new BusBuilder('bus1', 'other.inflector', ['my.middleware']),
-            $builders->getIterator()['bus1']
+            new BusBuilder('default', 'other.inflector', ['my.middleware']),
+            $builders->getIterator()['default']
         );
     }
 
@@ -65,12 +65,12 @@ final class BusBuildersFromConfigTest extends TestCase
         $builders = BusBuildersFromConfig::convert([
             'method_inflector' => 'other.inflector',
             'commandbus' => [
-                'bus1' => [
+                'default' => [
                     'middleware' => [
                         'my.middleware',
                     ],
                 ],
-                'bus2' => [
+                'other' => [
                     'method_inflector' => 'bus2.inflector',
                     'middleware' => [
                         'my.other.middleware',
@@ -80,8 +80,8 @@ final class BusBuildersFromConfigTest extends TestCase
         ]);
 
         $this->assertEquals(
-            new BusBuilder('bus2', 'bus2.inflector', ['my.other.middleware']),
-            $builders->getIterator()['bus2']
+            new BusBuilder('other', 'bus2.inflector', ['my.other.middleware']),
+            $builders->getIterator()['other']
         );
     }
 
@@ -94,7 +94,7 @@ final class BusBuildersFromConfigTest extends TestCase
                         'my.middleware',
                     ],
                 ],
-                'bus2' => [
+                'other' => [
                     'middleware' => [
                         'my.other.middleware',
                     ],
@@ -111,14 +111,14 @@ final class BusBuildersFromConfigTest extends TestCase
     public function test_default_bus_can_be_overrided()
     {
         $builders = BusBuildersFromConfig::convert([
-            'default_bus' => 'bus2',
+            'default_bus' => 'other',
             'commandbus' => [
                 'default' => [
                     'middleware' => [
                         'my.middleware',
                     ],
                 ],
-                'bus2' => [
+                'other' => [
                     'middleware' => [
                         'my.other.middleware',
                     ],
@@ -127,7 +127,7 @@ final class BusBuildersFromConfigTest extends TestCase
         ]);
 
         $this->assertEquals(
-            new BusBuilder('bus2', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
+            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
             $builders->defaultBus()
         );
     }
