@@ -3,7 +3,9 @@
 namespace League\Tactician\Bundle;
 
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
+use League\Tactician\Bundle\DependencyInjection\HandlerMapping\CompositeMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
+use League\Tactician\Bundle\DependencyInjection\HandlerMapping\TypeHintMapping;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler;
 use League\Tactician\Bundle\DependencyInjection\TacticianExtension;
@@ -18,8 +20,8 @@ class TacticianBundle extends Bundle
 
     public function __construct(HandlerMapping $handlerMapping = null)
     {
-        if ($handlerMapping == null) {
-            $handlerMapping = new ClassNameMapping();
+        if ($handlerMapping === null) {
+            $handlerMapping = new CompositeMapping(new ClassNameMapping(), new TypeHintMapping());
         }
 
         $this->handlerMapping = $handlerMapping;

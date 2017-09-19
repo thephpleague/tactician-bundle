@@ -42,7 +42,7 @@ abstract class TagBasedMapping implements HandlerMapping
         }
     }
 
-    abstract public function isSupported(Definition $definition, array $tagAttributes): bool;
+    abstract protected function isSupported(Definition $definition, array $tagAttributes): bool;
 
-    abstract public function findCommandsForService(Definition $definition, array $tagAttributes): array;
+    abstract protected function findCommandsForService(Definition $definition, array $tagAttributes): array;
 }
