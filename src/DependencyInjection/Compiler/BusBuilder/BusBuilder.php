@@ -108,8 +108,8 @@ final class BusBuilder
     private function registerHandlerServiceLocator(ContainerBuilder $container, array $commandsToAccept): string
     {
         $handlers = [];
-        foreach ($commandsToAccept as $commandName => $id) {
-            $handlers[$id] = new ServiceClosureArgument(new Reference($id));
+        foreach ($commandsToAccept as $commandName => $handlerId) {
+            $handlers[$handlerId] = new ServiceClosureArgument(new Reference($handlerId));
         }
 
         $handlerServiceLocator = (new Definition(ServiceLocator::class, [$handlers]))
@@ -117,10 +117,10 @@ final class BusBuilder
             ->addTag('container.service_locator');
 
         $container->setDefinition(
-            $id = "tactician.commandbus.{$this->busId}.handler.service_locator",
+            $handlerId = "tactician.commandbus.{$this->busId}.handler.service_locator",
             $handlerServiceLocator
         );
 
-        return $id;
+        return $handlerId;
     }
 }
