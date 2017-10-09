@@ -2,12 +2,12 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
+use stdClass;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Role\Role;
-use stdClass;
 
 /**
  * Integration test for security middleware.
@@ -35,7 +35,7 @@ EOF
 
     public function testCanNotBootKernelIfLoadingSecurityMiddlewareWithoutSecurityBeingTurnedOn()
     {
-        $this->expectException(UnknownMiddlewareException::class);
+        $this->expectException(ServiceNotFoundException::class);
         $this->givenConfig('tactician', <<<'EOF'
 commandbus:
     default:
@@ -48,6 +48,13 @@ EOF
 
     public function testCanBootKernelWithoutSecurityOrSecurityMiddleware()
     {
+        $this->givenConfig('tactician', <<<'EOF'
+commandbus:
+    default:
+        middleware:
+            - tactician.middleware.command_handler
+EOF
+        );
         static::$kernel->boot();
         $this->assertTrue(true);
     }

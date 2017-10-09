@@ -2,6 +2,8 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+
 /**
  * @runTestsInSeparateProcesses
  */
@@ -25,7 +27,7 @@ EOF
     }
 
     /**
-     * @expectedException \League\Tactician\Bundle\DependencyInjection\Compiler\UnknownMiddlewareException
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      */
     public function testHandleCommandWithInvalidMiddleware()
     {
@@ -83,8 +85,8 @@ EOF
     }
 
     /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid bus id "other". Valid buses are: default
+     * @expectedException \League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId
+     * @expectedExceptionMessage Could not find a command bus with id 'other'. Valid buses are: default
      */
     public function testHandlerOnUnknownBus()
     {
@@ -98,6 +100,22 @@ EOF
         $this->registerService('tactician.test.handler', \League\Tactician\Bundle\Tests\EchoTextHandler::class, [
             ['name' => 'tactician.handler', 'command' => 'League\Tactician\Bundle\Tests\EchoText', 'bus' => 'other'],
         ]);
+        static::$kernel->boot();
+    }
+
+    public function testInvalidDefaultBus()
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        $this->givenConfig('tactician', <<<'EOF'
+default_bus: some_bus_that_does_not_exist
+commandbus:
+    default:
+        middleware:
+            - tactician.middleware.command_handler
+EOF
+        );
+
         static::$kernel->boot();
     }
 

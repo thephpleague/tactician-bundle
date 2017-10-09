@@ -1,3 +1,20 @@
+## 1.1 (2017-XX-XX)
+
+New features
+- DI tags can now use "typehints: true" instead of mapping every command by hand.
+- You can specify custom mapping strategies.
+
+BC Breaks:
+- Different exceptions are now be thrown during the container build phase.
+- Remove tactician.commandbus.class container parameter.
+- Removed some container parameters that were used for internal state passing (tactician.commandbus.ids, etc)
+
+Other:
+- Internals and test suite have been significantly cleaned up.
+
+## 1.0.0 (2017-08-28)
+- No changes since RC1
+
 ## 1.0.0-RC1 (2017-08-03)
 
 BC Breaks:

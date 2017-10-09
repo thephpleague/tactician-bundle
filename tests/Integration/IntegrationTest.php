@@ -56,7 +56,7 @@ abstract class IntegrationTest extends KernelTestCase
         static::$kernel->addServiceToRegister($serviceId, $className, $tags);
     }
 
-    protected function handleCommand($busId, $commandClass, array $args)
+    protected function handleCommand($busId, $commandClass, array $args = [])
     {
         $class = new \ReflectionClass($commandClass);
         $command = $class->newInstanceArgs($args);

@@ -45,49 +45,7 @@ class AppKernel extends Kernel
 }
 ```
 
-## Configuring Command Handlers
-The most common use case with Tactician is passing a Command to the Command Bus and having it routed to the Handler.
-
-Since handlers often have extra dependencies and are best lazily-loaded, you'll want to register them in the service container.
-
-Let's say we have two classes, `RegisterUserCommand` and `RegisterUserHandler`. We'll register the Handler in the service container, along with a repository it needs. 
-
-```yaml
-foo.user.register_user_handler:
-    class: Foo\User\RegisterUserHandler
-    arguments:
-        - '@foo.user.user_repository'
-```
-
-However, we still need to map the Command to the Handler. We can do this by adding a tag to the Handler's DI definition.
-
-The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be the FQCN of the Command.
-
-```yaml
-foo.user.register_user_handler:
-    class: Foo\User\RegisterUserHandler
-    arguments:
-        - '@foo.user.user_repository'
-    tags:
-        - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
-```
-
-### Symfony 3.3+
-As of Symfony version 3.3 all services registered in the DI container are marked private by default. For this bundle to work properly the registered handlers needs to be public. This can be achieved by setting the public attribute on the service to `true`. 
-
-*Note:* This is a temporary solution for versions earlier than the 1.0 release candidates. If you've upgraded to 1.0 RC or higher, this is no longer necessary.
-
-```yaml
-foo.user.register_user_handler:
-    class: Foo\User\RegisterUserHandler
-    public: true
-    arguments:
-        - '@foo.user.user_repository'
-    tags:
-        - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
-```
-
-## Using the Command Bus 
+## Using the Command Bus
 Create a service and inject the command bus:
 
 ```yaml
@@ -98,7 +56,7 @@ services:
             - '@tactician.commandbus'
 ```
 
-Then pass a command to the command bus for execution: 
+Then pass a command to the command bus for execution:
 
 ```php
 <?php namespace AppBundle\Controller;
@@ -123,6 +81,134 @@ class YourNameController
 }
 ```
 
+## Configuring Command Handlers
+When you pass a command to Tactician, the ultimate goal is to have it mapped to a Handler.
+
+Since handlers often have extra dependencies and are best lazily-loaded, you'll want to register them in the service container.
+
+There's a few different ways to map your Commands to a Handler, all of which can be combined. We'll walk through them below:
+
+### 1. Manually Mapping
+Let's say we have two classes, `RegisterUserCommand` and `RegisterUserHandler`. We'll register the Handler in the service container, along with a repository it needs. 
+
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - '@foo.user.user_repository'
+```
+
+However, we still need to map the Command to the Handler. We can do this by adding a tag to the Handler's DI definition.
+
+The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be the FQCN of the Command.
+
+```yaml
+<?php
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - '@foo.user.user_repository'
+    tags:
+        - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
+```
+
+### 2. Map Based On Typehints
+Rather than repeating the command's full class name, we can also reflect on the Handler's method typehints.
+
+```yaml
+foo.user.register_user_handler:
+    class: Foo\User\RegisterUserHandler
+    arguments:
+        - '@foo.user.user_repository'
+    tags:
+        - { name: tactician.handler, typehints: true }
+```
+
+This detects what commands this handler receives by inspecting the class' methods. The rules for matching are:
+
+1. The method must be public.
+2. The method must accept only one parameter.
+3. The parameter must be typehinted with a class name.
+
+In other words, the RegisterUserHandler class should look like this:
+
+```php
+<?php
+class RegisterUserHandler
+{
+    public function handle(RegisterUser $command)
+    {
+       // do stuff
+    }
+}
+```
+
+If you have multiple commands going into a single handler, they will all be detected, provided they follow the rules above. The actual name of the method is NOT important.
+
+If you're using typehints AND FQCN mappings, then the FQCN mapping always wins out.
+
+Registering by typehints can be very useful if you're using the autowiring features in the latest versions of Symfony.
+
+### 3. Custom Mapping Rules
+
+If you'd like to define your own rules for automatically mapping commands to handlers in the container, you can do that as well.
+
+First, implement the [HandlerMapping interface](src/DependencyInjection/HandlerMapping/HandlerMapping.php). During compile time, you'll receive a ContainerBuilder and a Tactician [Router object](src/DependencyInjection/HandlerMapping/Routing.php) you can use to map your commands to your handler services.
+
+There's a good chance that your strategy will involve using container tags of some sort. If that's the case, look into extending the [TagBasedMapping](src/DependencyInjection/HandlerMapping/TagBasedMapping.php) abstract class. This will save you some of the boiler plate associated with handling multiple buses.
+
+Once your object is ready, pass it to the TacticianBundle instance when setting your AppKernel.php:
+
+```php
+<?php
+// app/AppKernel.php
+
+// ...
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+            new League\Tactician\Bundle\TacticianBundle(
+                new My\Custom\HandlerMapping()
+            ),
+        );
+    }
+}
+```
+
+### 4. Combining Mapping Strategies
+
+If you have multiple strategies you'd like to chain together, you can use the CompositeMapping object to chain them together.
+
+```php
+<?php
+// app/AppKernel.php
+
+// ...
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+            new League\Tactician\Bundle\TacticianBundle(
+                new League\Tactician\Bundle\DependencyInjection\HandlerMapping\CompositeMapping(
+                    new League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping(), // standard command: "FQCN" mapping
+                    new League\Tactician\Bundle\DependencyInjection\HandlerMapping\TypeHintMapping(), // standard typehints: true mapping
+                    new My\Custom\HandlerMapping() // your custom routing
+                )
+            ),
+        );
+    }
+}
+```
+If multiple HandlerMapping strategies detect the the same Command, but different Handlers, then the last mentioned mapping strategy wins. Therefore, it's usually best to put your custom strategy last OR the ClassNameMapping last so you can make full overrides when necessary.
+
+### 5. Write Your Own Middleware
+Remember, Tactician is based purely on middleware. If you don't want to mess around with all this and you have a simple convention based way of mapping commands to handlers, [just write your own middleware to execute Handlers](https://github.com/thephpleague/tactician/blob/master/src/Handler/CommandHandlerMiddleware.php#L56). 
+
 ## Configuring Middleware
 Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `$commandBus->handle()`.
 
@@ -133,7 +219,7 @@ tactician:
     commandbus:
         default:
             middleware:
-                # service ids for all your middlewares, top down. First in, first out.
+                # service ids for all your middlewares, top down. First in, last out.
                 - tactician.middleware.locking
                 - my.custom.middleware.plugin
                 - tactician.middleware.command_handler

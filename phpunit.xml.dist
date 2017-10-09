@@ -10,15 +10,19 @@
          beStrictAboutTestsThatDoNotTestAnything="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="TacticianBundle Test Suite">
+        <testsuite name="unit">
             <directory>tests/</directory>
+            <exclude>tests/Integration</exclude>
+        </testsuite>
+
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <blacklist>
-            <directory suffix=".php">Tests/</directory>
-            <directory suffix=".php">vendor/</directory>
-        </blacklist>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
     </filter>
     <logging>
         <log type="tap" target="build/report.tap"/>

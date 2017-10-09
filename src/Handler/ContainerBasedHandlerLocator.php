@@ -23,7 +23,7 @@ class ContainerBasedHandlerLocator implements HandlerLocator
 
     /**
      * @param ContainerInterface $container
-     * @param array              $commandToServiceIdMapping
+     * @param array $commandToServiceIdMapping
      */
     public function __construct(ContainerInterface $container, array $commandToServiceIdMapping)
     {
