@@ -2,6 +2,8 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+
 /**
  * @runTestsInSeparateProcesses
  */
@@ -101,7 +103,21 @@ EOF
         static::$kernel->boot();
     }
 
-    // TODO: test trying to make unknown bus the default bus
+    public function testInvalidDefaultBus()
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        $this->givenConfig('tactician', <<<'EOF'
+default_bus: some_bus_that_does_not_exist
+commandbus:
+    default:
+        middleware:
+            - tactician.middleware.command_handler
+EOF
+        );
+
+        static::$kernel->boot();
+    }
 
     /**
      * @expectedException \League\Tactician\Exception\MissingHandlerException
