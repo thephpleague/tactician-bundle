@@ -59,7 +59,8 @@ final class TypeHintMappingTest extends TestCase
             ],
             'will skip methods with no typehint' => [NoTypehintHandler::class, []],
             'will not try to map scalar typehints' => [ScalarHandler::class, []],
-            'will not use protected or private methods' => [ProtectedMethodHandler::class, []]
+            'will not use protected or private methods' => [ProtectedMethodHandler::class, []],
+            'will not use constructor method' => [ConstructorHandler::class, []]
         ];
     }
 
@@ -182,4 +183,15 @@ class ProtectedMethodHandler
     private function execute(OtherFakeCommand $command)
     {
     }
+}
+
+class ConstructorHandler
+{
+    public function __construct(SomeDependency $dependency)
+    {
+    }
+}
+
+class SomeDependency
+{
 }
