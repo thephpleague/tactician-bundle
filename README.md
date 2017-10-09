@@ -206,7 +206,7 @@ class AppKernel extends Kernel
 ```
 If multiple HandlerMapping strategies detect the the same Command, but different Handlers, then the last mentioned mapping strategy wins. Therefore, it's usually best to put your custom strategy last OR the ClassNameMapping last so you can make full overrides when necessary.
 
-### Write Your Own Middleware
+### 5. Write Your Own Middleware
 Remember, Tactician is based purely on middleware. If you don't want to mess around with all this and you have a simple convention based way of mapping commands to handlers, [just write your own middleware to execute Handlers](https://github.com/thephpleague/tactician/blob/master/src/Handler/CommandHandlerMiddleware.php#L56). 
 
 ## Configuring Middleware
