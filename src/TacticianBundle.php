@@ -21,7 +21,7 @@ class TacticianBundle extends Bundle
     public function __construct(HandlerMapping $handlerMapping = null)
     {
         if ($handlerMapping === null) {
-            $handlerMapping = new CompositeMapping(new TypeHintMapping(), new ClassNameMapping());
+            $handlerMapping = static::defaultMappingStrategy();
         }
 
         $this->handlerMapping = $handlerMapping;
@@ -40,5 +40,10 @@ class TacticianBundle extends Bundle
     public function getContainerExtension()
     {
         return new TacticianExtension();
+    }
+
+    public static function defaultMappingStrategy(): HandlerMapping
+    {
+        return new CompositeMapping(new TypeHintMapping(), new ClassNameMapping());
     }
 }

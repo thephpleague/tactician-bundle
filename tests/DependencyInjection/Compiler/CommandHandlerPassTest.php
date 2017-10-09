@@ -21,7 +21,6 @@ class CommandHandlerPassTest extends TestCase
     }
 
     // TODO: Somehow assert that routing is run and mapped onto the locators
-    // TODO: test that it runs with a minimal configuration
 
     public function testAddingSingleDefaultBus()
     {

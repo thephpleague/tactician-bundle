@@ -8,6 +8,7 @@ use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use League\Tactician\Bundle\Tests\Fake\OtherFakeCommand;
+use League\Tactician\Bundle\Tests\Fake\SomeHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -87,12 +88,5 @@ final class ClassNameMappingTest extends TestCase
             ->addTag('tactician.handler', ['command' => FakeCommand::class, 'bus' => 'bus.does.not.exist.mwhahahaha']);
 
         (new ClassNameMapping())->build($builder, new Routing(['bus.a', 'bus.b']));
-    }
-}
-
-class SomeHandler
-{
-    public function handle($foo)
-    {
     }
 }
