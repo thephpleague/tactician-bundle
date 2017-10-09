@@ -35,7 +35,7 @@ final class TypeHintMappingTest extends TestCase
         $builder = new ContainerBuilder();
         $builder
             ->setDefinition('some.handler', new Definition($handlerFQCN))
-            ->addTag('tactician.handler', ['auto' => true]);
+            ->addTag('tactician.handler', ['typehints' => true]);
 
         $routing = (new TypeHintMapping())->build($builder, new Routing(['default']));
 
@@ -68,11 +68,11 @@ final class TypeHintMappingTest extends TestCase
         $builder = new ContainerBuilder();
         $builder
             ->setDefinition('first.handler', new Definition(BasicHandler::class))
-            ->addTag('tactician.handler', ['auto' => true, 'bus' => 'bus.a']);
+            ->addTag('tactician.handler', ['typehints' => true, 'bus' => 'bus.a']);
 
         $builder
             ->setDefinition('second.handler', new Definition(DateTimeHandler::class))
-            ->addTag('tactician.handler', ['auto' => true, 'bus' => 'bus.b']);
+            ->addTag('tactician.handler', ['typehints' => true, 'bus' => 'bus.b']);
 
         $routing = (new TypeHintMapping())->build($builder, new Routing(['bus.a', 'bus.b']));
 
@@ -94,8 +94,8 @@ final class TypeHintMappingTest extends TestCase
         $builder = new ContainerBuilder();
         $builder
             ->setDefinition('first.handler', new Definition(BasicHandler::class))
-            ->addTag('tactician.handler', ['auto' => true, 'bus' => 'bus.a'])
-            ->addTag('tactician.handler', ['auto' => true, 'bus' => 'bus.b']);
+            ->addTag('tactician.handler', ['typehints' => true, 'bus' => 'bus.a'])
+            ->addTag('tactician.handler', ['typehints' => true, 'bus' => 'bus.b']);
 
         $routing = (new TypeHintMapping())->build($builder, new Routing(['bus.a', 'bus.b']));
 
@@ -115,7 +115,7 @@ final class TypeHintMappingTest extends TestCase
         $builder = new ContainerBuilder();
         $builder
             ->setDefinition('first.handler', new Definition(BasicHandler::class))
-            ->addTag('tactician.handler', ['auto' => true, 'bus' => 'bus.does.not.exist.mwhahahaha']);
+            ->addTag('tactician.handler', ['typehints' => true, 'bus' => 'bus.does.not.exist.mwhahahaha']);
 
         (new TypeHintMapping())->build($builder, new Routing(['bus.a', 'bus.b']));
     }

@@ -28,7 +28,7 @@ EOF
         $this->registerService(
             'tactician.test.handler',
             TypehintedHandler::class,
-            [['name' => 'tactician.handler', 'auto' => true]]
+            [['name' => 'tactician.handler', 'typehints' => true]]
         );
 
         $this->expectOutputString("typehint wins");
@@ -52,7 +52,7 @@ EOF
         $this->registerService(
             'tactician.test.typehinted_handler',
             TypehintedHandler::class,
-            [['name' => 'tactician.handler', 'auto' => true]]
+            [['name' => 'tactician.handler', 'typehints' => true]]
         );
 
         $this->registerService(
