@@ -28,10 +28,7 @@ class CommandHandlerPass implements CompilerPassInterface
     {
         $builders = BusBuildersFromConfig::convert($container->getExtensionConfig('tactician')[0]);
 
-        $routing = $this->handlerMapping->build(
-            $container,
-            new Routing($builders->getBusIds())
-        );
+        $routing = $this->handlerMapping->build($container, $builders->createBlankRouting());
 
         // Register the completed builders in our container
         foreach ($builders as $builder) {
