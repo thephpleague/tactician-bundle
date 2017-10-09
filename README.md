@@ -86,9 +86,9 @@ When you pass a command to Tactician, the ultimate goal is to have it mapped to 
 
 Since handlers often have extra dependencies and are best lazily-loaded, you'll want to register them in the service container.
 
-There's a few different ways to map your Commands to a Handler.
+There's a few different ways to map your Commands to a Handler, all of which can be combined. We'll walk through them below:
 
-### Manually Mapping
+### 1. Manually Mapping
 Let's say we have two classes, `RegisterUserCommand` and `RegisterUserHandler`. We'll register the Handler in the service container, along with a repository it needs. 
 
 ```yaml
@@ -112,7 +112,7 @@ foo.user.register_user_handler:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand }
 ```
 
-### Map Based On Typehints
+### 2. Map Based On Typehints
 Rather than repeating the command's full class name, we can also reflect on the Handler's method typehints.
 
 ```yaml
@@ -149,7 +149,7 @@ If you're using typehints AND FQCN mappings, then the FQCN mapping always wins o
 
 Registering by typehints can be very useful if you're using the autowiring features in the latest versions of Symfony.
 
-### Custom Mapping Rules
+### 3. Custom Mapping Rules
 
 If you'd like to define your own rules for automatically mapping commands to handlers in the container, you can do that as well.
 
@@ -178,7 +178,7 @@ class AppKernel extends Kernel
 }
 ```
 
-### Combining Mapping Strategies
+### 4. Combining Mapping Strategies
 
 If you have multiple strategies you'd like to chain together, you can use the CompositeMapping object to chain them together.
 
@@ -206,10 +206,8 @@ class AppKernel extends Kernel
 ```
 If multiple HandlerMapping strategies detect the the same Command, but different Handlers, then the last mentioned mapping strategy wins. Therefore, it's usually best to put your custom strategy last OR the ClassNameMapping last so you can make full overrides when necessary.
 
-### Custom Middleware
-Remember, Tactician is based purely on middleware. If you don't want to mess around with all this and you have a simple convention based way of mapping commands to handlers, [just write your own middleware to execute Handlers](https://github.com/thephpleague/tactician/blob/master/src/Handler/CommandHandlerMiddleware.php#L56). 
-
 ### Write Your Own Middleware
+Remember, Tactician is based purely on middleware. If you don't want to mess around with all this and you have a simple convention based way of mapping commands to handlers, [just write your own middleware to execute Handlers](https://github.com/thephpleague/tactician/blob/master/src/Handler/CommandHandlerMiddleware.php#L56). 
 
 ## Configuring Middleware
 Everything inside Tactician is a middleware plugin. Without any middleware configured, nothing will happen when you pass a command to `$commandBus->handle()`.
