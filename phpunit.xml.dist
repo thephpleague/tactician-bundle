@@ -15,10 +15,9 @@
         </testsuite>
     </testsuites>
     <filter>
-        <blacklist>
-            <directory suffix=".php">Tests/</directory>
-            <directory suffix=".php">vendor/</directory>
-        </blacklist>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
     </filter>
     <logging>
         <log type="tap" target="build/report.tap"/>
