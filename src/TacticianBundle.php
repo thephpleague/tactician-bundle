@@ -21,7 +21,7 @@ class TacticianBundle extends Bundle
     public function __construct(HandlerMapping $handlerMapping = null)
     {
         if ($handlerMapping === null) {
-            $handlerMapping = new CompositeMapping(new ClassNameMapping(), new TypeHintMapping());
+            $handlerMapping = new CompositeMapping(new TypeHintMapping(), new ClassNameMapping());
         }
 
         $this->handlerMapping = $handlerMapping;
