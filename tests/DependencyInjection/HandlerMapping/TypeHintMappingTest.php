@@ -60,7 +60,10 @@ final class TypeHintMappingTest extends TestCase
             'will skip methods with no typehint' => [NoTypehintHandler::class, []],
             'will not try to map scalar typehints' => [ScalarHandler::class, []],
             'will not use protected or private methods' => [ProtectedMethodHandler::class, []],
-            'will not use constructor method' => [ConstructorHandler::class, []]
+            'will not use constructor method' => [ConstructorHandler::class, []],
+            'will not use static methods' => [StaticHandler::class, []],
+            'will not use abstract methods' => [AbstractHandler::class, []],
+            'will not use variadic methods' => [VariadicHandler::class, []]
         ];
     }
 
@@ -137,11 +140,30 @@ class BasicHandler
     }
 }
 
+class VariadicHandler
+{
+    public function handle(FakeCommand ...$commands)
+    {
+    }
+}
+
 class DateTimeHandler
 {
     public function handle(DateTime $command)
     {
     }
+}
+
+class StaticHandler
+{
+    public static function handle(FakeCommand $command)
+    {
+    }
+}
+
+abstract class AbstractHandler
+{
+    abstract public function handle(FakeCommand $command);
 }
 
 class ScalarHandler

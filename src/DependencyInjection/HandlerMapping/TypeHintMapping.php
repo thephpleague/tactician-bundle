@@ -40,15 +40,14 @@ final class TypeHintMapping extends TagBasedMapping
         $reflClass = new ReflectionClass($definition->getClass());
 
         foreach ($reflClass->getMethods() as $method) {
-            if (!$method->isPublic()) {
-                continue;
-            }
 
-            if ($method->getNumberOfParameters() !== 1) {
-                continue;
-            }
-
-            if ($method->isConstructor()) {
+            if (!$method->isPublic()
+                || $method->isConstructor()
+                || $method->isStatic()
+                || $method->isAbstract()
+                || $method->isVariadic()
+                || $method->getNumberOfParameters() !== 1
+            ) {
                 continue;
             }
 
