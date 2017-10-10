@@ -34,19 +34,26 @@ class DebugMappingCommand extends ContainerAwareCommand
 
         $io->title('Tactician routing');
 
-        $headers = ['Command', 'Handler service'];
+        $headers = ['Command', 'Handler Service'];
 
         foreach ($this->report->toArray() as $busId => $map) {
             $io->section('Bus: ' . $busId);
 
             if (count($map) > 0) {
-                $io->table($headers, $map);
+                $io->table($headers, $this->mappingToRows($map));
             } else {
-                $io->warning(\sprintf(
-                    'No registered commands for bus %s',
-                    $busId
-                ));
+                $io->warning("No registered commands for bus $busId");
             }
         }
+    }
+
+    private function mappingToRows(array $map)
+    {
+        $rows = [];
+        foreach ($map as $commandName => $handlerService) {
+            $rows[] = [$commandName, $handlerService];
+        }
+
+        return $rows;
     }
 }
