@@ -128,8 +128,7 @@ This detects what commands this handler receives by inspecting the class' method
 
 1. The method must be public.
 2. The method must accept only one parameter.
-3. The method must not be the constructor.
-4. The parameter must be typehinted with a class name.
+3. The parameter must be typehinted with a class name.
 
 In other words, the RegisterUserHandler class should look like this:
 
