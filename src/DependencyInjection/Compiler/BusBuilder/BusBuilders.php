@@ -6,6 +6,7 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 use League\Tactician\Bundle\DependencyInjection\DuplicatedCommandBusId;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
+use ArrayIterator;
 
 final class BusBuilders implements \IteratorAggregate
 {
@@ -46,9 +47,12 @@ final class BusBuilders implements \IteratorAggregate
         return $this->busBuilders[$busId];
     }
 
+    /**
+     * @return ArrayIterator|BusBuilder[]
+     */
     public function getIterator()
     {
-        return new \ArrayIterator($this->busBuilders);
+        return new ArrayIterator($this->busBuilders);
     }
 
     private function assertValidBusId($busId)
