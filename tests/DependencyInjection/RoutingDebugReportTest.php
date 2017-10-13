@@ -37,7 +37,7 @@ class RoutingDebugReportTest extends TestCase
         $routing->routeToBus('foo', OtherFakeCommand::class, 'other_fake.handler');
 
         // WHEN
-        $report = new RoutingDebugReport($builders, $routing);
+        $report = RoutingDebugReport::fromBuildInfo($builders, $routing);
 
         // THEN
         $reportArray = $report->toArray();
@@ -46,15 +46,19 @@ class RoutingDebugReportTest extends TestCase
         $this->assertArrayHasKey('foo', $reportArray);
         $this->assertArrayHasKey('bar', $reportArray);
 
-        $this->assertCount(1, $reportArray['default']);
-        $this->assertCount(2, $reportArray['foo']);
-        $this->assertCount(1, $reportArray['bar']);
+        $this->assertEquals(
+            [FakeCommand::class => 'fake.handler', OtherFakeCommand::class => 'other_fake.handler'],
+            $reportArray['foo']
+        );
 
-        $mappings = array_merge($reportArray['default'], $reportArray['foo'], $reportArray['bar']);
+        $this->assertEquals(
+            [FakeCommand::class => 'fake.handler'],
+            $reportArray['default']
+        );
 
-        foreach ($mappings as $mapping) {
-            $this->assertArrayHasKey('command', $mapping);
-            $this->assertArrayHasKey('handler', $mapping);
-        }
+        $this->assertEquals(
+            [FakeCommand::class => 'fake.handler'],
+            $reportArray['bar']
+        );
     }
 }

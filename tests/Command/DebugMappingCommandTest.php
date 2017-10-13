@@ -42,7 +42,7 @@ class DebugMappingCommandTest extends TestCase
      * @param $buses
      * @return RoutingDebugReport
      */
-    private function prepareReport($buses): RoutingDebugReport
+    private function prepareReport(array $buses): RoutingDebugReport
     {
         $builders = new BusBuilders(
             array_map(function (string $bus) {
@@ -56,6 +56,6 @@ class DebugMappingCommandTest extends TestCase
         $routing->routeToBus('bar', FakeCommand::class, 'fake.handler');
         $routing->routeToBus('foo', OtherFakeCommand::class, 'other_fake.handler');
 
-        return new RoutingDebugReport($builders, $routing);
+        return RoutingDebugReport::fromBuildInfo($builders, $routing);
     }
 }
