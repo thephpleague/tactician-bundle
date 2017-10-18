@@ -28,6 +28,12 @@
   "license" : [
     "MIT"
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/RiskioFr/tactician-validator"
+    }
+  ],
   "require" : {
     "php":  ">=7.0",
     "league/tactician": "^1.0",
@@ -39,9 +45,9 @@
   },
   "minimum-stability": "beta",
   "suggest": {
-    "symfony/validator": "For command validator middleware",
     "symfony/security": "For command security middleware",
-    "league/tactician-doctrine": "For doctrine transaction middleware"
+    "league/tactician-doctrine": "For doctrine transaction middleware",
+    "league/tactician-validator": "For validator middleware"
   },
   "autoload" : {
     "psr-4" : {
@@ -62,8 +68,8 @@
     "phpunit/phpunit": "~6.1",
     "mockery/mockery": "~0.9.9",
     "symfony/security": "^2.8|^3.0",
-    "symfony/validator": "^2.8|^3.0",
     "league/tactician-doctrine": "^1.1",
+    "league/tactician-validator": "dev-master@dev",
     "symfony/framework-bundle": "^2.8|^3.0",
     "symfony/security-bundle": "^2.8|^3.0",
     "matthiasnoback/symfony-config-test": "^3.0",
