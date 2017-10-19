@@ -29,11 +29,11 @@ abstract class TagBasedMapping implements HandlerMapping
     {
         $definition = $container->getDefinition($serviceId);
 
-        if (!$this->isSupported($definition, $attributes)) {
+        if (!$this->isSupported($container, $definition, $attributes)) {
             return;
         }
 
-        foreach ($this->findCommandsForService($definition, $attributes) as $commandClassName) {
+        foreach ($this->findCommandsForService($container, $definition, $attributes) as $commandClassName) {
             if (isset($attributes['bus'])) {
                 $routing->routeToBus($attributes['bus'], $commandClassName, $serviceId);
             } else {
@@ -42,7 +42,7 @@ abstract class TagBasedMapping implements HandlerMapping
         }
     }
 
-    abstract protected function isSupported(Definition $definition, array $tagAttributes): bool;
+    abstract protected function isSupported(ContainerBuilder $container, Definition $definition, array $tagAttributes): bool;
 
-    abstract protected function findCommandsForService(Definition $definition, array $tagAttributes): array;
+    abstract protected function findCommandsForService(ContainerBuilder $container, Definition $definition, array $tagAttributes): array;
 }

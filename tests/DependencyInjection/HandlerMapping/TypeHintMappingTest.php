@@ -27,6 +27,19 @@ final class TypeHintMappingTest extends TestCase
         $this->assertEquals([], $routing->commandToServiceMapping('default'));
     }
 
+    public function test_will_resolve_parameters_in_handler_class()
+    {
+        $builder = new ContainerBuilder();
+        $builder->setParameter('handler_class', InvokeHandler::class);
+        $builder
+            ->setDefinition('some.handler', new Definition('%handler_class%'))
+            ->addTag('tactician.handler', ['typehints' => true]);
+
+        $routing = (new TypeHintMapping())->build($builder, new Routing(['default']));
+
+        $this->assertEquals([FakeCommand::class => 'some.handler'], $routing->commandToServiceMapping('default'));
+    }
+
     /**
      * @dataProvider simpleTestCases
      */
