@@ -27,6 +27,19 @@ final class ClassNameMappingTest extends TestCase
         $this->assertEquals([], $routing->commandToServiceMapping('default'));
     }
 
+    public function test_will_resolve_parameters_in_command_attribute()
+    {
+        $builder = new ContainerBuilder();
+        $builder->setParameter('fake_command_class', FakeCommand::class);
+        $builder
+            ->setDefinition('some.handler', new Definition(SomeHandler::class))
+            ->addTag('tactician.handler', ['command' => '%fake_command_class%']);
+
+        $routing = (new ClassNameMapping())->build($builder, new Routing(['default']));
+
+        $this->assertEquals([FakeCommand::class => 'some.handler'], $routing->commandToServiceMapping('default'));
+    }
+
     public function test_will_find_handler_for_defined_command()
     {
         $builder = new ContainerBuilder();

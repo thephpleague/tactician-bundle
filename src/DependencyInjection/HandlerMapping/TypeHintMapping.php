@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use ReflectionClass;
 
@@ -28,16 +29,16 @@ use ReflectionClass;
  */
 final class TypeHintMapping extends TagBasedMapping
 {
-    protected function isSupported(Definition $definition, array $tagAttributes): bool
+    protected function isSupported(ContainerBuilder $container, Definition $definition, array $tagAttributes): bool
     {
         return isset($tagAttributes['typehints']) && $tagAttributes['typehints'] === true;
     }
 
-    protected function findCommandsForService(Definition $definition, array $tagAttributes): array
+    protected function findCommandsForService(ContainerBuilder $container, Definition $definition, array $tagAttributes): array
     {
         $results = [];
 
-        $reflClass = new ReflectionClass($definition->getClass());
+        $reflClass = new ReflectionClass($container->getParameterBag()->resolveValue($definition->getClass()));
 
         foreach ($reflClass->getMethods() as $method) {
 
