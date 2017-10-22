@@ -33,8 +33,6 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $routing = $this->handlerMapping->build($container, $builders->createBlankRouting());
 
-        $container->setParameter('tactician.debug.mappings', []);
-
         // Register the completed builders in our container
         foreach ($builders as $builder) {
             $builder->registerInContainer($container, $routing->commandToServiceMapping($builder->id()));
