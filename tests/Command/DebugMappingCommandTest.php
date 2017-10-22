@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace League\Tactician\Bundle\Tests\Command;
 
 use League\Tactician\Bundle\Command\DebugMappingCommand;
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilders;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\RoutingDebugReport;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
@@ -44,18 +42,16 @@ class DebugMappingCommandTest extends TestCase
      */
     private function prepareReport(array $buses): RoutingDebugReport
     {
-        $builders = new BusBuilders(
-            array_map(function (string $bus) {
-                return new BusBuilder($bus, 'some.method.inflector', ['middleware1', 'middleware2']);
-            }, $buses),
-            'default'
-        );
-
         $routing = new Routing($buses);
 
         $routing->routeToBus('bar', FakeCommand::class, 'fake.handler');
         $routing->routeToBus('foo', OtherFakeCommand::class, 'other_fake.handler');
 
-        return RoutingDebugReport::fromBuildInfo($builders, $routing);
+        $mappings = [];
+        foreach ($buses as $bus) {
+            $mappings[$bus] = $routing->commandToServiceMapping($bus);
+        }
+
+        return new RoutingDebugReport($mappings);
     }
 }

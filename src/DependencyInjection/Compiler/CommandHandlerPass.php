@@ -33,6 +33,8 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $routing = $this->handlerMapping->build($container, $builders->createBlankRouting());
 
+        $container->setParameter('tactician.debug.mappings', []);
+
         // Register the completed builders in our container
         foreach ($builders as $builder) {
             $builder->registerInContainer($container, $routing->commandToServiceMapping($builder->id()));
@@ -42,17 +44,5 @@ class CommandHandlerPass implements CompilerPassInterface
         $container->setAlias('tactician.commandbus', $builders->defaultBus()->serviceId());
         $container->setAlias('tactician.handler.locator.symfony', $builders->defaultBus()->locatorServiceId());
         $container->setAlias('tactician.middleware.command_handler', $builders->defaultBus()->commandHandlerMiddlewareId());
-
-        // Add the debug report to the container
-        $container
-            ->setDefinition(
-                'tactician.debug.report',
-                new Definition(
-                    RoutingDebugReport::class,
-                    [RoutingDebugReport::fromBuildInfo($builders, $routing)->toArray()]
-                )
-            )
-            ->setFactory([RoutingDebugReport::class, 'fromArray']);
     }
-
 }

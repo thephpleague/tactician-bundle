@@ -13,25 +13,9 @@ class RoutingDebugReport
      */
     private $report = [];
 
-    private function __construct(array $report)
+    public function __construct(array $report)
     {
         $this->report = $report;
-    }
-
-    public static function fromBuildInfo(BusBuilders $builders, Routing $routing)
-    {
-        $report = [];
-
-        foreach ($builders as $builder) {
-            $report[$builder->id()] = $routing->commandToServiceMapping($builder->id());
-        }
-
-        return new static($report);
-    }
-
-    public static function fromArray(array $report)
-    {
-        return new static($report);
     }
 
     public function toArray(): array

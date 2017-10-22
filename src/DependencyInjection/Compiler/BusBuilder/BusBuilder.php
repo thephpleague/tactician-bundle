@@ -73,6 +73,8 @@ final class BusBuilder
             )
         );
 
+        $this->updateDebugMappings($container, $commandsToAccept);
+
         $container->setDefinition(
             $this->serviceId(),
             new Definition(
@@ -122,5 +124,25 @@ final class BusBuilder
         );
 
         return $handlerId;
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $commandsToAccept
+     */
+    private function updateDebugMappings(ContainerBuilder $container, array $commandsToAccept)
+    {
+        $mappings = [];
+
+        if ($container->hasParameter('tactician.debug.mappings')) {
+            $mappings = $container->getParameter('tactician.debug.mappings');
+        }
+
+        $mappings[$this->id()] = $commandsToAccept;
+
+        $container->setParameter(
+            'tactician.debug.mappings',
+            $mappings
+        );
     }
 }

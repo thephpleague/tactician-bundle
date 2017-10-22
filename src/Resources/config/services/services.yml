@@ -22,6 +22,11 @@ services:
     tactician.plugins.named_command.extractor:
         class: League\Tactician\Plugins\NamedCommand\NamedCommandExtractor
 
+    tactician.debug.report:
+        class: League\Tactician\Bundle\DependencyInjection\RoutingDebugReport
+        arguments:
+            - "%tactician.debug.mappings%"
+
     tactician.command.debug_mapping:
         class: League\Tactician\Bundle\Command\DebugMappingCommand
         arguments:

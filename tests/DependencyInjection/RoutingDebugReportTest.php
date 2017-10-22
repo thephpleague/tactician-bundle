@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilders;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\RoutingDebugReport;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
@@ -22,22 +20,18 @@ class RoutingDebugReportTest extends TestCase
             'bar'
         ];
 
-        $builders = new BusBuilders(
-            [
-                new BusBuilder($buses[0], 'some.method.inflector', ['middleware1', 'middleware2']),
-                new BusBuilder($buses[1], 'some.method.inflector', ['middleware1', 'middleware2']),
-                new BusBuilder($buses[2], 'some.method.inflector', ['middleware1', 'middleware2'])
-            ],
-            'default'
-        );
-
         $routing = new Routing($buses);
 
         $routing->routeToAllBuses(FakeCommand::class, 'fake.handler');
         $routing->routeToBus('foo', OtherFakeCommand::class, 'other_fake.handler');
 
+        $mappings = [];
+        foreach ($buses as $bus) {
+            $mappings[$bus] = $routing->commandToServiceMapping($bus);
+        }
+
         // WHEN
-        $report = RoutingDebugReport::fromBuildInfo($builders, $routing);
+        $report = new RoutingDebugReport($mappings);
 
         // THEN
         $reportArray = $report->toArray();
