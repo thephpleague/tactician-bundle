@@ -2,12 +2,10 @@
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Command\DebugMappingCommand;
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfig;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * This compiler pass maps Handler DI tags to specific commands.
@@ -44,13 +42,9 @@ class CommandHandlerPass implements CompilerPassInterface
         $container->setAlias('tactician.handler.locator.symfony', $builders->defaultBus()->locatorServiceId());
         $container->setAlias('tactician.middleware.command_handler', $builders->defaultBus()->commandHandlerMiddlewareId());
 
-        // Setup debug command
-        $container->setDefinition(
-            'tactician.command.debug_mapping',
-            new Definition(
-                DebugMappingCommand::class,
-                [$mappings]
-            )
-        );
+        // Wire debug command
+        if ($container->hasDefinition('tactician.command.debug_mapping')) {
+            $container->getDefinition('tactician.command.debug_mapping')->addArgument($mappings);
+        }
     }
 }
