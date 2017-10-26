@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Command;
 
-use League\Tactician\Bundle\DependencyInjection\RoutingDebugReport;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,15 +11,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class DebugMappingCommand extends ContainerAwareCommand
 {
     /**
-     * @var RoutingDebugReport
+     * @var array
      */
-    private $report;
+    private $mappings;
 
-    public function __construct(RoutingDebugReport $report)
+    public function __construct(array $mappings)
     {
         parent::__construct();
 
-        $this->report = $report;
+        $this->mappings = $mappings;
     }
 
     protected function configure()
@@ -36,7 +35,7 @@ class DebugMappingCommand extends ContainerAwareCommand
 
         $headers = ['Command', 'Handler Service'];
 
-        foreach ($this->report->toArray() as $busId => $map) {
+        foreach ($this->mappings as $busId => $map) {
             $io->section('Bus: ' . $busId);
 
             if (count($map) > 0) {
