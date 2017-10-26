@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\RoutingDebugReport;
-use League\Tactician\Bundle\Tests\Fake\FakeCommand;
-use League\Tactician\Bundle\Tests\Fake\OtherFakeCommand;
+use League\Tactician\Bundle\Tests\DependencyInjection\HandlerMapping\TestMappingData;
 use PHPUnit\Framework\TestCase;
 
 class RoutingDebugReportTest extends TestCase
@@ -14,45 +12,17 @@ class RoutingDebugReportTest extends TestCase
     public function testItShouldBuildValidReport()
     {
         // GIVEN
-        $buses = [
-            'default',
-            'foo',
-            'bar'
-        ];
-
-        $routing = new Routing($buses);
-
-        $routing->routeToAllBuses(FakeCommand::class, 'fake.handler');
-        $routing->routeToBus('foo', OtherFakeCommand::class, 'other_fake.handler');
-
-        $mappings = [];
-        foreach ($buses as $bus) {
-            $mappings[$bus] = $routing->commandToServiceMapping($bus);
-        }
+        $mappings = TestMappingData::example();
 
         // WHEN
         $report = new RoutingDebugReport($mappings);
 
         // THEN
         $reportArray = $report->toArray();
-        $this->assertCount(3, $reportArray);
-        $this->assertArrayHasKey('default', $reportArray);
-        $this->assertArrayHasKey('foo', $reportArray);
-        $this->assertArrayHasKey('bar', $reportArray);
 
         $this->assertEquals(
-            [FakeCommand::class => 'fake.handler', OtherFakeCommand::class => 'other_fake.handler'],
-            $reportArray['foo']
-        );
-
-        $this->assertEquals(
-            [FakeCommand::class => 'fake.handler'],
-            $reportArray['default']
-        );
-
-        $this->assertEquals(
-            [FakeCommand::class => 'fake.handler'],
-            $reportArray['bar']
+            TestMappingData::example(),
+            $reportArray
         );
     }
 }

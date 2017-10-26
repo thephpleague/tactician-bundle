@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilders;
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
-
 class RoutingDebugReport
 {
     /**
