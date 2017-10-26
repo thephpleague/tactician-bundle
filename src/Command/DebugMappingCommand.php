@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class DebugMappingCommand extends ContainerAwareCommand
+class DebugMappingCommand extends Command
 {
     /**
      * @var array
