@@ -1,7 +1,7 @@
 <?php
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Middleware\ValidatorMiddleware;
+use League\Tactician\Validator\ValidatorMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

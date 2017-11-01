@@ -3,7 +3,7 @@
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\ValidatorMiddlewarePass;
-use League\Tactician\Bundle\Middleware\ValidatorMiddleware;
+use League\Tactician\Validator\ValidatorMiddleware;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

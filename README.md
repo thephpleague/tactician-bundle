@@ -289,7 +289,7 @@ This middleware uses Symfony's validator to check the command object before pass
 
 Constraints can be added via configuration or annotations like in default Symfony practices, please refer to [their docs](https://symfony.com/doc/current/validation).
 
-If the command fails, it will throw a [League\Tactician\Bundle\Middleware\InvalidCommandException](src/Middleware/InvalidCommandException.php). This exception also contains the ConstraintViolationList produced by the validator so you can inspect or log the errors yourself. 
+If the command fails, it will throw a [League\Tactician\Validator\InvalidCommandException](src/Middleware/InvalidCommandException.php). This exception also contains the ConstraintViolationList produced by the validator so you can inspect or log the errors yourself. 
 
 ### Locking Middleware (tactician.middleware.locking)
 
