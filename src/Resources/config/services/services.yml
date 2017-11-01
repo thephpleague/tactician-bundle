@@ -22,7 +22,7 @@ services:
     tactician.plugins.named_command.extractor:
         class: League\Tactician\Plugins\NamedCommand\NamedCommandExtractor
 
-    tactician.command.debug_mapping:
-        class: League\Tactician\Bundle\Command\DebugMappingCommand
+    tactician.command.debug:
+        class: League\Tactician\Bundle\Command\DebugCommand
         tags:
             - { name: console.command }

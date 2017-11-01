@@ -2,7 +2,7 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Command\DebugMappingCommand;
+use League\Tactician\Bundle\Command\DebugCommand;
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
@@ -140,7 +140,7 @@ class CommandHandlerPassTest extends TestCase
         $mapping = $this->prophesize(HandlerMapping::class);
         $mapping->build($container, Argument::type(Routing::class))->willReturn($routing);
 
-        $container->register('tactician.command.debug_mapping', DebugMappingCommand::class);
+        $container->register('tactician.command.debug', DebugCommand::class);
 
         (new CommandHandlerPass($mapping->reveal()))->process($container);
 
@@ -151,7 +151,7 @@ class CommandHandlerPassTest extends TestCase
                    'bus.b' => $routing->commandToServiceMapping('bus.b'),
                 ],
             ],
-            $container->getDefinition('tactician.command.debug_mapping')->getArguments()
+            $container->getDefinition('tactician.command.debug')->getArguments()
         );
     }
 

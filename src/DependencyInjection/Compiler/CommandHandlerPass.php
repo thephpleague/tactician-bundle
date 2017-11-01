@@ -43,8 +43,8 @@ class CommandHandlerPass implements CompilerPassInterface
         $container->setAlias('tactician.middleware.command_handler', $builders->defaultBus()->commandHandlerMiddlewareId());
 
         // Wire debug command
-        if ($container->hasDefinition('tactician.command.debug_mapping')) {
-            $container->getDefinition('tactician.command.debug_mapping')->addArgument($mappings);
+        if ($container->hasDefinition('tactician.command.debug')) {
+            $container->getDefinition('tactician.command.debug')->addArgument($mappings);
         }
     }
 }
