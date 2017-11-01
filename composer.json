@@ -65,7 +65,7 @@
     "symfony/security": "^2.8|^3.0",
     "symfony/validator": "^2.8|^3.0",
     "league/tactician-doctrine": "^1.1",
-    "symfony/framework-bundle": "^2.8|^3.0",
+    "symfony/framework-bundle": "^2.8.15|^3.3",
     "symfony/security-bundle": "^2.8|^3.0",
     "matthiasnoback/symfony-config-test": "^3.0",
     "matthiasnoback/symfony-dependency-injection-test": "^2.1"
