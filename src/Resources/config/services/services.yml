@@ -21,3 +21,8 @@ services:
 
     tactician.plugins.named_command.extractor:
         class: League\Tactician\Plugins\NamedCommand\NamedCommandExtractor
+
+    tactician.command.debug:
+        class: League\Tactician\Bundle\Command\DebugCommand
+        tags:
+            - { name: console.command }

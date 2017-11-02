@@ -2,6 +2,7 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
+use League\Tactician\Bundle\Command\DebugCommand;
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
@@ -116,6 +117,41 @@ class CommandHandlerPassTest extends TestCase
         $this->assertEquals(
             [FakeCommand::class => 'some.handler.b', OtherFakeCommand::class => 'some.other.handler'],
             $container->getDefinition('tactician.commandbus.bus.b.handler.locator')->getArgument(1)
+        );
+    }
+
+    public function test_handler_wires_debug_command()
+    {
+        $container = $this->containerWithConfig(
+            [
+                'default_bus' => 'bus.a',
+                'commandbus' => [
+                    'bus.a' => ['middleware' => []],
+                    'bus.b' => ['middleware' => []]
+                ]
+            ]
+        );
+
+        $routing = new Routing(['bus.a', 'bus.b']);
+        $routing->routeToBus('bus.a', FakeCommand::class, 'some.handler.a');
+        $routing->routeToBus('bus.b', FakeCommand::class, 'some.handler.b');
+        $routing->routeToAllBuses(OtherFakeCommand::class, 'some.other.handler');
+
+        $mapping = $this->prophesize(HandlerMapping::class);
+        $mapping->build($container, Argument::type(Routing::class))->willReturn($routing);
+
+        $container->register('tactician.command.debug', DebugCommand::class);
+
+        (new CommandHandlerPass($mapping->reveal()))->process($container);
+
+        $this->assertSame(
+            [
+                [
+                   'bus.a' => $routing->commandToServiceMapping('bus.a'),
+                   'bus.b' => $routing->commandToServiceMapping('bus.b'),
+                ],
+            ],
+            $container->getDefinition('tactician.command.debug')->getArguments()
         );
     }
 

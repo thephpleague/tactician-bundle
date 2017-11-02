@@ -2,10 +2,8 @@
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfig;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -30,15 +28,23 @@ class CommandHandlerPass implements CompilerPassInterface
 
         $routing = $this->handlerMapping->build($container, $builders->createBlankRouting());
 
+        $mappings = [];
+
         // Register the completed builders in our container
         foreach ($builders as $builder) {
-            /** @var BusBuilder $builder */
-            $builder->registerInContainer($container, $routing->commandToServiceMapping($builder->id()));
+            $commandToServiceMapping = $routing->commandToServiceMapping($builder->id());
+            $mappings[$builder->id()] = $commandToServiceMapping;
+            $builder->registerInContainer($container, $commandToServiceMapping);
         }
 
         // Setup default aliases
         $container->setAlias('tactician.commandbus', $builders->defaultBus()->serviceId());
         $container->setAlias('tactician.handler.locator.symfony', $builders->defaultBus()->locatorServiceId());
         $container->setAlias('tactician.middleware.command_handler', $builders->defaultBus()->commandHandlerMiddlewareId());
+
+        // Wire debug command
+        if ($container->hasDefinition('tactician.command.debug')) {
+            $container->getDefinition('tactician.command.debug')->addArgument($mappings);
+        }
     }
 }
