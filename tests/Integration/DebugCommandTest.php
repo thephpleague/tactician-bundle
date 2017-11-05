@@ -63,7 +63,7 @@ EOF;
     {
         $application = new Application(static::$kernel);
 
-        $command = $application->find('tactician:debug');
+        $command = $application->find('debug:tactician');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array(
             'command' => $command->getName()

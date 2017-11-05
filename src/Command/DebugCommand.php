@@ -24,7 +24,7 @@ class DebugCommand extends Command
 
     protected function configure()
     {
-        $this->setName('tactician:debug');
+        $this->setName('debug:tactician');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
