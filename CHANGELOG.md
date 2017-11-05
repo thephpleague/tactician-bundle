@@ -1,8 +1,9 @@
-## 1.1 (2017-XX-XX)
+## 1.1 (2017-11-05)
 
 New features
 - DI tags can now use "typehints: true" instead of mapping every command by hand.
 - You can specify custom mapping strategies.
+- The ```debug:tactician``` command prints command to service mappings.
 
 BC Breaks:
 - Different exceptions are now be thrown during the container build phase.
