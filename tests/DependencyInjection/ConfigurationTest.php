@@ -27,6 +27,19 @@ class ConfigurationTest extends TestCase
         $this->assertConfigurationIsValid([]);
     }
 
+    public function testDefaultConfiguration()
+    {
+        $this->assertProcessedConfigurationEquals(
+            [],
+            [
+                'commandbus' => ['default' => ['middleware' => ['tactician.middleware.command_handler']]],
+                'default_bus' => 'default',
+                'method_inflector' => 'tactician.handler.method_name_inflector.handle',
+                'security' => [],
+            ]
+        );
+    }
+
     public function testSimpleMiddleware()
     {
         $this->assertConfigurationIsValid([

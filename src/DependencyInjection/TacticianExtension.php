@@ -22,7 +22,7 @@ class TacticianExtension extends ConfigurableExtension
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('services.yml');
-
+        $container->setParameter('tactician.merged_config', $mergedConfig);
         $this->configureSecurity($mergedConfig, $container);
     }
 

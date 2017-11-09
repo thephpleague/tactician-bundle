@@ -11,13 +11,6 @@ class BasicCommandAndBusMappingTest extends IntegrationTest
 {
     public function testHandleCommandOnDefaultBus()
     {
-        $this->givenConfig('tactician', <<<'EOF'
-commandbus:
-    default:
-        middleware:
-            - tactician.middleware.command_handler
-EOF
-        );
         $this->registerService('tactician.test.handler', \League\Tactician\Bundle\Tests\EchoTextHandler::class, [
             ['name' => 'tactician.handler', 'command' => 'League\Tactician\Bundle\Tests\EchoText'],
         ]);
