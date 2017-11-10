@@ -159,7 +159,7 @@ class CommandHandlerPassTest extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->prependExtensionConfig('tactician', $config);
+        $container->setParameter('tactician.merged_config', $config);
 
         return $container;
     }

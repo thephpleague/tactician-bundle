@@ -24,7 +24,9 @@ class CommandHandlerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        $builders = BusBuildersFromConfig::convert($container->getExtensionConfig('tactician')[0]);
+        $builders = BusBuildersFromConfig::convert(
+            $this->readAndForgetParameter($container, 'tactician.merged_config')
+        );
 
         $routing = $this->handlerMapping->build($container, $builders->createBlankRouting());
 
@@ -46,5 +48,13 @@ class CommandHandlerPass implements CompilerPassInterface
         if ($container->hasDefinition('tactician.command.debug')) {
             $container->getDefinition('tactician.command.debug')->addArgument($mappings);
         }
+    }
+
+    private function readAndForgetParameter(ContainerBuilder $container, $parameter)
+    {
+        $value = $container->getParameter($parameter);
+        $container->getParameterBag()->remove($parameter);
+
+        return $value;
     }
 }
