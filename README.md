@@ -251,6 +251,9 @@ tactician:
             middleware:
                 - tactician.middleware.locking
                 - some.middleware.service.to.call.the.remote.accounting.app
+                - tactician.commandbus.accounting.middleware.command_handler # Because "tactician.middleware.command_handler" refers to the default bus
+
+
 ```
 
 The configuration defines two buses: "default" and "accounting". These buses will be registered as the
@@ -280,6 +283,12 @@ foo.user.register_user_handler:
         - '@foo.user.user_repository'
     tags:
         - { name: tactician.handler, command: Foo\User\RegisterUserCommand, bus: accounting }
+```
+
+and you will be able to handle this command only on the accounting bus:
+```php
+$bus = $container->get('tactician.commandbus.accounting');
+$bus->handle(new Foo\User\RegisterUserCommand('my', 'arguments'));
 ```
 
 ## Extra Bundled Middleware
