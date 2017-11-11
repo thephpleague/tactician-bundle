@@ -1,3 +1,14 @@
+## 1.1.1 (2017-11-11)
+Bugfixes
+- Fixed trying to use a bus when absolutely no config was defined (#82)
+
+Other
+- Improved version constraints
+- Updated docs
+
+BC Breaks
+- None
+
 ## 1.1 (2017-11-05)
 
 New features
