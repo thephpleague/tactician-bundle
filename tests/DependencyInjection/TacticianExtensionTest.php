@@ -75,13 +75,4 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('tactician.logger.class_properties_formatter');
         $this->assertContainerBuilderHasService('tactician.logger.class_name_formatter');
     }
-
-    public function testLoggerMiddlewareIsNotCreatedWithoutLoggerDefinition()
-    {
-        $this->load();
-
-        $this->assertContainerBuilderNotHasService('tactician.middleware.logger');
-        $this->assertContainerBuilderNotHasService('tactician.logger.class_properties_formatter');
-        $this->assertContainerBuilderNotHasService('tactician.logger.class_name_formatter');
-    }
 }
