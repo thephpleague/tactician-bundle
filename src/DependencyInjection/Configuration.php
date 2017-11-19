@@ -68,6 +68,10 @@ class Configuration implements ConfigurationInterface
                         ->prototype('scalar')->end()
                     ->end()
                 ->end()
+                ->scalarNode('logger_formatter')
+                    ->defaultValue('tactician.logger.class_properties_formatter')
+                    ->cannotBeEmpty()
+                ->end()
             ->end()
             ->validate()
                 ->ifTrue(function ($config) {

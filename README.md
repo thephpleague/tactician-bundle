@@ -307,6 +307,10 @@ If the command fails, it will throw a [League\Tactician\Bundle\Middleware\Invali
 
 This middleware is bundled in Tactician, please refer to [the official documentation](http://tactician.thephpleague.com/plugins/locking-middleware/) for details.
 
+### Logger Middleware (tactician.middleware.logger)
+
+This middleware is bundled in Tactician, please refer to [the official documentation](http://tactician.thephpleague.com/plugins/logger/) for details.
+
 ### Security Middleware (tactician.middleware.security)
 
 The security middleware will perform authorization on handling all commands. By default an AccessDenied exception will be thrown if the user is not authorized.

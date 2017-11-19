@@ -4,6 +4,7 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use League\Tactician\Bundle\DependencyInjection\TacticianExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 class TacticianExtensionTest extends AbstractExtensionTestCase
@@ -63,5 +64,24 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderNotHasService('tactician.middleware.security_voter');
+    }
+
+    public function testLoggerMiddlewareIsCreated()
+    {
+        $this->container->setDefinition('logger', new Definition(\stdClass::class));
+        $this->load();
+
+        $this->assertContainerBuilderHasService('tactician.middleware.logger');
+        $this->assertContainerBuilderHasService('tactician.logger.class_properties_formatter');
+        $this->assertContainerBuilderHasService('tactician.logger.class_name_formatter');
+    }
+
+    public function testLoggerMiddlewareIsNotCreatedWithoutLoggerDefinition()
+    {
+        $this->load();
+
+        $this->assertContainerBuilderNotHasService('tactician.middleware.logger');
+        $this->assertContainerBuilderNotHasService('tactician.logger.class_properties_formatter');
+        $this->assertContainerBuilderNotHasService('tactician.logger.class_name_formatter');
     }
 }

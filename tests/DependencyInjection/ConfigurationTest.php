@@ -36,6 +36,7 @@ class ConfigurationTest extends TestCase
                 'default_bus' => 'default',
                 'method_inflector' => 'tactician.handler.method_name_inflector.handle',
                 'security' => [],
+                'logger_formatter' => 'tactician.logger.class_properties_formatter'
             ]
         );
     }
@@ -238,5 +239,30 @@ class ConfigurationTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    public function testCustomLoggerFormatterCanBeSet()
+    {
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'logger_formatter' => 'some.formatter.service',
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ],
+                        ],
+                        'second' => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
     }
 }
