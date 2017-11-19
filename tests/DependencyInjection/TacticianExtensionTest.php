@@ -68,7 +68,6 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
 
     public function testLoggerMiddlewareIsCreated()
     {
-        $this->container->setDefinition('logger', new Definition(\stdClass::class));
         $this->load();
 
         $this->assertContainerBuilderHasService('tactician.middleware.logger');
