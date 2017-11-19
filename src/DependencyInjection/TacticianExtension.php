@@ -79,7 +79,7 @@ class TacticianExtension extends ConfigurableExtension
      */
     private function configureLogger(array $mergedConfig, ContainerBuilder $container)
     {
-        if (!class_exists(LoggerMiddleware::class) || !$container->hasDefinition('logger')) {
+        if (!class_exists(LoggerMiddleware::class)) {
             return;
         }
 
