@@ -70,13 +70,13 @@ class YourNameController
 
     public function __construct(CommandBus $commandBus)
     {
-        $this->commandbus = $commandBus;
+        $this->commandBus = $commandBus;
     }
 
     public function doSomething()
     {
         $command = new DoSomethingCommand();
-        $this->commandbus->handle($command);
+        $this->commandBus->handle($command);
     }
 }
 ```
