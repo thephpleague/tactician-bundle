@@ -84,7 +84,7 @@ final class BusBuilder
                     )
                 ]
             )
-        );
+        )->setPublic(true);
     }
 
     private function registerLocatorService(ContainerBuilder $container, $commandsToAccept)
