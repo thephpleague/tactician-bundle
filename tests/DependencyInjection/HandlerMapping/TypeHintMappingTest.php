@@ -71,6 +71,7 @@ final class TypeHintMappingTest extends TestCase
                 [DateTime::class => 'some.handler']
             ],
             'will skip methods with no typehint' => [NoTypehintHandler::class, []],
+            'will skip methods with an interface typehint' => [InterfaceTypehintHandler::class, []],
             'will not try to map scalar typehints' => [ScalarHandler::class, []],
             'will not use protected or private methods' => [ProtectedMethodHandler::class, []],
             'will not use constructor method' => [ConstructorHandler::class, []],
@@ -190,6 +191,17 @@ class ScalarHandler
     }
 
     public function that(callable $thing)
+    {
+    }
+}
+
+interface ServiceInterface {
+
+}
+
+class InterfaceTypehintHandler
+{
+    public function interfaced(ServiceInterface $foo)
     {
     }
 }
