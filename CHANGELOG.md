@@ -1,3 +1,11 @@
+## 1.1.2 (2017-12-08)
+Bugfixes
+- Exclude interfaces from auto routing in the Typehints mapping strategy [#92]
+- Fix container visibility issues in Symfony 4 [#91]
+
+BC Breaks
+- None
+
 ## 1.1.1 (2017-11-11)
 Bugfixes
 - Fixed trying to use a bus when absolutely no config was defined (#82)
