@@ -67,10 +67,10 @@ class HandleCommandVoter extends Voter
 
         if (count($allowedRoles) > 0) {
             return $this->decisionManager->decide($token, $allowedRoles);
-        } else {
-            // default conclusion is access denied
-            return false;
         }
+
+        // default conclusion is access denied
+        return false;
     }
 
     /**
@@ -84,8 +84,8 @@ class HandleCommandVoter extends Voter
     {
         if (array_key_exists($type, $this->commandRoleMapping)) {
             return $this->commandRoleMapping[$type];
-        } else {
-            return [];
         }
+
+        return [];
     }
 }
