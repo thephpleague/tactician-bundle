@@ -11,7 +11,7 @@ class ContainerBasedHandlerLocatorTest extends TestCase
     public function testGetHandler()
     {
         $container = new ContainerBuilder();
-        $container->register('fake_command_handler', 'stdClass');
+        $container->register('fake_command_handler', 'stdClass')->setPublic(true);
         $container->compile();
 
         $locator = new ContainerBasedHandlerLocator($container, [

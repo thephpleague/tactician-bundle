@@ -10,7 +10,7 @@ use ReflectionClass;
 /**
  * Routes commands based on typehints in the handler.
  *
- * If your handler has a public method with a single, non-scalar type hinted
+ * If your handler has a public method with a single, non-scalar, no-interface type hinted
  * parameter, we'll assume that typehint is a command and route it to this
  * service definition as the handler.
  *
@@ -21,11 +21,13 @@ use ReflectionClass;
  *     public function handle(RegisterUser $command) {...}
  *     private function foobar(SomeObject $obj) {...}
  *     public function checkThings(OtherObject $obj, WhatObject $obj2)
+ *     public function setADependency(ManagerInterface $interface) {...}
  * }
  *
  * would have RegisterUser routed to it, but not SomeObject (because it's
- * used in a private method) and not OtherObject or WhatObject (because they
- * don't appear as the only parameter).
+ * used in a private method), not OtherObject or WhatObject (because they
+ * don't appear as the only parameter) and not setADependency (because it
+ * has an interface type hinted parameter).
  */
 final class TypeHintMapping extends TagBasedMapping
 {
@@ -53,7 +55,10 @@ final class TypeHintMapping extends TagBasedMapping
             }
 
             $parameter = $method->getParameters()[0];
-            if (!$parameter->hasType() || $parameter->getType()->isBuiltin()) {
+            if (!$parameter->hasType()
+                || $parameter->getType()->isBuiltin()
+                || $parameter->getClass()->isInterface()
+            ) {
                 continue;
             }
 
