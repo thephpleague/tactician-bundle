@@ -31,6 +31,7 @@
   "require" : {
     "php":  ">=7.0",
     "league/tactician": "^1.0",
+    "league/tactician-logger": "^0.10.0",
     "league/tactician-container": "^2.0",
     "symfony/config": "^2.8|^3.3|^4.0",
     "symfony/dependency-injection": "^2.8|^3.3|^4.0",
@@ -42,8 +43,7 @@
     "symfony/console": "For debugging command-to-handler routing using the tactician:debug console command",
     "symfony/validator": "For command validator middleware",
     "symfony/security": "For command security middleware",
-    "league/tactician-doctrine": "For doctrine transaction middleware",
-    "league/tactician-logger": "For logger middleware"
+    "league/tactician-doctrine": "For doctrine transaction middleware"
   },
   "autoload" : {
     "psr-4" : {
@@ -67,7 +67,6 @@
     "symfony/security": "^2.8|^3.3|^4.0",
     "symfony/validator": "^2.8|^3.3|^4.0",
     "league/tactician-doctrine": "^1.1",
-    "league/tactician-logger": "^0.10.0",
     "symfony/framework-bundle": "^2.8.15|^3.3|^4.0",
     "symfony/security-bundle": "^2.8|^3.3|^4.0",
     "matthiasnoback/symfony-config-test": "^3.0",
