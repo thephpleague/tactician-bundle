@@ -39,6 +39,7 @@ Other:
 
 BC Breaks:
 - PHP 7 is now required
+- `tactician.middleware.command_handler` now only contains the default bus handlers. Check [#83](https://github.com/thephpleague/tactician-bundle/pull/83/files) to see how to update your config accordingly.
 
 New features:
 - Allow multiple command buses, each with separated handlers and different method inflectors
