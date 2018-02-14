@@ -6,6 +6,9 @@ services:
     tactician.handler.method_name_inflector.handle:
         class: League\Tactician\Handler\MethodNameInflector\HandleInflector
 
+    tactician.handler.method_name_inflector.class_name:
+        class: League\Tactician\Handler\MethodNameInflector\ClassNameInflector
+
     tactician.handler.method_name_inflector.handle_class_name:
         class: League\Tactician\Handler\MethodNameInflector\HandleClassNameInflector
 
