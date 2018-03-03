@@ -1,3 +1,7 @@
+## 1.1.3 (2017-03-03)
+- #99 - Add class name inflector support
+- #87 - Add Tactician logger support
+
 ## 1.1.2 (2017-12-08)
 Bugfixes
 - #92 Exclude interfaces from auto routing in the Typehints mapping strategy
