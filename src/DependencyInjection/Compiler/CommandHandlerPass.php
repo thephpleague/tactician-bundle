@@ -6,6 +6,7 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersF
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use League\Tactician\CommandBus;
 
 /**
  * This compiler pass maps Handler DI tags to specific commands.
@@ -41,6 +42,7 @@ class CommandHandlerPass implements CompilerPassInterface
 
         // Setup default aliases
         $container->setAlias('tactician.commandbus', $builders->defaultBus()->serviceId());
+        $container->setAlias(CommandBus::class, 'tactician.commandbus');
         $container->setAlias('tactician.handler.locator.symfony', $builders->defaultBus()->locatorServiceId());
         $container->setAlias('tactician.middleware.command_handler', $builders->defaultBus()->commandHandlerMiddlewareId());
 
