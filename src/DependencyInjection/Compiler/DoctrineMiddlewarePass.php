@@ -31,10 +31,16 @@ class DoctrineMiddlewarePass implements CompilerPassInterface
                 sprintf('tactician.middleware.doctrine.%s', $name),
                 new Definition(TransactionMiddleware::class, [ new Reference($serviceId) ])
             );
+
+            $container->setDefinition(
+                sprintf('tactician.middleware.doctrine_rollback_only.%s', $name),
+                new Definition(RollbackOnlyTransactionMiddleware::class, [ new Reference($serviceId) ])
+            );
         }
 
         $defaultEntityManager = $container->getParameter('doctrine.default_entity_manager');
         $container->setAlias('tactician.middleware.doctrine', sprintf('tactician.middleware.doctrine.%s', $defaultEntityManager));
+        $container->setAlias('tactician.middleware.doctrine_rollback_only', sprintf('tactician.middleware.doctrine.%s', $defaultEntityManager));
     }
 }
 
