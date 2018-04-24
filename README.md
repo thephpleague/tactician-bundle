@@ -81,6 +81,33 @@ class YourNameController
 }
 ```
 
+### Autowiring
+
+If Symfony autowire feature is enabled (avaliable for Symfony 2.8+), instead of creating a service for each controller using the default commandbus you can inject and use it as follows:
+
+```php
+<?php namespace AppBundle\Controller;
+
+use League\Tactician\CommandBus;
+use AppBundle\Commands\DoSomethingCommand;
+
+class YourNameController
+{
+    public function doSomething(CommandBus $commandBus)
+    {
+        $command = new DoSomethingCommand();
+        $commandBus->handle($command);
+    }
+}
+```
+
+Note that this only works for the default commandbus, if you want to inject other than the default one you can override the config through an alias with:
+
+```yaml
+services:
+    League\Tactician\CommandBus: '@tactician.commandbus.your_commandbus'
+```
+
 ## Configuring Command Handlers
 When you pass a command to Tactician, the ultimate goal is to have it mapped to a Handler.
 
