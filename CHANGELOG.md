@@ -1,5 +1,6 @@
 ## 1.1.4 (2018-04-24)
 - #100 - Allow autowiring the default Command Bus instance based on a `CommandBus` typehint
+- #101 - Register the new Doctrine Rollback Only middleware
 
 ## 1.1.3 (2018-03-03)
 - #99 - Add class name inflector support
