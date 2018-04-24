@@ -1,6 +1,7 @@
 <?php
 namespace League\Tactician\Bundle\DependencyInjection\Compiler;
 
+use League\Tactician\Doctrine\ORM\RollbackOnlyTransactionMiddleware;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,7 +41,7 @@ class DoctrineMiddlewarePass implements CompilerPassInterface
 
         $defaultEntityManager = $container->getParameter('doctrine.default_entity_manager');
         $container->setAlias('tactician.middleware.doctrine', sprintf('tactician.middleware.doctrine.%s', $defaultEntityManager));
-        $container->setAlias('tactician.middleware.doctrine_rollback_only', sprintf('tactician.middleware.doctrine.%s', $defaultEntityManager));
+        $container->setAlias('tactician.middleware.doctrine_rollback_only', sprintf('tactician.middleware.doctrine_rollback_only.%s', $defaultEntityManager));
     }
 }
 
