@@ -1,3 +1,6 @@
+## 1.1.5 (2018-04-25)
+- #102 & #103 - Fix bug registering new Doctrine Rollback Only middleware
+
 ## 1.1.4 (2018-04-24)
 - #100 - Allow autowiring the default Command Bus instance based on a `CommandBus` typehint
 - #101 - Register the new Doctrine Rollback Only middleware
