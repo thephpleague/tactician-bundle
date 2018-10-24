@@ -286,7 +286,7 @@ tactician:
 The configuration defines two buses: "default" and "accounting". These buses will be registered as the
 `tactician.commandbus.default` and `tactician.commandbus.accounting` services respectively.
 
-Take note that each bus has now configured their own command handler middleware: `tactician.middleware.command_handler` for the default and `tactician.commandbus.accounting.middleware.command_handler` for the account one. 
+Take note that each bus now has configured their own command handler middleware: `tactician.middleware.command_handler` for the default and `tactician.commandbus.accounting.middleware.command_handler` for the account one. 
 
 If you want, you can also change which command handler is registered to `tactician.commandbus`. You can do this by
 setting the `default_bus` value in the configuration, like so:
