@@ -8,9 +8,11 @@ use Symfony\Component\DependencyInjection\Definition;
 
 abstract class TagBasedMapping implements HandlerMapping
 {
+    const TAG_NAME = 'tactician.handler';
+
     public function build(ContainerBuilder $container, Routing $routing): Routing
     {
-        foreach ($container->findTaggedServiceIds('tactician.handler') as $serviceId => $tags) {
+        foreach ($container->findTaggedServiceIds(self::TAG_NAME) as $serviceId => $tags) {
             foreach ($tags as $attributes) {
                 $this->mapServiceByTag($container, $routing, $serviceId, $attributes);
             }
