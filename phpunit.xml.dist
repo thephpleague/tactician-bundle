@@ -19,6 +19,9 @@
             <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+    </php>
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
