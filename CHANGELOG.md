@@ -1,3 +1,7 @@
+## 1.1.6 (2018-12-16)
+- #109 - Remove deprecation notices for Symfony 4.2, increase test matrix
+- #108 - Move handler service tag into constant for easier PHP-based mapping
+
 ## 1.1.5 (2018-04-25)
 - #102 & #103 - Fix bug registering new Doctrine Rollback Only middleware
 
