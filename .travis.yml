@@ -10,6 +10,8 @@ php:
   - 7.0
   - 7.1
   - 7.2
+  - 7.3
+  - nightly
 
 env:
   matrix:
@@ -19,6 +21,8 @@ env:
     - SYMFONY_VERSION="3.3.*"
     - SYMFONY_VERSION="3.4.*"
     - SYMFONY_VERSION="4.0.*"
+    - SYMFONY_VERSION="4.1.*"
+    - SYMFONY_VERSION="4.2.*"
 
 matrix:
   include:
@@ -29,7 +33,10 @@ matrix:
   exclude:
     - php: 7.0
       env: SYMFONY_VERSION="4.0.*"
-
+    - php: 7.0
+      env: SYMFONY_VERSION="4.1.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="4.2.*"
 
 before_install:
   - composer self-update || true
