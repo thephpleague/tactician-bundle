@@ -6,6 +6,11 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersF
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use function array_key_exists;
+use function end;
+use function in_array;
+use function is_array;
+use function method_exists;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
@@ -16,14 +21,12 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * Create a rootnode tree for configuration that can be injected into the DI container.
-     *
-     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder() : TreeBuilder
     {
         $treeBuilder = new TreeBuilder('tactician');
 
-        if (\method_exists($treeBuilder, 'getRootNode')) {
+        if (method_exists($treeBuilder, 'getRootNode')) {
             $rootNode = $treeBuilder->getRootNode();
         } else {
             // BC layer for symfony/config 4.1 and older
@@ -44,8 +47,8 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')->end()
                                 ->validate()
                                     ->ifTrue(function ($config) {
-                                        $isPresent = in_array('tactician.middleware.command_handler', $config);
-                                        $isLast = end($config) == 'tactician.middleware.command_handler';
+                                        $isPresent = in_array('tactician.middleware.command_handler', $config, true);
+                                        $isLast = end($config) === 'tactician.middleware.command_handler';
 
                                         return $isPresent && !$isLast;
                                     })
@@ -63,8 +66,8 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(BusBuildersFromConfig::DEFAULT_BUS_ID)
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('method_inflector')
-                    ->defaultValue(BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR)
+                ->scalarNode('command_handler_mapping')
+                    ->defaultValue(BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING)
                     ->cannotBeEmpty()
                 ->end()
                 ->arrayNode('security')
@@ -80,19 +83,19 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(static function ($config) : bool {
                     return is_array($config) &&
                         array_key_exists('default_bus', $config) &&
                         array_key_exists('commandbus', $config)
                     ;
                 })
-                    ->then(function ($config) {
+                    ->then(static function (array $config) : array {
                         $busNames = [];
                         foreach ($config['commandbus'] as $busName => $busConfig) {
                             $busNames[] = $busName;
                         }
 
-                        if (!in_array($config['default_bus'], $busNames)) {
+                        if (! in_array($config['default_bus'], $busNames, true)) {
                             throw new InvalidConfigurationException(
                                 sprintf(
                                     'The default_bus "%s" was not defined as a command bus. Valid option(s): %s',

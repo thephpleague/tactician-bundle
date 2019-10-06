@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 
-use League\Tactician\Bundle\DependencyInjection\DuplicatedCommandBusId;
-use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
-use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
 use ArrayIterator;
+use IteratorAggregate;
+use League\Tactician\Bundle\DependencyInjection\DuplicatedCommandBusId;
+use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
 
-final class BusBuilders implements \IteratorAggregate
+final class BusBuilders implements IteratorAggregate
 {
     /**
      * @var BusBuilder[]
@@ -28,11 +28,6 @@ final class BusBuilders implements \IteratorAggregate
 
         $this->assertValidBusId($defaultBusId);
         $this->defaultBusId = $defaultBusId;
-    }
-
-    public function createBlankRouting(): Routing
-    {
-        return new Routing(array_keys($this->busBuilders));
     }
 
     public function defaultBus(): BusBuilder
@@ -55,14 +50,14 @@ final class BusBuilders implements \IteratorAggregate
         return new ArrayIterator($this->busBuilders);
     }
 
-    private function assertValidBusId($busId)
+    private function assertValidBusId($busId) : void
     {
         if (!isset($this->busBuilders[$busId])) {
             throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
         }
     }
 
-    private function add(BusBuilder $builder)
+    private function add(BusBuilder $builder) : void
     {
         $id = $builder->id();
 

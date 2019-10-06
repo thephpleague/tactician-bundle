@@ -34,9 +34,9 @@ final class BusBuilderTest extends TestCase
 
     public function testProcess()
     {
-        $builder = new BusBuilder('default', 'some.method.inflector', ['middleware1', 'middleware2']);
+        $builder = new BusBuilder('default', 'some.class.inflector', 'some.method.inflector', ['middleware1', 'middleware2']);
 
-        $builder->registerInContainer($container = new ContainerBuilder(), []);
+        $builder->registerInContainer($container = new ContainerBuilder());
 
         $this->busShouldBeCorrectlyRegisteredInContainer($container, 'default', 'some.method.inflector');
     }
