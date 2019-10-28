@@ -12,7 +12,6 @@ class TacticianBundle extends Bundle
     public function build(ContainerBuilder $container) : void
     {
         parent::build($container);
-        $container->addCompilerPass(new Compiler\DoctrineMiddlewarePass());
         $container->addCompilerPass(new Compiler\ValidatorMiddlewarePass());
         $container->addCompilerPass(new Compiler\SecurityMiddlewarePass());
         $container->addCompilerPass(new Compiler\CommandHandlerPass());

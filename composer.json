@@ -42,8 +42,7 @@
   "suggest": {
     "symfony/console": "For debugging command-to-handler routing using the tactician:debug console command",
     "symfony/validator": "For command validator middleware",
-    "symfony/security": "For command security middleware",
-    "league/tactician-doctrine": "For doctrine transaction middleware"
+    "symfony/security": "For command security middleware"
   },
   "autoload" : {
     "psr-4" : {
@@ -66,7 +65,6 @@
     "symfony/console": "^2.8|^3.3|^4.0",
     "symfony/security": "^2.8|^3.3|^4.0",
     "symfony/validator": "^2.8|^3.3|^4.0",
-    "league/tactician-doctrine": "^1.1.1",
     "symfony/framework-bundle": "^2.8.15|^3.3|^4.0",
     "symfony/security-bundle": "^2.8|^3.3|^4.0",
     "matthiasnoback/symfony-config-test": "^3.0",
