@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace League\Tactician\Bundle\Command;
+namespace League\Tactician\Bundle\Console;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

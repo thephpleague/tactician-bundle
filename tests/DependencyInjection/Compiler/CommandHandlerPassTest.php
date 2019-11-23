@@ -2,7 +2,7 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Command\DebugCommand;
+use League\Tactician\Bundle\Console\DebugCommand;
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;

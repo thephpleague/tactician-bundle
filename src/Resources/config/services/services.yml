@@ -29,6 +29,6 @@ services:
             $methodNameInflector: '@tactician.handler.method_name_inflector.handle'
 
     tactician.command.debug:
-        class: League\Tactician\Bundle\Command\DebugCommand
+        class: League\Tactician\Bundle\Console\DebugCommand
         tags:
             - { name: console.command }
