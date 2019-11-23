@@ -31,15 +31,10 @@
     "phpstan/phpstan-strict-rules": "^0.11.1",
     "phpunit/phpunit": "^8",
     "symfony/console": "^4.4",
-    "symfony/framework-bundle": "^4.4",
-    "symfony/security": "^4.4",
-    "symfony/security-bundle": "^4.4",
-    "symfony/validator": "^4.4"
+    "symfony/framework-bundle": "^4.4"
   },
   "suggest": {
-    "symfony/console": "For debugging command-to-handler routing using the tactician:debug console command",
-    "symfony/validator": "For command validator middleware",
-    "symfony/security": "For command security middleware"
+    "symfony/console": "For debugging command-to-handler routing using the tactician:debug console command"
   },
   "autoload" : {
     "psr-4" : {
