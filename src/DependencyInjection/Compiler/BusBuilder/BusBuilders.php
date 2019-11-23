@@ -30,12 +30,12 @@ final class BusBuilders implements IteratorAggregate
         $this->defaultBusId = $defaultBusId;
     }
 
-    public function defaultBus(): BusBuilder
+    public function defaultBus() : BusBuilder
     {
         return $this->get($this->defaultBusId);
     }
 
-    private function get(string $busId): BusBuilder
+    private function get(string $busId) : BusBuilder
     {
         $this->assertValidBusId($busId);
 
@@ -52,7 +52,7 @@ final class BusBuilders implements IteratorAggregate
 
     private function assertValidBusId($busId) : void
     {
-        if (!isset($this->busBuilders[$busId])) {
+        if (! isset($this->busBuilders[$busId])) {
             throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
         }
     }

@@ -26,9 +26,9 @@ final class BusBuilder
 
     public function __construct(string $busId, string $commandToHandlerMapping, array $middlewareIds)
     {
-        $this->busId = $busId;
+        $this->busId                   = $busId;
         $this->commandToHandlerMapping = $commandToHandlerMapping;
-        $this->middlewareIds = $middlewareIds;
+        $this->middlewareIds           = $middlewareIds;
     }
 
     public function id() : string
@@ -54,7 +54,7 @@ final class BusBuilder
                 CommandHandlerMiddleware::class,
                 [
                     new Reference('service_container'),
-                    new Reference($this->commandToHandlerMapping)
+                    new Reference($this->commandToHandlerMapping),
                 ]
             )
         );

@@ -5,10 +5,10 @@ namespace League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder;
 
 final class BusBuildersFromConfig
 {
-    public const DEFAULT_BUS_ID = 'default';
+    public const DEFAULT_BUS_ID                  = 'default';
     public const DEFAULT_COMMAND_HANDLER_MAPPING = 'tactician.handler.command_handler_mapping.map_by_naming_convention';
 
-    public static function convert(array $config): BusBuilders
+    public static function convert(array $config) : BusBuilders
     {
         $defaultCommandHandlerMapping = $config['command_handler_mapping'] ?? self::DEFAULT_COMMAND_HANDLER_MAPPING;
 
