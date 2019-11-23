@@ -13,19 +13,19 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class CommandHandlerPassTest extends TestCase
+final class CommandHandlerPassTest extends TestCase
 {
-    /**
-     * @var HandlerMapping
-     */
-    private $mappingStrategy;
+//    /**
+//     * @var HandlerMapping
+//     */
+//    private $mappingStrategy;
+//
+//    protected function setUp() : void
+//    {
+//        $this->mappingStrategy = new ClassNameMapping();
+//    }
 
-    protected function setUp() : void
-    {
-        $this->mappingStrategy = new ClassNameMapping();
-    }
-
-    public function testAddingSingleDefaultBus()
+    public function testAddingSingleDefaultBus() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -36,14 +36,14 @@ class CommandHandlerPassTest extends TestCase
             ]
         );
 
-        (new CommandHandlerPass($this->mappingStrategy))->process($container);
+        (new CommandHandlerPass())->process($container);
 
         $this->assertTrue($container->hasDefinition('tactician.commandbus.default'));
 
         $this->assertDefaultAliasesAreDeclared($container, 'default');
     }
 
-    public function testProcessAddsLocatorAndHandlerDefinitionForTaggedBuses()
+    public function testProcessAddsHandlerDefinitionForTaggedBuses() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -57,7 +57,7 @@ class CommandHandlerPassTest extends TestCase
             ]
         );
 
-        (new CommandHandlerPass($this->mappingStrategy))->process($container);
+        (new CommandHandlerPass())->process($container);
 
         $this->assertTrue($container->hasDefinition('tactician.commandbus.default'));
         $this->assertTrue($container->hasDefinition('tactician.commandbus.custom_bus'));
@@ -66,7 +66,7 @@ class CommandHandlerPassTest extends TestCase
         $this->assertDefaultAliasesAreDeclared($container, 'custom_bus');
     }
 
-    public function test_handler_mapping_is_called()
+    public function test_handler_mapping_is_called() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -155,7 +155,7 @@ class CommandHandlerPassTest extends TestCase
         );
     }
 
-    private function containerWithConfig($config)
+    private function containerWithConfig($config) : ContainerBuilder
     {
         $container = new ContainerBuilder();
 
@@ -164,19 +164,11 @@ class CommandHandlerPassTest extends TestCase
         return $container;
     }
 
-    /**
-     * @param $container
-     */
-    protected function assertDefaultAliasesAreDeclared(ContainerBuilder $container, string $defaultBusId)
+    protected function assertDefaultAliasesAreDeclared(ContainerBuilder $container, string $defaultBusId) : void
     {
         $this->assertSame(
             $container->findDefinition('tactician.commandbus'),
             $container->getDefinition("tactician.commandbus.$defaultBusId")
-        );
-
-        $this->assertSame(
-            $container->findDefinition('tactician.handler.locator.symfony'),
-            $container->getDefinition("tactician.commandbus.$defaultBusId.handler.locator")
         );
 
         $this->assertSame(

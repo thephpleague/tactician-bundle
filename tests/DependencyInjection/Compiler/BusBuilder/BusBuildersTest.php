@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class BusBuildersTest extends TestCase
 {
-    public function test_can_iterate_over_builders()
+    public function test_can_iterate_over_builders() : void
     {
         $builders = new BusBuilders(
             [$a, $b] = $this->buildersNamed('foo', 'bar'),
@@ -22,21 +22,21 @@ final class BusBuildersTest extends TestCase
         $this->assertEquals(['foo' => $a, 'bar' => $b], iterator_to_array($builders));
     }
 
-    public function test_default_builder_must_be_an_id_that_actually_exists()
+    public function test_default_builder_must_be_an_id_that_actually_exists() : void
     {
         $this->expectException(InvalidCommandBusId::class);
 
         $this->builders(['bus1'], 'some_bus_that_does_not_exist');
     }
 
-    public function test_two_buses_can_not_have_the_same_id()
+    public function test_two_buses_can_not_have_the_same_id() : void
     {
         $this->expectException(DuplicatedCommandBusId::class);
 
         $this->builders(['bus1', 'bus1']);
     }
 
-    public function test_blank_routing_has_ids()
+    public function test_blank_routing_has_ids() : void
     {
         $builders = $this->builders(['bus1', 'bus2']);
 
@@ -51,7 +51,7 @@ final class BusBuildersTest extends TestCase
     private function buildersNamed(string ...$ids): array
     {
         return array_map(
-            function (string $id) {
+            static function (string $id) : BusBuilder {
                 return new BusBuilder($id, 'some.inflector', []);
             },
             $ids
