@@ -26,11 +26,11 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('default', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.middleware']),
             $builders->getIterator()['default']
         );
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('other', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.other.middleware']),
             $builders->getIterator()['other']
         );
@@ -55,7 +55,7 @@ final class BusBuildersFromConfigTest extends TestCase
         ]);
 
 
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('default', 'other.mapping', ['my.middleware']),
             $builders->getIterator()['default']
         );
@@ -80,7 +80,7 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('other', 'bus2.mapping', ['my.other.middleware']),
             $builders->getIterator()['other']
         );
@@ -103,7 +103,7 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('default', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.middleware']),
             $builders->defaultBus()
         );
@@ -127,7 +127,7 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
+        self::assertEquals(
             new BusBuilder('other', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.other.middleware']),
             $builders->defaultBus()
         );

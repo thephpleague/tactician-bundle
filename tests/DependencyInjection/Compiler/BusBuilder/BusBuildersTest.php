@@ -19,7 +19,7 @@ final class BusBuildersTest extends TestCase
             'foo'
         );
 
-        $this->assertEquals(['foo' => $a, 'bar' => $b], iterator_to_array($builders));
+        self::assertEquals(['foo' => $a, 'bar' => $b], iterator_to_array($builders));
     }
 
     public function test_default_builder_must_be_an_id_that_actually_exists() : void
@@ -40,7 +40,7 @@ final class BusBuildersTest extends TestCase
     {
         $builders = $this->builders(['bus1', 'bus2']);
 
-        $this->assertEquals(new Routing(['bus1', 'bus2']), $builders->createBlankRouting());
+        self::assertEquals(new Routing(['bus1', 'bus2']), $builders->createBlankRouting());
     }
 
     private function builders($ids, $default = 'bus1'): BusBuilders

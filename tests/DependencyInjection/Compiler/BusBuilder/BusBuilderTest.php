@@ -13,18 +13,18 @@ final class BusBuilderTest extends TestCase
     {
         $builder = new BusBuilder('default', 'some.command_handler_mapping', ['middleware1', 'middleware2']);
 
-        $this->assertEquals('default', $builder->id());
-        $this->assertEquals('tactician.commandbus.default', $builder->serviceId());
-        $this->assertEquals('tactician.commandbus.default.middleware.command_handler', $builder->commandHandlerMiddlewareId());
+        self::assertEquals('default', $builder->id());
+        self::assertEquals('tactician.commandbus.default', $builder->serviceId());
+        self::assertEquals('tactician.commandbus.default.middleware.command_handler', $builder->commandHandlerMiddlewareId());
     }
 
     public function test_alternate_name_generates_expected_ids() : void
     {
         $builder = new BusBuilder('foobar', 'some.command_handler_mapping', ['middleware1', 'middleware2']);
 
-        $this->assertEquals('foobar', $builder->id());
-        $this->assertEquals('tactician.commandbus.foobar', $builder->serviceId());
-        $this->assertEquals('tactician.commandbus.foobar.middleware.command_handler', $builder->commandHandlerMiddlewareId());
+        self::assertEquals('foobar', $builder->id());
+        self::assertEquals('tactician.commandbus.foobar', $builder->serviceId());
+        self::assertEquals('tactician.commandbus.foobar.middleware.command_handler', $builder->commandHandlerMiddlewareId());
     }
 
     public function testProcess() : void
@@ -40,7 +40,7 @@ final class BusBuilderTest extends TestCase
     {
         $handlerId = "tactician.commandbus.$busId.middleware.command_handler";
 
-        $this->assertSame(
+        self::assertSame(
             $commandHandlerMapping,
             (string) $container
                 ->getDefinition($handlerId)
