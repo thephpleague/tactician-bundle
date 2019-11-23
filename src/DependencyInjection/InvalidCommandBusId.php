@@ -3,12 +3,19 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\DependencyInjection;
 
-final class InvalidCommandBusId extends \Exception
+use Exception;
+use function implode;
+use function sprintf;
+
+final class InvalidCommandBusId extends Exception
 {
-    public static function ofName(string $expectedId, array $validIds)
+    /**
+     * @param string[] $validIds
+     */
+    public static function ofName(string $expectedId, array $validIds) : self
     {
         return new static(
-            "Could not find a command bus with id '$expectedId'. Valid buses are: " . implode(', ', $validIds)
+            sprintf("Could not find a command bus with id '%s'. Valid buses are: %s", $expectedId, implode(', ', $validIds))
         );
     }
 }

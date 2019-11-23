@@ -10,28 +10,22 @@ use function array_key_exists;
 use function end;
 use function in_array;
 use function is_array;
-use function method_exists;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     /**
      * Create a rootnode tree for configuration that can be injected into the DI container.
      */
     public function getConfigTreeBuilder() : TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('tactician');
+        $treeBuilder = new TreeBuilder(TacticianExtension::ALIAS);
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('tactician');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -46,7 +40,8 @@ class Configuration implements ConfigurationInterface
                                 ->useAttributeAsKey('name')
                                 ->prototype('scalar')->end()
                                 ->validate()
-                                    ->ifTrue(function ($config) {
+                                    ->ifTrue(
+                                        static function (array $config) : bool {
                                         $isPresent = in_array('tactician.middleware.command_handler', $config, true);
                                         $isLast = end($config) === 'tactician.middleware.command_handler';
 

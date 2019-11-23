@@ -9,18 +9,19 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 final class TacticianExtension extends ConfigurableExtension
 {
+    public const ALIAS = 'tactician';
+
     public function getAlias() : string
     {
-        return 'tactician';
+        return self::ALIAS;
     }
 
     /**
      * Configures the passed container according to the merged configuration.
      *
-     * @param array            $mergedConfig
-     * @param ContainerBuilder $container
+     * @param array $mergedConfig
      */
-    protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container) : void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('services.yml');

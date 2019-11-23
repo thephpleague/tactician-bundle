@@ -11,7 +11,7 @@ use function array_keys;
 /**
  * This compiler pass maps Handler DI tags to specific commands.
  */
-class CommandHandlerPass implements CompilerPassInterface
+final class CommandHandlerPass implements CompilerPassInterface
 {
     public const TACTICIAN_HANDLER_TAG = 'tactician.handler';
 
