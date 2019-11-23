@@ -43,7 +43,8 @@ final class CommandHandlerPass implements CompilerPassInterface
         }
     }
 
-    private function readAndForgetParameter(ContainerBuilder $container, $parameter)
+    /** @return mixed */
+    private function readAndForgetParameter(ContainerBuilder $container, string $parameter)
     {
         $value = $container->getParameter($parameter);
         $container->getParameterBag()->remove($parameter);

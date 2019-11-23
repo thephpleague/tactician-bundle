@@ -23,9 +23,12 @@
     "symfony/yaml": "^4.4"
   },
   "require-dev": {
-    "matthiasnoback/symfony-config-test": "^3.0",
-    "matthiasnoback/symfony-dependency-injection-test": "^2.1",
+    "matthiasnoback/symfony-config-test": "^4.0",
+    "matthiasnoback/symfony-dependency-injection-test": "^4.0",
     "mockery/mockery": "^1.2",
+    "phpstan/phpstan": "^0.11.19",
+    "phpstan/phpstan-phpunit": "^0.11.2",
+    "phpstan/phpstan-strict-rules": "^0.11.1",
     "phpunit/phpunit": "^8",
     "symfony/console": "^4.4",
     "symfony/framework-bundle": "^4.4",

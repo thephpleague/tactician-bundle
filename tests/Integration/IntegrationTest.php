@@ -28,7 +28,7 @@ abstract class IntegrationTest extends KernelTestCase
         return new \AppKernel('test', true);
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         static::$kernel = static::createKernel();
         $this->filesystem = new Filesystem();
@@ -39,7 +39,7 @@ abstract class IntegrationTest extends KernelTestCase
         static::$kernel->defineCacheDir($cacheDir);
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         $this->filesystem->remove(
             static::$kernel->getCacheDir()

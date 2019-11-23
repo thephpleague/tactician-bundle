@@ -22,12 +22,12 @@ final class DebugCommand extends Command
         $this->mappings = $mappings;
     }
 
-    protected function configure()
+    protected function configure() : void
     {
         $this->setName('debug:tactician');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output) : int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -44,9 +44,11 @@ final class DebugCommand extends Command
                 $io->warning("No registered commands for bus $busId");
             }
         }
+
+        return 0;
     }
 
-    private function mappingToRows(array $map)
+    private function mappingToRows(array $map) : array
     {
         $rows = [];
         foreach ($map as $commandName => $handlerService) {

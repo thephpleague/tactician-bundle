@@ -10,7 +10,7 @@ use League\Tactician\Bundle\Tests\Fake\FakeCommand;
  */
 final class MappingPrecedenceTest extends IntegrationTest
 {
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 

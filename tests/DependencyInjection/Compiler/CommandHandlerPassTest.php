@@ -20,7 +20,7 @@ class CommandHandlerPassTest extends TestCase
      */
     private $mappingStrategy;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->mappingStrategy = new ClassNameMapping();
     }

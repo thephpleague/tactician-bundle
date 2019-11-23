@@ -50,7 +50,7 @@ final class BusBuilders implements IteratorAggregate
         return new ArrayIterator($this->busBuilders);
     }
 
-    private function assertValidBusId($busId) : void
+    private function assertValidBusId(string $busId) : void
     {
         if (! isset($this->busBuilders[$busId])) {
             throw InvalidCommandBusId::ofName($busId, array_keys($this->busBuilders));
