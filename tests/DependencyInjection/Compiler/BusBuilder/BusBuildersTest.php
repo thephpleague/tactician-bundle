@@ -8,13 +8,14 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilders;
 use League\Tactician\Bundle\DependencyInjection\DuplicatedCommandBusId;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
+use PHPUnit\Framework\TestCase;
 
-final class BusBuildersTest extends \PHPUnit_Framework_TestCase
+final class BusBuildersTest extends TestCase
 {
     public function test_can_iterate_over_builders()
     {
         $builders = new BusBuilders(
-            list($a, $b) = $this->buildersNamed('foo', 'bar'),
+            [$a, $b] = $this->buildersNamed('foo', 'bar'),
             'foo'
         );
 

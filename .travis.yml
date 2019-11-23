@@ -29,13 +29,6 @@ jobs:
     -   php: nightly
 
   include:
-    -   stage: Validate composer.json
-        name: Validate composer.json
-        php: 7.2
-        script:
-          - make validate-composer
-          - curl -O https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar
-          - php composer-require-checker.phar check composer.json
     -   stage: Code Quality
     -   name: PHPStan
         php: 7.2

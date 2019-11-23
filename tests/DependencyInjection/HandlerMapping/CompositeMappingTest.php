@@ -8,9 +8,10 @@ use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use League\Tactician\Bundle\Tests\Fake\OtherFakeCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class CompositeMappingTest extends \PHPUnit_Framework_TestCase
+final class CompositeMappingTest extends TestCase
 {
     public function test_merging_multiple_mappings()
     {
