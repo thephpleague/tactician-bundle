@@ -1,63 +1,58 @@
 <?php
 
-
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use League\Tactician\Bundle\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class ConfigurationTest extends TestCase
+final class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    /**
-     * Return the instance of ConfigurationInterface that should be used by the
-     * Configuration-specific assertions in this test-case
-     *
-     * @return \Symfony\Component\Config\Definition\ConfigurationInterface
-     */
-    protected function getConfiguration()
+    /** {@inheritDoc} */
+    protected function getConfiguration() : ConfigurationInterface
     {
         return new Configuration();
     }
 
-    public function testBlankConfiguration()
+    public function testBlankConfiguration() : void
     {
         $this->assertConfigurationIsValid([]);
     }
 
-    public function testDefaultConfiguration()
+    public function testDefaultConfiguration() : void
     {
         $this->assertProcessedConfigurationEquals(
             [],
             [
-                'commandbus' => ['default' => ['middleware' => ['tactician.middleware.command_handler']]],
-                'default_bus' => 'default',
-                'method_inflector' => 'tactician.handler.method_name_inflector.handle',
-                'security' => [],
-                'logger_formatter' => 'tactician.logger.class_properties_formatter'
+                'commandbus'              => ['default' => ['middleware' => ['tactician.middleware.command_handler']]],
+                'default_bus'             => 'default',
+                'command_handler_mapping' => 'tactician.handler.command_handler_mapping.map_by_naming_convention',
             ]
         );
     }
 
-    public function testSimpleMiddleware()
+    public function testSimpleMiddleware() : void
     {
-        $this->assertConfigurationIsValid([
-            'tactician' => [
-                'commandbus' => [
-                    'default' => [
-                        'middleware' => [
-                            'my_middleware'  => 'some_middleware',
-                            'my_middleware2' => 'some_middleware',
-                        ]
-                    ]
-                ]
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'commandbus' => [
+                        'default' => [
+                            'middleware' => [
+                                'my_middleware'  => 'some_middleware',
+                                'my_middleware2' => 'some_middleware',
+                            ],
+                        ],
+                    ],
+                ],
             ]
-        ]);
+        );
     }
 
-    public function testMiddlewareMustBeScalar()
+    public function testMiddlewareMustBeScalar() : void
     {
         $this->assertConfigurationIsInvalid(
             [
@@ -67,29 +62,29 @@ class ConfigurationTest extends TestCase
                             'middleware' => [
                                 'my_middleware'  => [],
                                 'my_middleware2' => 'some_middleware',
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'Invalid type for path "tactician.commandbus.default.middleware.my_middleware". Expected scalar, but got array.'
         );
     }
 
-    public function testDefaultMiddlewareMustExist()
+    public function testDefaultMiddlewareMustExist() : void
     {
         $this->assertConfigurationIsInvalid(
             [
                 'tactician' => [
                     'default_bus' => 'foo',
-                    'commandbus' => [
+                    'commandbus'  => [
                         'bar' => [
                             'middleware' => [
-                                'my_middleware'  => 'some_middleware',
-                            ]
-                        ]
-                    ]
-                ]
+                                'my_middleware' => 'some_middleware',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'The default_bus "foo" was not defined as a command bus.'
         );
@@ -100,17 +95,17 @@ class ConfigurationTest extends TestCase
                     'commandbus' => [
                         'bar' => [
                             'middleware' => [
-                                'my_middleware'  => 'some_middleware',
-                            ]
-                        ]
-                    ]
-                ]
+                                'my_middleware' => 'some_middleware',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'The default_bus "default" was not defined as a command bus.'
         );
     }
 
-    public function testMiddlewareDefinitionCannotBeEmpty()
+    public function testMiddlewareDefinitionCannotBeEmpty() : void
     {
         $this->assertConfigurationIsInvalid(
             [
@@ -118,10 +113,10 @@ class ConfigurationTest extends TestCase
                     'commandbus' => [
                         'default' => [
                             'middleware' => [
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'The path "tactician.commandbus.default.middleware" should have at least 1 element(s) defined.'
         );
@@ -132,16 +127,16 @@ class ConfigurationTest extends TestCase
                     'commandbus' => [
                         'foo' => [
                             'middleware' => [
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'The path "tactician.commandbus.foo.middleware" should have at least 1 element(s) defined.'
         );
     }
 
-    public function testCommandHandlerMiddlewareIfPresentAndNotLastIsInvalid()
+    public function testCommandHandlerMiddlewareIfPresentAndNotLastIsInvalid() : void
     {
         $this->assertConfigurationIsInvalid(
             [
@@ -152,16 +147,16 @@ class ConfigurationTest extends TestCase
                                 'tactician.middleware.command_handler',
                                 'my_middleware.custom.stuff',
 
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             '"tactician.middleware.command_handler" should be the last middleware loaded when it is used.'
         );
     }
 
-    public function testCommandHandlerMiddlewarePresentAndLastIsValid()
+    public function testCommandHandlerMiddlewarePresentAndLastIsValid() : void
     {
         $this->assertConfigurationIsValid(
             [
@@ -171,82 +166,19 @@ class ConfigurationTest extends TestCase
                             'middleware' => [
                                 'my_middleware.custom.stuff',
                                 'tactician.middleware.command_handler',
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        );
-    }
-    public function testCommandHandlerMiddlewareNotPresentDoesNotAffectValidation()
-    {
-        $this->assertConfigurationIsValid(
-            [
-                'tactician' => [
-                    'commandbus' => [
-                        'default' => [
-                            'middleware' => [
-                                'my_middleware.custom.stuff',
-                                'my_middleware.custom.other_stuff',
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        );
-    }
-
-    public function testCustomMethodInflectorCanBeSet()
-    {
-        $this->assertConfigurationIsValid(
-            [
-                'tactician' => [
-                    'method_inflector' => 'some.inflector.service',
-                    'commandbus' => [
-                        'default' => [
-                            'middleware' => [
-                                'my_middleware.custom.stuff',
-                                'my_middleware.custom.other_stuff',
                             ],
                         ],
-                        'second' => [
-                            'middleware' => [
-                                'my_middleware.custom.stuff',
-                                'my_middleware.custom.other_stuff',
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        );
-    }
-
-    public function testSecurityConfiguration()
-        {
-        $this->assertConfigurationIsValid([
-            'tactician' => [
-                'commandbus' => [
-                    'default' => [
-                        'middleware' => [
-                            'my_middleware'  => 'some_middleware',
-                            'my_middleware2' => 'some_middleware',
-                        ]
-                    ]
+                    ],
                 ],
-                'security' => [
-                    'Some\Command' => ['ROLE_USER'],
-                    'Some\Other\Command' => ['ROLE_ADMIN'],
-                ]
             ]
-        ]);
+        );
     }
 
-    public function testCustomLoggerFormatterCanBeSet()
+    public function testCommandHandlerMiddlewareNotPresentDoesNotAffectValidation() : void
     {
         $this->assertConfigurationIsValid(
             [
                 'tactician' => [
-                    'logger_formatter' => 'some.formatter.service',
                     'commandbus' => [
                         'default' => [
                             'middleware' => [
@@ -254,14 +186,33 @@ class ConfigurationTest extends TestCase
                                 'my_middleware.custom.other_stuff',
                             ],
                         ],
-                        'second' => [
+                    ],
+                ],
+            ]
+        );
+    }
+
+    public function testCustomCommandHandlerMappingCanBeSet() : void
+    {
+        $this->assertConfigurationIsValid(
+            [
+                'tactician' => [
+                    'command_handler_mapping' => 'some.command_handler_mapping.service',
+                    'commandbus'       => [
+                        'default' => [
                             'middleware' => [
                                 'my_middleware.custom.stuff',
                                 'my_middleware.custom.other_stuff',
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                        'second'  => [
+                            'middleware' => [
+                                'my_middleware.custom.stuff',
+                                'my_middleware.custom.other_stuff',
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
     }
