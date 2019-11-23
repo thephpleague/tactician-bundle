@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace League\Tactician\Bundle\Command;
+namespace League\Tactician\Bundle\Console;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class DebugCommand extends Command
+final class DebugCommand extends Command
 {
     /**
      * @var array
@@ -22,12 +22,12 @@ class DebugCommand extends Command
         $this->mappings = $mappings;
     }
 
-    protected function configure()
+    protected function configure() : void
     {
         $this->setName('debug:tactician');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output) : int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -44,9 +44,11 @@ class DebugCommand extends Command
                 $io->warning("No registered commands for bus $busId");
             }
         }
+
+        return 0;
     }
 
-    private function mappingToRows(array $map)
+    private function mappingToRows(array $map) : array
     {
         $rows = [];
         foreach ($map as $commandName => $handlerService) {

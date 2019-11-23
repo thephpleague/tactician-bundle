@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler\BusBuilder;
 
-use PHPUnit\Framework\TestCase;
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersFromConfig;
+use PHPUnit\Framework\TestCase;
 
 final class BusBuildersFromConfigTest extends TestCase
 {
-    public function test_config_leads_to_builder_with_default_for_each_commandbus()
+    public function test_config_leads_to_builder_with_default_for_each_commandbus() : void
     {
         $builders = BusBuildersFromConfig::convert([
             'commandbus' => [
@@ -26,20 +26,20 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
-            new BusBuilder('default', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.middleware']),
+        self::assertEquals(
+            new BusBuilder('default', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.middleware']),
             $builders->getIterator()['default']
         );
-        $this->assertEquals(
-            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
+        self::assertEquals(
+            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.other.middleware']),
             $builders->getIterator()['other']
         );
     }
 
-    public function test_default_method_inflector_can_be_overrided()
+    public function test_default_command_handler_mapping_can_be_overrided() : void
     {
         $builders = BusBuildersFromConfig::convert([
-            'method_inflector' => 'other.inflector',
+            'command_handler_mapping' => 'other.mapping',
             'commandbus' => [
                 'default' => [
                     'middleware' => [
@@ -54,16 +54,17 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
-            new BusBuilder('default', 'other.inflector', ['my.middleware']),
+
+        self::assertEquals(
+            new BusBuilder('default', 'other.mapping', ['my.middleware']),
             $builders->getIterator()['default']
         );
     }
 
-    public function test_method_inflector_of_each_bus_can_be_overrided()
+    public function test_command_handler_mapping_of_each_bus_can_be_overrided() : void
     {
         $builders = BusBuildersFromConfig::convert([
-            'method_inflector' => 'other.inflector',
+            'command_handler_mapping' => 'other.mapping',
             'commandbus' => [
                 'default' => [
                     'middleware' => [
@@ -71,7 +72,7 @@ final class BusBuildersFromConfigTest extends TestCase
                     ],
                 ],
                 'other' => [
-                    'method_inflector' => 'bus2.inflector',
+                    'command_handler_mapping' => 'bus2.mapping',
                     'middleware' => [
                         'my.other.middleware',
                     ],
@@ -79,13 +80,13 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
-            new BusBuilder('other', 'bus2.inflector', ['my.other.middleware']),
+        self::assertEquals(
+            new BusBuilder('other', 'bus2.mapping', ['my.other.middleware']),
             $builders->getIterator()['other']
         );
     }
 
-    public function test_default_bus_is_set()
+    public function test_default_bus_is_set() : void
     {
         $builders = BusBuildersFromConfig::convert([
             'commandbus' => [
@@ -102,13 +103,13 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
-            new BusBuilder('default', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.middleware']),
+        self::assertEquals(
+            new BusBuilder('default', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.middleware']),
             $builders->defaultBus()
         );
     }
 
-    public function test_default_bus_can_be_overrided()
+    public function test_default_bus_can_be_overrided() : void
     {
         $builders = BusBuildersFromConfig::convert([
             'default_bus' => 'other',
@@ -126,8 +127,8 @@ final class BusBuildersFromConfigTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(
-            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR, ['my.other.middleware']),
+        self::assertEquals(
+            new BusBuilder('other', BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING, ['my.other.middleware']),
             $builders->defaultBus()
         );
     }

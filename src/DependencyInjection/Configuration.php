@@ -6,29 +6,26 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuildersF
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use function array_key_exists;
+use function end;
+use function in_array;
+use function is_array;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     /**
      * Create a rootnode tree for configuration that can be injected into the DI container.
-     *
-     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder() : TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('tactician');
+        $treeBuilder = new TreeBuilder(TacticianExtension::ALIAS);
 
-        if (\method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('tactician');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -43,9 +40,10 @@ class Configuration implements ConfigurationInterface
                                 ->useAttributeAsKey('name')
                                 ->prototype('scalar')->end()
                                 ->validate()
-                                    ->ifTrue(function ($config) {
-                                        $isPresent = in_array('tactician.middleware.command_handler', $config);
-                                        $isLast = end($config) == 'tactician.middleware.command_handler';
+                                    ->ifTrue(
+                                        static function (array $config) : bool {
+                                        $isPresent = in_array('tactician.middleware.command_handler', $config, true);
+                                        $isLast = end($config) === 'tactician.middleware.command_handler';
 
                                         return $isPresent && !$isLast;
                                     })
@@ -63,36 +61,25 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(BusBuildersFromConfig::DEFAULT_BUS_ID)
                     ->cannotBeEmpty()
                 ->end()
-                ->scalarNode('method_inflector')
-                    ->defaultValue(BusBuildersFromConfig::DEFAULT_METHOD_INFLECTOR)
-                    ->cannotBeEmpty()
-                ->end()
-                ->arrayNode('security')
-                    ->defaultValue([])
-                    ->useAttributeAsKey('name')
-                    ->prototype('array')
-                        ->prototype('scalar')->end()
-                    ->end()
-                ->end()
-                ->scalarNode('logger_formatter')
-                    ->defaultValue('tactician.logger.class_properties_formatter')
+                ->scalarNode('command_handler_mapping')
+                    ->defaultValue(BusBuildersFromConfig::DEFAULT_COMMAND_HANDLER_MAPPING)
                     ->cannotBeEmpty()
                 ->end()
             ->end()
             ->validate()
-                ->ifTrue(function ($config) {
+                ->ifTrue(static function ($config) : bool {
                     return is_array($config) &&
                         array_key_exists('default_bus', $config) &&
                         array_key_exists('commandbus', $config)
                     ;
                 })
-                    ->then(function ($config) {
+                    ->then(static function (array $config) : array {
                         $busNames = [];
                         foreach ($config['commandbus'] as $busName => $busConfig) {
                             $busNames[] = $busName;
                         }
 
-                        if (!in_array($config['default_bus'], $busNames)) {
+                        if (! in_array($config['default_bus'], $busNames, true)) {
                             throw new InvalidConfigurationException(
                                 sprintf(
                                     'The default_bus "%s" was not defined as a command bus. Valid option(s): %s',

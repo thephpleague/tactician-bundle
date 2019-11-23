@@ -2,7 +2,7 @@
 
 namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 
-use League\Tactician\Bundle\Command\DebugCommand;
+use League\Tactician\Bundle\Console\DebugCommand;
 use League\Tactician\Bundle\DependencyInjection\Compiler\CommandHandlerPass;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\ClassNameMapping;
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\HandlerMapping;
@@ -13,19 +13,19 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class CommandHandlerPassTest extends TestCase
+final class CommandHandlerPassTest extends TestCase
 {
-    /**
-     * @var HandlerMapping
-     */
-    private $mappingStrategy;
+//    /**
+//     * @var HandlerMapping
+//     */
+//    private $mappingStrategy;
+//
+//    protected function setUp() : void
+//    {
+//        $this->mappingStrategy = new ClassNameMapping();
+//    }
 
-    protected function setUp()
-    {
-        $this->mappingStrategy = new ClassNameMapping();
-    }
-
-    public function testAddingSingleDefaultBus()
+    public function testAddingSingleDefaultBus() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -36,14 +36,14 @@ class CommandHandlerPassTest extends TestCase
             ]
         );
 
-        (new CommandHandlerPass($this->mappingStrategy))->process($container);
+        (new CommandHandlerPass())->process($container);
 
-        $this->assertTrue($container->hasDefinition('tactician.commandbus.default'));
+        self::assertTrue($container->hasDefinition('tactician.commandbus.default'));
 
         $this->assertDefaultAliasesAreDeclared($container, 'default');
     }
 
-    public function testProcessAddsLocatorAndHandlerDefinitionForTaggedBuses()
+    public function testProcessAddsHandlerDefinitionForTaggedBuses() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -57,16 +57,16 @@ class CommandHandlerPassTest extends TestCase
             ]
         );
 
-        (new CommandHandlerPass($this->mappingStrategy))->process($container);
+        (new CommandHandlerPass())->process($container);
 
-        $this->assertTrue($container->hasDefinition('tactician.commandbus.default'));
-        $this->assertTrue($container->hasDefinition('tactician.commandbus.custom_bus'));
-        $this->assertTrue($container->hasDefinition('tactician.commandbus.other_bus'));
+        self::assertTrue($container->hasDefinition('tactician.commandbus.default'));
+        self::assertTrue($container->hasDefinition('tactician.commandbus.custom_bus'));
+        self::assertTrue($container->hasDefinition('tactician.commandbus.other_bus'));
 
         $this->assertDefaultAliasesAreDeclared($container, 'custom_bus');
     }
 
-    public function test_handler_mapping_is_called()
+    public function test_handler_mapping_is_called() : void
     {
         $container = $this->containerWithConfig(
             [
@@ -82,7 +82,7 @@ class CommandHandlerPassTest extends TestCase
 
         (new CommandHandlerPass($mapping->reveal()))->process($container);
 
-        $this->assertEquals(
+        self::assertEquals(
             [FakeCommand::class => 'some.handler'],
             $container->getDefinition('tactician.commandbus.default.handler.locator')->getArgument(1)
         );
@@ -110,11 +110,11 @@ class CommandHandlerPassTest extends TestCase
 
         (new CommandHandlerPass($mapping->reveal()))->process($container);
 
-        $this->assertEquals(
+        self::assertEquals(
             [FakeCommand::class => 'some.handler.a', OtherFakeCommand::class => 'some.other.handler'],
             $container->getDefinition('tactician.commandbus.bus.a.handler.locator')->getArgument(1)
         );
-        $this->assertEquals(
+        self::assertEquals(
             [FakeCommand::class => 'some.handler.b', OtherFakeCommand::class => 'some.other.handler'],
             $container->getDefinition('tactician.commandbus.bus.b.handler.locator')->getArgument(1)
         );
@@ -144,7 +144,7 @@ class CommandHandlerPassTest extends TestCase
 
         (new CommandHandlerPass($mapping->reveal()))->process($container);
 
-        $this->assertSame(
+        self::assertSame(
             [
                 [
                    'bus.a' => $routing->commandToServiceMapping('bus.a'),
@@ -155,7 +155,7 @@ class CommandHandlerPassTest extends TestCase
         );
     }
 
-    private function containerWithConfig($config)
+    private function containerWithConfig($config) : ContainerBuilder
     {
         $container = new ContainerBuilder();
 
@@ -164,22 +164,14 @@ class CommandHandlerPassTest extends TestCase
         return $container;
     }
 
-    /**
-     * @param $container
-     */
-    protected function assertDefaultAliasesAreDeclared(ContainerBuilder $container, string $defaultBusId)
+    protected function assertDefaultAliasesAreDeclared(ContainerBuilder $container, string $defaultBusId) : void
     {
-        $this->assertSame(
+        self::assertSame(
             $container->findDefinition('tactician.commandbus'),
             $container->getDefinition("tactician.commandbus.$defaultBusId")
         );
 
-        $this->assertSame(
-            $container->findDefinition('tactician.handler.locator.symfony'),
-            $container->getDefinition("tactician.commandbus.$defaultBusId.handler.locator")
-        );
-
-        $this->assertSame(
+        self::assertSame(
             $container->findDefinition('tactician.middleware.command_handler'),
             $container->getDefinition("tactician.commandbus.$defaultBusId.middleware.command_handler")
         );

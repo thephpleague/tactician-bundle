@@ -1,31 +1,34 @@
 services:
-    tactician.middleware.locking:
-        class: League\Tactician\Plugins\LockingMiddleware
+
+    # The standard Handler class name inflectors
+    tactician.handler.class_name_inflector.suffix.handler:
+        class: League\Tactician\Handler\Mapping\ClassName\Suffix
+        arguments:
+            $suffix: 'Handler'
 
     # The standard Handler method name inflectors
     tactician.handler.method_name_inflector.handle:
-        class: League\Tactician\Handler\MethodNameInflector\HandleInflector
-
-    tactician.handler.method_name_inflector.class_name:
-        class: League\Tactician\Handler\MethodNameInflector\ClassNameInflector
-
-    tactician.handler.method_name_inflector.handle_class_name:
-        class: League\Tactician\Handler\MethodNameInflector\HandleClassNameInflector
+        class: League\Tactician\Handler\Mapping\MethodName\Handle
 
     tactician.handler.method_name_inflector.handle_class_name_without_suffix:
-        class: League\Tactician\Handler\MethodNameInflector\HandleClassNameWithoutSuffixInflector
+        class: League\Tactician\Handler\Mapping\MethodName\HandleClassNameWithoutSuffix
+
+    tactician.handler.method_name_inflector.handle_last_part_of_class_name:
+        class: League\Tactician\Handler\Mapping\MethodName\HandleLastPartOfClassName
 
     tactician.handler.method_name_inflector.invoke:
-        class: League\Tactician\Handler\MethodNameInflector\InvokeInflector
+        class: League\Tactician\Handler\Mapping\MethodName\Invoke
 
-    # The CommandNameExtractors in Tactician core
-    tactician.handler.command_name_extractor.class_name:
-        class: League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor
+    tactician.handler.method_name_inflector.last_part_of_class_name:
+        class: League\Tactician\Handler\Mapping\MethodName\LastPartOfClassName
 
-    tactician.plugins.named_command.extractor:
-        class: League\Tactician\Plugins\NamedCommand\NamedCommandExtractor
+    tactician.handler.command_handler_mapping.map_by_naming_convention:
+        class: League\Tactician\Handler\Mapping\MapByNamingConvention
+        arguments:
+            $classNameInflector: '@tactician.handler.class_name_inflector.suffix.handler'
+            $methodNameInflector: '@tactician.handler.method_name_inflector.handle'
 
     tactician.command.debug:
-        class: League\Tactician\Bundle\Command\DebugCommand
+        class: League\Tactician\Bundle\Console\DebugCommand
         tags:
             - { name: console.command }
