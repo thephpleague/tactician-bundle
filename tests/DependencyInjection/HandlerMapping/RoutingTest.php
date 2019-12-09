@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace League\Tactician\Bundle\Tests\DependencyInjection\HandlerMapping;
 
 use League\Tactician\Bundle\DependencyInjection\HandlerMapping\Routing;
+use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
 use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use League\Tactician\Bundle\Tests\Fake\OtherFakeCommand;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 final class RoutingTest extends TestCase
 {
@@ -42,33 +44,29 @@ final class RoutingTest extends TestCase
         $this->assertEquals([FakeCommand::class => 'very.broad.handler'], $routing->commandToServiceMapping('bus2'));
     }
 
-    /**
-     * @expectedException        \League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId
-     * @expectedExceptionMessage Could not find a command bus with id 'fake_bus'. Valid buses are: default
-     */
     public function test_can_not_get_mapping_for_unknown_bus()
     {
         $routing = new Routing(['default']);
+
+        $this->expectExceptionObject(InvalidCommandBusId::ofName('fake_bus', ['default']));
         $routing->commandToServiceMapping('fake_bus');
     }
 
-    /**
-     * @expectedException        \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Can not route Legit\Class to some.handler.service, class Legit\Class does not exist!
-     */
     public function test_will_not_route_unknown_class_name()
     {
         $routing = new Routing(['default']);
+
+        $this->expectExceptionObject(
+            new InvalidArgumentException('Can not route Legit\Class to some.handler.service, class Legit\Class does not exist!')
+        );
         $routing->routeToBus('default', 'Legit\Class', 'some.handler.service');
     }
 
-    /**
-     * @expectedException        \League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId
-     * @expectedExceptionMessage Could not find a command bus with id 'bus3'. Valid buses are: bus1, bus2
-     */
     public function test_will_not_accept_command_on_invalid_bus_id()
     {
         $routing = new Routing(['bus1', 'bus2']);
+
+        $this->expectExceptionObject(InvalidCommandBusId::ofName('bus3', ['bus1', 'bus2']));
         $routing->routeToBus('bus3', FakeCommand::class, 'some.handler.service');
     }
 }

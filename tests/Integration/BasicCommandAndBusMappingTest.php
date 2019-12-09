@@ -2,7 +2,10 @@
 
 namespace League\Tactician\Bundle\Tests\Integration;
 
+use League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId;
+use League\Tactician\Exception\MissingHandlerException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * @runTestsInSeparateProcesses
@@ -19,11 +22,10 @@ class BasicCommandAndBusMappingTest extends IntegrationTest
         $this->handleCommand('default', \League\Tactician\Bundle\Tests\EchoText::class, ['Hello world']);
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
-     */
     public function testHandleCommandWithInvalidMiddleware()
     {
+        $this->expectException(ServiceNotFoundException::class);
+
         $this->givenConfig('tactician', <<<'EOF'
 commandbus:
     default:
@@ -77,12 +79,10 @@ EOF
         $this->handleCommand('other', \League\Tactician\Bundle\Tests\EchoText::class, ['Welcome']);
     }
 
-    /**
-     * @expectedException \League\Tactician\Bundle\DependencyInjection\InvalidCommandBusId
-     * @expectedExceptionMessage Could not find a command bus with id 'other'. Valid buses are: default
-     */
     public function testHandlerOnUnknownBus()
     {
+        $this->expectExceptionObject(InvalidCommandBusId::ofName('other', ['default']));
+
         $this->givenConfig('tactician', <<<'EOF'
 commandbus:
     default:
@@ -112,9 +112,6 @@ EOF
         static::$kernel->boot();
     }
 
-    /**
-     * @expectedException \League\Tactician\Exception\MissingHandlerException
-     */
     public function testHandleCommandSpecifiedOnAnotherBus()
     {
         $this->givenConfig('tactician', <<<'EOF'
@@ -130,6 +127,8 @@ EOF
         $this->registerService('tactician.test.handler', \League\Tactician\Bundle\Tests\EchoTextHandler::class, [
             ['name' => 'tactician.handler', 'command' => 'League\Tactician\Bundle\Tests\EchoText', 'bus' => 'other'],
         ]);
+
+        $this->expectException(MissingHandlerException::class);
         $this->handleCommand('default', \League\Tactician\Bundle\Tests\EchoText::class, ['Welcome']);
     }
 }
