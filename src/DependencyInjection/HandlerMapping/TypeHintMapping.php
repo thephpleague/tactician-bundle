@@ -62,7 +62,7 @@ final class TypeHintMapping extends TagBasedMapping
                 continue;
             }
 
-            $results[] = (string)$parameter->getType();
+            $results[] = $parameter->getType()->getName();
         }
 
         return $results;
