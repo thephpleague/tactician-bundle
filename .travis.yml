@@ -37,6 +37,8 @@ matrix:
       env: SYMFONY_VERSION="4.1.*"
     - php: 7.0
       env: SYMFONY_VERSION="4.2.*"
+    - php: 7.4
+      env: SYMFONY_VERSION="4.1.*"
 
 before_install:
   - composer self-update || true
