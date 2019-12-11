@@ -6,6 +6,7 @@ namespace League\Tactician\Bundle\DependencyInjection\HandlerMapping;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use ReflectionClass;
+use function method_exists;
 
 /**
  * Routes commands based on typehints in the handler.
@@ -62,7 +63,13 @@ final class TypeHintMapping extends TagBasedMapping
                 continue;
             }
 
-            $results[] = $parameter->getType()->getName();
+            $type = $parameter->getType();
+            if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+                $results[] = $type->getName();
+            } else {
+                $results[] = (string)$type;
+            }
+
         }
 
         return $results;
