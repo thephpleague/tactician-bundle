@@ -6,11 +6,20 @@ use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use League\Tactician\Doctrine\ORM\RollbackOnlyTransactionMiddleware;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
+use stdClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->container->set('doctrine.orm.default_entity_manager', new stdClass());
+        $this->container->set('doctrine.orm.second_entity_manager', new stdClass());
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container)
     {
         $container->addCompilerPass(new DoctrineMiddlewarePass());
