@@ -83,7 +83,7 @@ class YourNameController
 
 ### Autowiring
 
-If Symfony autowire feature is enabled (avaliable for Symfony 2.8+), instead of creating a service for each controller using the default commandbus you can inject and use it as follows:
+If Symfony autowire feature is enabled (available from Symfony 2.8), instead of creating a service for each controller using the default commandbus you can inject and use it as follows:
 
 ```php
 <?php namespace AppBundle\Controller;
@@ -106,6 +106,26 @@ Note that this only works for the default commandbus, if you want to inject othe
 ```yaml
 services:
     League\Tactician\CommandBus: '@tactician.commandbus.your_commandbus'
+```
+
+If you have multiple buses, you can uses named aliases by using the bus name in
+the parameters definition. In that case, we want to inject the command bus named
+`default`, so the parameter should be named `defaultBus`. The syntax always
+follows `{bus_name}Bus`.
+
+> This feature is only available from Symfony 4.2
+```php
+<?php namespace AppBundle\Controller;
+
+use League\Tactician\CommandBus;
+
+class YourNameController
+{
+    public function doSomething(CommandBus $defaultBus)
+    {
+        //
+    }
+}
 ```
 
 ## Configuring Command Handlers
