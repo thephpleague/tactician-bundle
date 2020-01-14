@@ -5,6 +5,7 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler\BusBuilder;
 
 use League\Tactician\Bundle\DependencyInjection\Compiler\BusBuilder\BusBuilder;
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\CommandBus;
 use League\Tactician\Container\ContainerLocator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,5 +65,11 @@ final class BusBuilderTest extends TestCase
                 ->getDefinition($handlerId)
                 ->getArgument(2)
         );
+
+        if (method_exists($container, 'registerAliasForArgument')) {
+            $this->assertTrue(
+                $container->hasAlias(CommandBus::class . ' $defaultBus')
+            );
+        }
     }
 }

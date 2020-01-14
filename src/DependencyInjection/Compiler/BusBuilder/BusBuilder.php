@@ -85,6 +85,10 @@ final class BusBuilder
                 ]
             )
         )->setPublic(true);
+
+        if (method_exists($container, 'registerAliasForArgument')) {
+            $container->registerAliasForArgument($this->serviceId(), CommandBus::class, "{$this->busId}Bus");
+        }
     }
 
     private function registerLocatorService(ContainerBuilder $container, $commandsToAccept)
