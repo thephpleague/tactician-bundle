@@ -108,9 +108,8 @@ services:
     League\Tactician\CommandBus: '@tactician.commandbus.your_commandbus'
 ```
 
-If you have multiple buses, you can uses named aliases by using the bus name in
-the parameters definition. In that case, we want to inject the command bus named
-`default`, so the parameter should be named `defaultBus`. The syntax always
+If you have multiple buses, you can use named parameter aliases by using the bus name as part of the parameter name. For example, if you want to inject the command bus named
+`default`, name the parameter `defaultBus`. The syntax always
 follows `{bus_name}Bus`.
 
 > This feature is only available from Symfony 4.2
