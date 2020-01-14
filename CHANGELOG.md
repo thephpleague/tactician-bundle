@@ -1,3 +1,10 @@
+## 1.2.0
+- #121 - Multiple buses can now be autowired based on the parameter name 
+
+## 1.1.7 (2019-12-31)
+- #119 - Symfony 5 support
+- PHP 7.4 compatibility fixes
+
 ## 1.1.6 (2018-12-16)
 - #109 - Remove deprecation notices for Symfony 4.2, increase test matrix
 - #108 - Move handler service tag into constant for easier PHP-based mapping
