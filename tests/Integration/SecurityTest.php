@@ -133,7 +133,7 @@ EOF
         static::$kernel->getContainer()
             ->get('security.token_storage')
             ->setToken(
-                new AnonymousToken('test', 'anon', [new Role($role)])
+                new AnonymousToken('test', 'anon', [$role])
             );
     }
 }

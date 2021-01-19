@@ -44,6 +44,8 @@ class DebugCommand extends Command
                 $io->warning("No registered commands for bus $busId");
             }
         }
+
+        return 0;
     }
 
     private function mappingToRows(array $map)

@@ -1,3 +1,6 @@
+## 1.3.0
+- #125 - PHP 8.0 compatibility fixes
+
 ## 1.2.0
 - #121 - Multiple buses can now be autowired based on the parameter name 
 

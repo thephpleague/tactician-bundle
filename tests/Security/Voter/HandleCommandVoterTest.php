@@ -23,7 +23,7 @@ class HandleCommandVoterTest extends TestCase
      */
     private $decisionManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->decisionManager = Mockery::mock(AccessDecisionManager::class);
     }

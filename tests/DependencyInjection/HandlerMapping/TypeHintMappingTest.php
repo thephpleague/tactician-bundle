@@ -57,7 +57,7 @@ final class TypeHintMappingTest extends TestCase
 
     public function simpleTestCases()
     {
-        return [
+        $cases = [
             'can read __invoke magic method type hint' => [
                 InvokeHandler::class,
                 [FakeCommand::class => 'some.handler']
@@ -79,6 +79,13 @@ final class TypeHintMappingTest extends TestCase
             'will not use abstract methods' => [AbstractHandler::class, []],
             'will not use variadic methods' => [VariadicHandler::class, []]
         ];
+
+        if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
+            require 'php8_handlers.php';
+            $cases['will not use union type methods'] = [UnionTypeHandler::class, []];
+        }
+
+        return $cases;
     }
 
     public function test_can_bind_to_specific_bus()

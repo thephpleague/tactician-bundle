@@ -3,6 +3,7 @@
 namespace League\Tactician\Bundle\Tests\Handler;
 
 use League\Tactician\Bundle\Handler\ContainerBasedHandlerLocator;
+use League\Tactician\Exception\MissingHandlerException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -22,11 +23,10 @@ class ContainerBasedHandlerLocatorTest extends TestCase
         $this->assertInstanceOf('stdClass', $locator->getHandlerForCommand('FakeCommand'));
     }
 
-    /**
-     * @expectedException \League\Tactician\Exception\MissingHandlerException
-     */
     public function testGetHandlerThrowsExceptionForNotFound()
     {
+        $this->expectException(MissingHandlerException::class);
+
         $locator = new ContainerBasedHandlerLocator(new ContainerBuilder(), [
             'OtherCommand' => 'my_bundle.order.id'
         ]);
