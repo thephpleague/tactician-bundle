@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -20,7 +20,7 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
         $this->container->set('doctrine.orm.second_entity_manager', new stdClass());
     }
 
-    protected function registerCompilerPass(ContainerBuilder $container)
+    protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new DoctrineMiddlewarePass());
     }

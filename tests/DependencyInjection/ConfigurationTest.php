@@ -72,7 +72,9 @@ class ConfigurationTest extends TestCase
                     ]
                 ]
             ],
-            'Invalid type for path "tactician.commandbus.default.middleware.my_middleware". Expected scalar, but got array.'
+            //we use a regexp to support the slightly different message thrown by symfony >=5.0
+            '#Invalid type for path "tactician.commandbus.default.middleware.my_middleware"\. Expected "?scalar"?, but got "?array"?\.#',
+            true
         );
     }
 

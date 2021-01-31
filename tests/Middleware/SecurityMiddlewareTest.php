@@ -24,7 +24,7 @@ class SecurityMiddlewareTest extends TestCase
     /**
      * Set up.
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->authorizationChecker = Mockery::mock(AuthorizationCheckerInterface::class);
     }
