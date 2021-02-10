@@ -149,7 +149,6 @@ However, we still need to map the Command to the Handler. We can do this by addi
 The tag should have two attributes: the tag name, which should always be `tactician.handler`, and the command, which should be the FQCN of the Command.
 
 ```yaml
-<?php
 foo.user.register_user_handler:
     class: Foo\User\RegisterUserHandler
     arguments:
