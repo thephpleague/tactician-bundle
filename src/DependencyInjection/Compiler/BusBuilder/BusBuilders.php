@@ -50,6 +50,7 @@ final class BusBuilders implements \IteratorAggregate
     /**
      * @return ArrayIterator|BusBuilder[]
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->busBuilders);
