@@ -9,6 +9,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
@@ -25,7 +26,7 @@ class HandleCommandVoterTest extends TestCase
 
     public function setUp(): void
     {
-        $this->decisionManager = Mockery::mock(AccessDecisionManager::class);
+        $this->decisionManager = Mockery::mock(AccessDecisionManagerInterface::class);
     }
 
     public function testAKnownCommandWillBeDelegatedToTheDecisionManager()

@@ -14,7 +14,7 @@ class AppKernel extends Kernel
     private $services = [];
     private $cacheDir;
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -41,7 +41,7 @@ class AppKernel extends Kernel
         ];
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return $this->cacheDir;
     }

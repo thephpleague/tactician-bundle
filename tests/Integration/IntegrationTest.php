@@ -7,6 +7,7 @@ namespace League\Tactician\Bundle\Tests\Integration;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
 abstract class IntegrationTest extends KernelTestCase
@@ -21,7 +22,7 @@ abstract class IntegrationTest extends KernelTestCase
      */
     private $filesystem;
 
-    protected static function createKernel(array $options = array())
+    protected static function createKernel(array $options = array()): KernelInterface
     {
         require_once __DIR__.'/../testapp/AppKernel.php';
 
