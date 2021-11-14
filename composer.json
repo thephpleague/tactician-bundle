@@ -38,7 +38,6 @@
     "symfony/http-kernel": "^3.4|^4.4|^5.0",
     "symfony/yaml": "^3.4|^4.4|^5.0"
   },
-  "minimum-stability": "beta",
   "suggest": {
     "symfony/console": "For debugging command-to-handler routing using the tactician:debug console command",
     "symfony/validator": "For command validator middleware",
