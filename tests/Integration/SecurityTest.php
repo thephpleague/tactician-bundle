@@ -6,8 +6,12 @@ use League\Tactician\Bundle\Tests\Fake\FakeCommand;
 use stdClass;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Http\Authentication\AuthenticatorManagerInterface;
 
 /**
  * Integration test for security middleware.
@@ -106,7 +110,9 @@ EOF
      */
     private function loadSecurityConfiguration()
     {
-        $this->givenConfig('security', <<< 'EOF'
+        $config = interface_exists(AuthenticatorManagerInterface::class) ? "enable_authenticator_manager: true\n" : '';
+
+        $this->givenConfig('security', $config.<<< 'EOF'
 access_denied_url: /
 
 role_hierarchy:
@@ -119,7 +125,6 @@ providers:
 
 firewalls:
     main:
-        anonymous: ~
         http_basic: ~
 EOF
         );
@@ -130,10 +135,20 @@ EOF
      */
     protected function setUserRole(string $role)
     {
+        if (class_exists(InMemoryUser::class)) {
+            $user = new InMemoryUser('test', 'test', [$role]);
+            $token = \Mockery::mock(TokenInterface::class);
+            $token->shouldReceive('getUser')->andReturn($user);
+            $token->shouldReceive('getRoleNames')->andReturn([$role]);
+            if (method_exists(TokenInterface::class, 'isAuthenticated')) {
+                $token->shouldReceive('isAuthenticated')->andReturn(true);
+            }
+        } else {
+            $token = new AnonymousToken('test', 'anon', [$role]);
+        }
+
         static::$kernel->getContainer()
             ->get('security.token_storage')
-            ->setToken(
-                new AnonymousToken('test', 'anon', [$role])
-            );
+            ->setToken($token);
     }
 }
