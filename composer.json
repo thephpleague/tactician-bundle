@@ -32,7 +32,7 @@
     "php":  ">=7.2",
     "league/tactician": "^1.0",
     "league/tactician-logger": "^0.10|^0.11",
-    "league/tactician-container": "^2.0",
+    "league/tactician-container": "^2.0|^3.0",
     "symfony/config": "^3.4|^4.4|^5.0|^6.0",
     "symfony/dependency-injection": "^3.4|^4.4|^5.0|^6.0",
     "symfony/http-kernel": "^3.4|^4.4|^5.0|^6.0",
