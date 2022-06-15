@@ -1,3 +1,6 @@
+## 1.4.0
+- #131 - Allow league/tactician-container v3
+
 ## 1.3.0
 - #125 - PHP 8.0 compatibility fixes
 
