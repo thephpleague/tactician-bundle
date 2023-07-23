@@ -20,6 +20,8 @@ class TacticianExtension extends ConfigurableExtension
      *
      * @param array $mergedConfig
      * @param ContainerBuilder $container
+     *
+     * @return void
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
