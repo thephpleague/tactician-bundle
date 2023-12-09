@@ -68,6 +68,7 @@
     "symfony/framework-bundle": "^3.4.31|^4.4|^5.0|^6.0",
     "symfony/security-bundle": "^3.4|^4.4|^5.0|^6.0",
     "matthiasnoback/symfony-config-test": "^4.2.1",
-    "matthiasnoback/symfony-dependency-injection-test": "^4.2.1"
+    "matthiasnoback/symfony-dependency-injection-test": "^4.2.1",
+    "phpspec/prophecy": "^1.18"
   }
 }
