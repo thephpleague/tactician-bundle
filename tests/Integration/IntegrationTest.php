@@ -13,11 +13,6 @@ use Symfony\Component\Yaml\Yaml;
 abstract class IntegrationTest extends KernelTestCase
 {
     /**
-     * @var Kernel
-     */
-    protected static $kernel;
-
-    /**
      * @var Filesystem
      */
     private $filesystem;
