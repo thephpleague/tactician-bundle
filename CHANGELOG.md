@@ -1,3 +1,7 @@
+## 1.5.0
+- #134 - Fix deprecations for Symfony 6.3
+- #135 - Allow Symfony 7
+
 ## 1.4.0
 - #131 - Allow league/tactician-container v3
 
