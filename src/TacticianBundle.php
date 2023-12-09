@@ -28,7 +28,9 @@ class TacticianBundle extends Bundle
         $this->handlerMapping = $handlerMapping;
     }
 
-
+    /**
+     * @return void
+     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);

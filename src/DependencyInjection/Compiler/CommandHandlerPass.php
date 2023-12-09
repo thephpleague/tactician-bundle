@@ -23,6 +23,9 @@ class CommandHandlerPass implements CompilerPassInterface
         $this->handlerMapping = $mappingStrategy;
     }
 
+    /**
+     * @return void
+     */
     public function process(ContainerBuilder $container)
     {
         $builders = BusBuildersFromConfig::convert(
