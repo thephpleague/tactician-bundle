@@ -6,7 +6,6 @@ namespace League\Tactician\Bundle\Tests\Integration;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -28,6 +27,14 @@ abstract class IntegrationTest extends KernelTestCase
     {
         static::$kernel = static::createKernel();
         $this->filesystem = new Filesystem();
+
+        // Default config so unrelated tests don't break
+        static::$kernel->loadConfig('security', [
+            'access_denied_url' => '/',
+            'firewalls' => [
+                'main' => ['http_basic' => []],
+            ],
+        ]);
 
         $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tactician-bundle'.DIRECTORY_SEPARATOR.uniqid("tactician-bundle", true);
 

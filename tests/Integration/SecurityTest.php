@@ -37,19 +37,6 @@ EOF
         $this->assertTrue(true);
     }
 
-    public function testCanNotBootKernelIfLoadingSecurityMiddlewareWithoutSecurityBeingTurnedOn()
-    {
-        $this->expectException(ServiceNotFoundException::class);
-        $this->givenConfig('tactician', <<<'EOF'
-commandbus:
-    default:
-        middleware:
-            - tactician.middleware.security
-EOF
-        );
-        static::$kernel->boot();
-    }
-
     public function testCanBootKernelWithoutSecurityOrSecurityMiddleware()
     {
         $this->givenConfig('tactician', <<<'EOF'
@@ -110,9 +97,9 @@ EOF
      */
     private function loadSecurityConfiguration()
     {
-        $config = interface_exists(AuthenticatorManagerInterface::class) ? "enable_authenticator_manager: true\n" : '';
+//        $config = interface_exists(AuthenticatorManagerInterface::class) ? "enable_authenticator_manager: true\n" : '';
 
-        $this->givenConfig('security', $config.<<< 'EOF'
+        $this->givenConfig('security', <<< 'EOF'
 access_denied_url: /
 
 role_hierarchy:

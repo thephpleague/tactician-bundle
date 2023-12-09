@@ -23,7 +23,7 @@ class TacticianExtension extends ConfigurableExtension
      *
      * @return void
      */
-    protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/services'));
         $loader->load('services.yml');
