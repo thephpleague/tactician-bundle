@@ -16,10 +16,8 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * Create a rootnode tree for configuration that can be injected into the DI container.
-     *
-     * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('tactician');
 
