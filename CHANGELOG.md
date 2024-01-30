@@ -1,3 +1,6 @@
+## 1.5.1
+- #136 - Fix return declaration for Symfony 7
+
 ## 1.5.0
 - #134 - Fix deprecations for Symfony 6.3
 - #135 - Allow Symfony 7
