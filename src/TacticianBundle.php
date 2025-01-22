@@ -19,7 +19,7 @@ class TacticianBundle extends Bundle
      */
     private $handlerMapping;
 
-    public function __construct(HandlerMapping $handlerMapping = null)
+    public function __construct(?HandlerMapping $handlerMapping = null)
     {
         if ($handlerMapping === null) {
             $handlerMapping = static::defaultMappingStrategy();
