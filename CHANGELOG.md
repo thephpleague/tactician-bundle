@@ -1,4 +1,7 @@
-## 1.5.1
+## 1.5.2
+- #140 - Fix PHP 8.4
+
+- ## 1.5.1
 - #136 - Fix return declaration for Symfony 7
 
 ## 1.5.0
