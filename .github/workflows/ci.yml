@@ -33,6 +33,9 @@ jobs:
             -   name: Check Composer configuration
                 run: composer validate --strict
 
+            -   name: Configure Composer
+                run: composer config prefer-stable true
+
             -   name: Install dependencies
                 run: composer install --no-progress --prefer-dist --optimize-autoloader
 
