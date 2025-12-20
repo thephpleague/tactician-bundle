@@ -3,23 +3,40 @@
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use League\Tactician\Bundle\DependencyInjection\TacticianExtension;
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
-class TacticianExtensionTest extends AbstractExtensionTestCase
+class TacticianExtensionTest extends TestCase
 {
-    /**
-     * Return an array of container extensions you need to be registered for each test (usually just the container
-     * extension you are testing.
-     *
-     * @return ExtensionInterface[]
-     */
-    protected function getContainerExtensions(): array
+    private ContainerBuilder $container;
+    private TacticianExtension $extension;
+
+    protected function setUp(): void
     {
-        return [
-            new TacticianExtension()
-        ];
+        $this->container = new ContainerBuilder();
+        $this->extension = new TacticianExtension();
+
+        // Add required service stubs that the extension depends on
+        $this->container->setDefinition('logger', new Definition(LoggerInterface::class));
+        $this->container->setDefinition('security.access.decision_manager', new Definition(AccessDecisionManagerInterface::class));
+    }
+
+    private function load(array $config = []): void
+    {
+        $this->extension->load([$config], $this->container);
+
+        // Make tactician services public to prevent them from being inlined during compilation
+        foreach ($this->container->getDefinitions() as $id => $definition) {
+            if (str_starts_with($id, 'tactician.')) {
+                $definition->setPublic(true);
+            }
+        }
+
+        $this->container->compile();
     }
 
     public function testLoadSecurityConfiguration()
@@ -38,8 +55,10 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             'security' => $securitySettings
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, $securitySettings);
-        $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.security_voter'));
+        $definition = $this->container->getDefinition('tactician.middleware.security_voter');
+        $this->assertEquals($securitySettings, $definition->getArgument(1));
+        $this->assertTrue($definition->hasTag('security.voter'));
     }
 
     public function testDefaultSecurityConfigurationIsAllowNothing()
@@ -55,23 +74,25 @@ class TacticianExtensionTest extends AbstractExtensionTestCase
             ]
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.security_voter', 1, []);
-        $this->assertContainerBuilderHasServiceDefinitionWithTag('tactician.middleware.security_voter', 'security.voter');
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.security_voter'));
+        $definition = $this->container->getDefinition('tactician.middleware.security_voter');
+        $this->assertEquals([], $definition->getArgument(1));
+        $this->assertTrue($definition->hasTag('security.voter'));
     }
 
     public function testVoterIsNotLoadedWithoutSecurityMiddleware()
     {
         $this->load();
 
-        $this->assertContainerBuilderNotHasService('tactician.middleware.security_voter');
+        $this->assertFalse($this->container->hasDefinition('tactician.middleware.security_voter'));
     }
 
     public function testLoggerMiddlewareIsCreated()
     {
         $this->load();
 
-        $this->assertContainerBuilderHasService('tactician.middleware.logger');
-        $this->assertContainerBuilderHasService('tactician.logger.class_properties_formatter');
-        $this->assertContainerBuilderHasService('tactician.logger.class_name_formatter');
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.logger'));
+        $this->assertTrue($this->container->hasDefinition('tactician.logger.class_properties_formatter'));
+        $this->assertTrue($this->container->hasDefinition('tactician.logger.class_name_formatter'));
     }
 }

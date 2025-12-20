@@ -67,8 +67,6 @@
     "symfony/validator": "^6.4|^7.0|^8.0",
     "symfony/framework-bundle": "^6.4|^7.0|^8.0",
     "symfony/security-bundle": "^6.4|^7.0|^8.0",
-    "matthiasnoback/symfony-config-test": "^4.2.1",
-    "matthiasnoback/symfony-dependency-injection-test": "^4.2.1",
     "phpspec/prophecy": "^1.18"
   }
 }

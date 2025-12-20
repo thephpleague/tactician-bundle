@@ -56,4 +56,4 @@ jobs:
                   SYMFONY_REQUIRE: "${{ matrix.symfony }}"
 
             - name: "Run PHPUnit Tests"
-              run: "vendor/bin/simple-phpunit"
+              run: "vendor/bin/phpunit"

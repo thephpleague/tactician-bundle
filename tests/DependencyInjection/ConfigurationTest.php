@@ -4,22 +4,43 @@
 namespace League\Tactician\Bundle\Tests\DependencyInjection;
 
 use League\Tactician\Bundle\DependencyInjection\Configuration;
-use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationTest extends TestCase
 {
-    use ConfigurationTestCaseTrait;
-
-    /**
-     * Return the instance of ConfigurationInterface that should be used by the
-     * Configuration-specific assertions in this test-case
-     *
-     * @return \Symfony\Component\Config\Definition\ConfigurationInterface
-     */
-    protected function getConfiguration()
+    private function processConfiguration(array $configs): array
     {
-        return new Configuration();
+        $processor = new Processor();
+        return $processor->processConfiguration(new Configuration(), $configs);
+    }
+
+    private function assertConfigurationIsValid(array $configs): void
+    {
+        try {
+            $this->processConfiguration($configs);
+            $this->assertTrue(true); // If we get here, configuration is valid
+        } catch (InvalidConfigurationException $e) {
+            $this->fail('Configuration validation failed: ' . $e->getMessage());
+        }
+    }
+
+    private function assertProcessedConfigurationEquals(array $configs, array $expected): void
+    {
+        $processed = $this->processConfiguration($configs);
+        $this->assertEquals($expected, $processed);
+    }
+
+    private function assertConfigurationIsInvalid(array $configs, string $expectedMessage, bool $isRegexp = false): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        if ($isRegexp) {
+            $this->expectExceptionMessageMatches($expectedMessage);
+        } else {
+            $this->expectExceptionMessage($expectedMessage);
+        }
+        $this->processConfiguration($configs);
     }
 
     public function testBlankConfiguration()
