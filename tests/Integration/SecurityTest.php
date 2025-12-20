@@ -97,10 +97,24 @@ EOF
      */
     private function loadSecurityConfiguration()
     {
-//        $config = interface_exists(AuthenticatorManagerInterface::class) ? "enable_authenticator_manager: true\n" : '';
+        // Symfony 5.3-7.3 requires enable_authenticator_manager
+        // In Symfony 7.4+, this option was removed (authenticator manager is always enabled)
+        $config = '';
+        if (interface_exists(AuthenticatorManagerInterface::class)) {
+            // Use Kernel version to check if we're on Symfony < 7.4
+            if (defined('Symfony\Component\HttpKernel\Kernel::VERSION')) {
+                $version = \Symfony\Component\HttpKernel\Kernel::VERSION;
+                if (version_compare($version, '7.4', '<')) {
+                    $config = "enable_authenticator_manager: true\n";
+                }
+            } else {
+                // Fallback for older Symfony versions without VERSION constant
+                $config = "enable_authenticator_manager: true\n";
+            }
+        }
 
-        $this->givenConfig('security', <<< 'EOF'
-access_denied_url: /
+        $this->givenConfig('security', <<< EOF
+{$config}access_denied_url: /
 
 role_hierarchy:
     ROLE_ADMIN:       ROLE_USER
