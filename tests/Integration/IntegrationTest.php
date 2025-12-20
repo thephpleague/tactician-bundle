@@ -29,12 +29,29 @@ abstract class IntegrationTest extends KernelTestCase
         $this->filesystem = new Filesystem();
 
         // Default config so unrelated tests don't break
-        static::$kernel->loadConfig('security', [
+        $securityConfig = [
             'access_denied_url' => '/',
             'firewalls' => [
                 'main' => ['http_basic' => []],
             ],
-        ]);
+        ];
+
+        // Symfony 5.3-7.3 requires enable_authenticator_manager
+        // In Symfony 7.4+, this option was removed (authenticator manager is always enabled)
+        if (interface_exists('Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface')) {
+            // Use Kernel version to check if we're on Symfony < 7.4
+            if (defined('Symfony\Component\HttpKernel\Kernel::VERSION')) {
+                $version = \Symfony\Component\HttpKernel\Kernel::VERSION;
+                if (version_compare($version, '7.4', '<')) {
+                    $securityConfig['enable_authenticator_manager'] = true;
+                }
+            } else {
+                // Fallback for older Symfony versions without VERSION constant
+                $securityConfig['enable_authenticator_manager'] = true;
+            }
+        }
+
+        static::$kernel->loadConfig('security', $securityConfig);
 
         $cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tactician-bundle'.DIRECTORY_SEPARATOR.uniqid("tactician-bundle", true);
 
@@ -44,9 +61,19 @@ abstract class IntegrationTest extends KernelTestCase
 
     protected function tearDown(): void
     {
-        $this->filesystem->remove(
-            static::$kernel->getCacheDir()
-        );
+        $cacheDir = static::$kernel ? static::$kernel->getCacheDir() : null;
+
+        // Manually shutdown and nullify kernel to prevent parent::tearDown() from trying to boot a misconfigured kernel
+        if (static::$kernel !== null) {
+            static::$kernel->shutdown();
+            static::$kernel = null;
+        }
+
+        parent::tearDown();
+
+        if ($cacheDir && $this->filesystem->exists($cacheDir)) {
+            $this->filesystem->remove($cacheDir);
+        }
     }
 
     protected function givenConfig($namespace, $config)
