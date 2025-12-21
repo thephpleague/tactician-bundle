@@ -5,24 +5,26 @@ namespace League\Tactician\Bundle\Tests\DependencyInjection\Compiler;
 use League\Tactician\Bundle\DependencyInjection\Compiler\DoctrineMiddlewarePass;
 use League\Tactician\Doctrine\ORM\RollbackOnlyTransactionMiddleware;
 use League\Tactician\Doctrine\ORM\TransactionMiddleware;
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
+class DoctrineMiddlewarePassTest extends TestCase
 {
+    private ContainerBuilder $container;
+
     protected function setUp(): void
     {
-        parent::setUp();
-
+        $this->container = new ContainerBuilder();
         $this->container->set('doctrine.orm.default_entity_manager', new stdClass());
         $this->container->set('doctrine.orm.second_entity_manager', new stdClass());
+        $this->container->addCompilerPass(new DoctrineMiddlewarePass());
     }
 
-    protected function registerCompilerPass(ContainerBuilder $container): void
+    private function compile(): void
     {
-        $container->addCompilerPass(new DoctrineMiddlewarePass());
+        $this->container->compile();
     }
 
     public function test_registering_middleware_for_multiple_entity_managers()
@@ -31,22 +33,25 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
             $this->markTestSkipped('"league/tactician-doctrine" is not installed');
         }
 
-        $this->setParameter(
+        $this->container->setParameter(
             'doctrine.entity_managers',
             [
                 'default' => 'doctrine.orm.default_entity_manager',
                 'second' => 'doctrine.orm.second_entity_manager',
             ]
         );
-        $this->setParameter('doctrine.default_entity_manager', 'default');
+        $this->container->setParameter('doctrine.default_entity_manager', 'default');
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('tactician.middleware.doctrine.default', TransactionMiddleware::class);
-        $this->assertContainerBuilderHasService('tactician.middleware.doctrine.second', TransactionMiddleware::class);
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine.default', 0, new Reference('doctrine.orm.default_entity_manager'));
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine.second', 0, new Reference('doctrine.orm.second_entity_manager'));
-        $this->assertContainerBuilderHasAlias('tactician.middleware.doctrine', 'tactician.middleware.doctrine.default');
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.doctrine.default'));
+        $this->assertEquals(TransactionMiddleware::class, $this->container->getDefinition('tactician.middleware.doctrine.default')->getClass());
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.doctrine.second'));
+        $this->assertEquals(TransactionMiddleware::class, $this->container->getDefinition('tactician.middleware.doctrine.second')->getClass());
+        $this->assertEquals(new Reference('doctrine.orm.default_entity_manager'), $this->container->getDefinition('tactician.middleware.doctrine.default')->getArgument(0));
+        $this->assertEquals(new Reference('doctrine.orm.second_entity_manager'), $this->container->getDefinition('tactician.middleware.doctrine.second')->getArgument(0));
+        $this->assertTrue($this->container->hasAlias('tactician.middleware.doctrine'));
+        $this->assertEquals('tactician.middleware.doctrine.default', (string) $this->container->getAlias('tactician.middleware.doctrine'));
     }
 
     public function test_do_not_process_when_there_are_no_entity_managers()
@@ -57,7 +62,7 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
 
         $this->compile();
 
-        $this->assertContainerBuilderNotHasService('tactician.middleware.doctrine');
+        $this->assertFalse($this->container->hasDefinition('tactician.middleware.doctrine'));
     }
 
     public function test_do_not_process_when_tactician_doctrine_is_not_installed()
@@ -66,12 +71,12 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
             $this->markTestSkipped('"league/tactician-doctrine" is installed');
         }
 
-        $this->setParameter('doctrine.entity_managers', ['default' => 'doctrine.orm.default_entity_manager']);
-        $this->setParameter('doctrine.default_entity_manager', 'default');
+        $this->container->setParameter('doctrine.entity_managers', ['default' => 'doctrine.orm.default_entity_manager']);
+        $this->container->setParameter('doctrine.default_entity_manager', 'default');
 
         $this->compile();
 
-        $this->assertContainerBuilderNotHasService('tactician.middleware.doctrine');
+        $this->assertFalse($this->container->hasDefinition('tactician.middleware.doctrine'));
     }
 
     public function test_rollback_only_middleware_is_added()
@@ -80,21 +85,24 @@ class DoctrineMiddlewarePassTest extends AbstractCompilerPassTestCase
             $this->markTestSkipped('"league/tactician-doctrine" is not installed');
         }
 
-        $this->setParameter(
+        $this->container->setParameter(
             'doctrine.entity_managers',
             [
                 'default' => 'doctrine.orm.default_entity_manager',
                 'second' => 'doctrine.orm.second_entity_manager',
             ]
         );
-        $this->setParameter('doctrine.default_entity_manager', 'default');
+        $this->container->setParameter('doctrine.default_entity_manager', 'default');
 
         $this->compile();
 
-        $this->assertContainerBuilderHasService('tactician.middleware.doctrine_rollback_only.default', RollbackOnlyTransactionMiddleware::class);
-        $this->assertContainerBuilderHasService('tactician.middleware.doctrine_rollback_only.second', RollbackOnlyTransactionMiddleware::class);
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine_rollback_only.default', 0, new Reference('doctrine.orm.default_entity_manager'));
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument('tactician.middleware.doctrine_rollback_only.second', 0, new Reference('doctrine.orm.second_entity_manager'));
-        $this->assertContainerBuilderHasAlias('tactician.middleware.doctrine_rollback_only', 'tactician.middleware.doctrine_rollback_only.default');
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.doctrine_rollback_only.default'));
+        $this->assertEquals(RollbackOnlyTransactionMiddleware::class, $this->container->getDefinition('tactician.middleware.doctrine_rollback_only.default')->getClass());
+        $this->assertTrue($this->container->hasDefinition('tactician.middleware.doctrine_rollback_only.second'));
+        $this->assertEquals(RollbackOnlyTransactionMiddleware::class, $this->container->getDefinition('tactician.middleware.doctrine_rollback_only.second')->getClass());
+        $this->assertEquals(new Reference('doctrine.orm.default_entity_manager'), $this->container->getDefinition('tactician.middleware.doctrine_rollback_only.default')->getArgument(0));
+        $this->assertEquals(new Reference('doctrine.orm.second_entity_manager'), $this->container->getDefinition('tactician.middleware.doctrine_rollback_only.second')->getArgument(0));
+        $this->assertTrue($this->container->hasAlias('tactician.middleware.doctrine_rollback_only'));
+        $this->assertEquals('tactician.middleware.doctrine_rollback_only.default', (string) $this->container->getAlias('tactician.middleware.doctrine_rollback_only'));
     }
 }

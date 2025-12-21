@@ -23,10 +23,7 @@ class CommandHandlerPass implements CompilerPassInterface
         $this->handlerMapping = $mappingStrategy;
     }
 
-    /**
-     * @return void
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $builders = BusBuildersFromConfig::convert(
             $this->readAndForgetParameter($container, 'tactician.merged_config')

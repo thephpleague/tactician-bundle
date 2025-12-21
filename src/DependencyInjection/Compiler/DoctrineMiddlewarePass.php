@@ -13,10 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DoctrineMiddlewarePass implements CompilerPassInterface
 {
-    /**
-     * @return void
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!class_exists(TransactionMiddleware::class) || !$container->hasParameter('doctrine.entity_managers')) {
             return;

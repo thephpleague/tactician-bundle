@@ -4,6 +4,7 @@ namespace League\Tactician\Bundle\Security\Voter;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
@@ -52,16 +53,7 @@ class HandleCommandVoter extends Voter
         return $attribute === 'handle' && is_object($subject);
     }
 
-    /**
-     * Checks if the currently logged on user may handle $subject.
-     *
-     * @param string         $attribute
-     * @param mixed          $subject
-     * @param TokenInterface $token
-     *
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $allowedRoles = $this->getAllowedRoles(get_class($subject));
 
